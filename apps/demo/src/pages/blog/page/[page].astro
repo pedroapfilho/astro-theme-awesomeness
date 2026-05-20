@@ -1,0 +1,25 @@
+---
+import type { GetStaticPathsOptions, Page } from "astro";
+import type { CollectionEntry } from "astro:content";
+import { getCollection } from "astro:content";
+import ListLayout from "astro-awesomeness/layouts/list-layout";
+import "../../../styles/global.css";
+
+export const getStaticPaths = async ({ paginate }: GetStaticPathsOptions) => {
+  const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
+    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+  );
+  return paginate(posts, { pageSize: 5 });
+};
+
+type Props = { page: Page<CollectionEntry<"posts">> };
+const { page } = Astro.props as Props;
+const urlForPage = (n: number) => (n === 1 ? "/" : `/blog/page/${n}`);
+---
+<ListLayout
+  title="All posts"
+  description="Every post on the demo blog."
+  posts={page.data.map((post) => ({ slug: post.id, data: post.data }))}
+  page={{ currentPage: page.currentPage, lastPage: page.lastPage, url: {} }}
+  urlForPage={urlForPage}
+/>

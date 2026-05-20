@@ -1,0 +1,14 @@
+---
+import { getCollection } from "astro:content";
+import ListLayout from "astro-awesomeness/layouts/list-layout";
+import "../styles/global.css";
+
+const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
+);
+---
+<ListLayout
+  title="Awesomeness demo"
+  description="The reference blog for astro-awesomeness."
+  posts={posts.map((post) => ({ slug: post.id, data: post.data }))}
+/>
