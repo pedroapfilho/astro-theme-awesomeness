@@ -1,4 +1,6 @@
 ---
+import Footer from "../astro/footer.astro";
+import Header from "../astro/header.astro";
 import Seo from "../astro/seo.astro";
 
 type Props = {
@@ -8,6 +10,7 @@ type Props = {
   image?: string;
   type?: "website" | "article";
   lang?: string;
+  siteTitle?: string;
 };
 
 const {
@@ -17,6 +20,7 @@ const {
   image,
   type = "website",
   lang = "en",
+  siteTitle,
 } = Astro.props;
 ---
 <!doctype html>
@@ -36,7 +40,11 @@ const {
     </script>
     <slot name="head" />
   </head>
-  <body class="bg-background text-foreground min-h-dvh">
-    <slot />
+  <body class="bg-background text-foreground min-h-dvh flex flex-col">
+    {siteTitle && <Header siteTitle={siteTitle} />}
+    <div class="flex-1">
+      <slot />
+    </div>
+    {siteTitle && <Footer siteTitle={siteTitle} />}
   </body>
 </html>

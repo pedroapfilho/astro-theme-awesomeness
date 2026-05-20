@@ -11,4 +11,5 @@ const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
   title="Awesomeness demo"
   description="The reference blog for astro-awesomeness."
   posts={posts.map((post) => ({ slug: post.id, data: post.data }))}
+  siteTitle="Awesomeness"
 />

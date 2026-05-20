@@ -10,12 +10,13 @@ import Prose from "../astro/prose.astro";
 type Props = {
   post: { slug: string; data: Post; body: string };
   locale?: string;
+  siteTitle?: string;
 };
 
-const { post, locale } = Astro.props;
+const { post, locale, siteTitle } = Astro.props;
 const { title, description, pubDate, updatedDate, tags } = post.data;
 ---
-<BaseLayout title={title} description={description} type="article">
+<BaseLayout title={title} description={description} type="article" siteTitle={siteTitle}>
   <article class="mx-auto max-w-3xl px-4 py-10">
     <header class="mb-8">
       <h1 class="text-foreground text-3xl font-bold tracking-tight sm:text-4xl">{title}</h1>

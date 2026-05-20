@@ -27,4 +27,5 @@ const { tag, posts } = Astro.props as Props;
   title={`Tagged "${tag}"`}
   description={`Posts tagged ${tag}.`}
   posts={posts.map((post) => ({ slug: post.id, data: post.data }))}
+  siteTitle="Awesomeness"
 />

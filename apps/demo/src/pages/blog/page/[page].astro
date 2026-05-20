@@ -22,4 +22,5 @@ const urlForPage = (n: number) => (n === 1 ? "/" : `/blog/page/${n}`);
   posts={page.data.map((post) => ({ slug: post.id, data: post.data }))}
   page={{ currentPage: page.currentPage, lastPage: page.lastPage, url: {} }}
   urlForPage={urlForPage}
+  siteTitle="Awesomeness"
 />

@@ -1,4 +1,6 @@
-@import "tailwindcss";
+/* This stylesheet is consumed AFTER `@import "tailwindcss"` in the host app.
+   It contributes tokens, base styles, prose, and the dark variant. */
+
 @import "tw-animate-css";
 
 @custom-variant dark (&:is(.dark *));
