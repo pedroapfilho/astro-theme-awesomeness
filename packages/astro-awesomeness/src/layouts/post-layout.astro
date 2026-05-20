@@ -1,0 +1,40 @@
+---
+import type { Post } from "../content/index";
+
+import BaseLayout from "./base-layout.astro";
+import FormattedDate from "../astro/formatted-date.astro";
+import ReadingTime from "../astro/reading-time.astro";
+import TagList from "../astro/tag-list.astro";
+import Prose from "../astro/prose.astro";
+
+type Props = {
+  post: { slug: string; data: Post; body: string };
+  locale?: string;
+};
+
+const { post, locale } = Astro.props;
+const { title, description, pubDate, updatedDate, tags } = post.data;
+---
+<BaseLayout title={title} description={description} type="article">
+  <article class="mx-auto max-w-3xl px-4 py-10">
+    <header class="mb-8">
+      <h1 class="text-foreground text-3xl font-bold tracking-tight sm:text-4xl">{title}</h1>
+      <div class="text-muted-foreground mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
+        <FormattedDate date={pubDate} locale={locale} />
+        <span aria-hidden="true">·</span>
+        <ReadingTime text={post.body} />
+        {updatedDate && (
+          <>
+            <span aria-hidden="true">·</span>
+            <span>Updated <FormattedDate date={updatedDate} locale={locale} /></span>
+          </>
+        )}
+      </div>
+      {tags.length > 0 && <TagList tags={tags} class="mt-4" />}
+    </header>
+
+    <Prose>
+      <slot />
+    </Prose>
+  </article>
+</BaseLayout>
