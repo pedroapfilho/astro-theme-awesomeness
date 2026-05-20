@@ -1,0 +1,14 @@
+---
+import { Code } from "astro:components";
+
+type Props = {
+  code: string;
+  lang?: string;
+  class?: string;
+};
+
+const { code, lang = "ts", class: className = "" } = Astro.props;
+---
+<div class:list={["bg-muted border-border overflow-hidden rounded-md border", className]}>
+  <Code code={code} lang={lang} theme="github-dark" />
+</div>
