@@ -4,14 +4,15 @@ import type { Post } from "../content/index";
 import FormattedDate from "./formatted-date.astro";
 import TagList from "./tag-list.astro";
 
+type PostEntry = { id: string; data: Post };
 type Props = {
-  post: { slug: string; data: Post };
+  post: PostEntry;
   locale?: string;
 };
 
 const { post, locale } = Astro.props;
 const { title, description, pubDate, tags } = post.data;
-const href = `/blog/${post.slug}`;
+const href = `/blog/${post.id}`;
 ---
 <article class="border-border group border-b py-6 last:border-0">
   <a href={href} class="block">

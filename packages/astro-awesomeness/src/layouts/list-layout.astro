@@ -8,7 +8,7 @@ import Pagination from "../astro/pagination.astro";
 type Props = {
   title: string;
   description: string;
-  posts: Array<{ slug: string; data: Post }>;
+  posts: Array<{ id: string; data: Post }>;
   page?: { currentPage: number; lastPage: number; url: { prev?: string; next?: string } };
   urlForPage?: (page: number) => string;
   locale?: string;

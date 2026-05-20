@@ -19,7 +19,7 @@ const urlForPage = (n: number) => (n === 1 ? "/" : `/blog/page/${n}`);
 <ListLayout
   title="All posts"
   description="Every post on the demo blog."
-  posts={page.data.map((post) => ({ slug: post.id, data: post.data }))}
+  posts={page.data}
   page={{ currentPage: page.currentPage, lastPage: page.lastPage, url: {} }}
   urlForPage={urlForPage}
   siteTitle="Awesomeness"

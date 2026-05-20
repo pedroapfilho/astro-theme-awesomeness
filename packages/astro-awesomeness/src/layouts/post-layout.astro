@@ -8,7 +8,7 @@ import TagList from "../astro/tag-list.astro";
 import Prose from "../astro/prose.astro";
 
 type Props = {
-  post: { slug: string; data: Post; body: string };
+  post: { id: string; data: Post; body?: string };
   locale?: string;
   siteTitle?: string;
 };
@@ -23,7 +23,7 @@ const { title, description, pubDate, updatedDate, tags } = post.data;
       <div class="text-muted-foreground mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
         <FormattedDate date={pubDate} locale={locale} />
         <span aria-hidden="true">·</span>
-        <ReadingTime text={post.body} />
+        <ReadingTime text={post.body ?? ""} />
         {updatedDate && (
           <>
             <span aria-hidden="true">·</span>
