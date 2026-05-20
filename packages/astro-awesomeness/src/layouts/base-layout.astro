@@ -1,0 +1,42 @@
+---
+import Seo from "../astro/seo.astro";
+
+type Props = {
+  title: string;
+  description: string;
+  canonical?: string;
+  image?: string;
+  type?: "website" | "article";
+  lang?: string;
+};
+
+const {
+  title,
+  description,
+  canonical,
+  image,
+  type = "website",
+  lang = "en",
+} = Astro.props;
+---
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <Seo title={title} description={description} canonical={canonical} image={image} type={type} />
+    <script is:inline>
+      (() => {
+        const stored = localStorage.getItem("theme");
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const theme = stored === "dark" || stored === "light" ? stored : prefersDark ? "dark" : "light";
+        document.documentElement.classList.toggle("dark", theme === "dark");
+      })();
+    </script>
+    <slot name="head" />
+  </head>
+  <body class="bg-background text-foreground min-h-dvh">
+    <slot />
+  </body>
+</html>
