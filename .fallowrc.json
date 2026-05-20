@@ -1,4 +1,5 @@
 {
   "$schema": "https://raw.githubusercontent.com/fallow-rs/fallow/main/schema.json",
-  "entry": ["oxlint.config.ts", "**/tsdown.config.ts"]
+  "entry": ["oxlint.config.ts", "**/tsdown.config.ts"],
+  "ignorePatterns": ["apps/demo/src/styles/global.css"]
 }
