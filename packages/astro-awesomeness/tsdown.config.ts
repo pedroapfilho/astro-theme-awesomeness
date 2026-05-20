@@ -2,7 +2,7 @@ import { defineConfig } from "tsdown";
 
 const config = defineConfig({
   clean: true,
-  copy: [{ from: "src/styles/globals.css", to: "dist/styles/globals.css" }],
+  copy: [{ from: "src/styles/globals.css", to: "dist/styles/" }],
   dts: true,
   entry: [
     "src/index.ts",

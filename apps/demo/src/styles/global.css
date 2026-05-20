@@ -1,0 +1,9 @@
+@import "tailwindcss";
+@import "astro-awesomeness/styles.css";
+@plugin "astro-awesomeness/tailwind";
+
+@theme {
+  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
+  --color-accent: oklch(0.7 0.18 250);
+  --color-accent-foreground: oklch(0.18 0 0);
+}
