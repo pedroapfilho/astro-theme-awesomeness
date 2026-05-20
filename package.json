@@ -1,0 +1,43 @@
+{
+  "name": "astro-awesomeness-monorepo",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "turbo run start",
+    "dev": "turbo run dev",
+    "lint": "turbo run lint",
+    "format": "oxfmt",
+    "format:check": "oxfmt --check",
+    "typecheck": "turbo run typecheck",
+    "build": "turbo run build",
+    "clean": "turbo run clean && rm -rf node_modules",
+    "test": "turbo run test",
+    "test:coverage": "turbo run test:coverage",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "turbo run build && changeset publish",
+    "fallow": "fallow",
+    "fallow:dead": "fallow dead-code",
+    "fallow:dupes": "fallow dupes",
+    "fallow:health": "fallow health --score",
+    "fallow:audit": "fallow audit --base main",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.31.0",
+    "fallow": "^2.75.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.0.5",
+    "oxfmt": "^0.49.0",
+    "oxlint": "^1.65.0",
+    "oxlint-config-awesomeness": "^3.0.2",
+    "tsdown": "^0.22.0",
+    "turbo": "^2.9.14"
+  },
+  "lint-staged": {
+    "!(*.d).{ts,tsx,mts,cts,js,jsx,mjs,cjs}": ["oxlint"],
+    "*.{ts,tsx,mts,cts,js,jsx,mjs,cjs,json,md}": ["oxfmt"]
+  },
+  "engines": { "node": ">=24" },
+  "packageManager": "pnpm@11.1.3"
+}
