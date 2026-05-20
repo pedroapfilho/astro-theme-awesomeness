@@ -17,6 +17,9 @@ out/
 # TypeScript
 *.tsbuildinfo
 
+# Test coverage
+coverage/
+
 # Fallow cache
 .fallow/
 
