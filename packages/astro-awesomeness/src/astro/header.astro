@@ -1,0 +1,22 @@
+---
+import { ThemeToggle } from "../components/theme-toggle";
+
+type Props = {
+  siteTitle: string;
+  homeHref?: string;
+  class?: string;
+};
+
+const { siteTitle, homeHref = "/", class: className = "" } = Astro.props;
+---
+<header class:list={["border-border bg-background/80 sticky top-0 z-40 border-b backdrop-blur", className]}>
+  <div class="mx-auto flex max-w-3xl items-center justify-between px-4 py-3">
+    <a href={homeHref} class="text-foreground text-base font-semibold tracking-tight">
+      {siteTitle}
+    </a>
+    <nav class="flex items-center gap-2">
+      <slot name="nav" />
+      <ThemeToggle client:load />
+    </nav>
+  </div>
+</header>

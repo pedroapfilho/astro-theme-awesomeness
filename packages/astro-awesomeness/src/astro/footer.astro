@@ -1,0 +1,15 @@
+---
+type Props = {
+  siteTitle: string;
+  class?: string;
+};
+
+const { siteTitle, class: className = "" } = Astro.props;
+const year = new Date().getFullYear();
+---
+<footer class:list={["border-border text-muted-foreground mt-16 border-t py-6 text-sm", className]}>
+  <div class="mx-auto flex max-w-3xl flex-col items-center justify-between gap-2 px-4 sm:flex-row">
+    <p>© {year} {siteTitle}</p>
+    <slot name="links" />
+  </div>
+</footer>
