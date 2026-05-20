@@ -150,6 +150,7 @@ function CommandShortcut({ className, ...props }: React.ComponentProps<"span">) 
 
 export {
   Command,
+  // fallow-ignore-next-line unused-export
   CommandDialog,
   CommandInput,
   CommandList,

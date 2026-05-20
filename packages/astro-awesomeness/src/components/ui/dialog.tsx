@@ -130,12 +130,15 @@ function DialogDescription({
 
 export {
   Dialog,
+  // fallow-ignore-next-line unused-export
   DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
+  // fallow-ignore-next-line unused-export
   DialogOverlay,
+  // fallow-ignore-next-line unused-export
   DialogPortal,
   DialogTitle,
   DialogTrigger,
