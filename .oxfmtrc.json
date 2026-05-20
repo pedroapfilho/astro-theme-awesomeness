@@ -1,0 +1,10 @@
+{
+  "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxfmt/configuration_schema.json",
+  "experimental": {
+    "sortImports": true,
+    "sortTailwindcss": {
+      "attributes": ["class", "className"],
+      "functions": ["cn", "clsx", "cva", "tw"]
+    }
+  }
+}
