@@ -1,0 +1,35 @@
+---
+type Props = {
+  currentPage: number;
+  lastPage: number;
+  urlForPage: (page: number) => string;
+  class?: string;
+};
+
+const { currentPage, lastPage, urlForPage, class: className = "" } = Astro.props;
+const hasPrev = currentPage > 1;
+const hasNext = currentPage < lastPage;
+---
+<nav class:list={["mt-8 flex items-center justify-between", className]} aria-label="Pagination">
+  {hasPrev ? (
+    <a
+      href={urlForPage(currentPage - 1)}
+      class="border-border hover:bg-muted inline-flex items-center rounded-md border px-3 py-1.5 text-sm transition-colors"
+      rel="prev"
+    >
+      ← Previous
+    </a>
+  ) : <span aria-hidden="true" />}
+  <span class="text-muted-foreground text-sm">
+    Page {currentPage} of {lastPage}
+  </span>
+  {hasNext ? (
+    <a
+      href={urlForPage(currentPage + 1)}
+      class="border-border hover:bg-muted inline-flex items-center rounded-md border px-3 py-1.5 text-sm transition-colors"
+      rel="next"
+    >
+      Next →
+    </a>
+  ) : <span aria-hidden="true" />}
+</nav>

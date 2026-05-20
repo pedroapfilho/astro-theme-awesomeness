@@ -1,0 +1,27 @@
+---
+import type { Post } from "../content/index";
+
+import FormattedDate from "./formatted-date.astro";
+import TagList from "./tag-list.astro";
+
+type Props = {
+  post: { slug: string; data: Post };
+  locale?: string;
+};
+
+const { post, locale } = Astro.props;
+const { title, description, pubDate, tags } = post.data;
+const href = `/blog/${post.slug}`;
+---
+<article class="border-border group border-b py-6 last:border-0">
+  <a href={href} class="block">
+    <h2 class="text-foreground group-hover:text-accent-foreground text-xl font-semibold tracking-tight transition-colors">
+      {title}
+    </h2>
+    <div class="text-muted-foreground mt-1 flex items-center gap-2 text-sm">
+      <FormattedDate date={pubDate} locale={locale} />
+    </div>
+    <p class="text-muted-foreground mt-2 line-clamp-2 text-sm">{description}</p>
+  </a>
+  {tags.length > 0 && <TagList tags={tags} class="mt-3" />}
+</article>

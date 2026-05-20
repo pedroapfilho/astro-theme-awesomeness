@@ -1,0 +1,23 @@
+---
+import { slugify } from "../lib/slugify";
+
+type Props = {
+  tags: Array<string>;
+  base?: string;
+  class?: string;
+};
+
+const { tags, base = "/tags", class: className = "" } = Astro.props;
+---
+<ul class:list={["flex flex-wrap gap-2", className]}>
+  {tags.map((tag) => (
+    <li>
+      <a
+        href={`${base}/${slugify(tag)}`}
+        class="border-border bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground inline-flex items-center rounded-md border px-2 py-0.5 text-xs transition-colors"
+      >
+        {tag}
+      </a>
+    </li>
+  ))}
+</ul>
