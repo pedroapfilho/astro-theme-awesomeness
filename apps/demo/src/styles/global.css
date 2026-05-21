@@ -3,7 +3,6 @@
 @plugin "astro-awesomeness/tailwind";
 
 @source "../**/*.{astro,tsx,ts,jsx,js,md,mdx}";
-@source "../../../../packages/astro-awesomeness/src/**/*.{astro,tsx,ts}";
 
 @theme {
   --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;

@@ -3,6 +3,13 @@
 
 @import "tw-animate-css";
 
+/* Scan our own .astro/.tsx files so consumer Tailwind generates utilities
+   used by the theme. Paths resolve from dist/styles/globals.css after build:
+   `../../src` → <package-root>/src in both workspace and node_modules. */
+@source "../../src/astro/**/*.astro";
+@source "../../src/layouts/**/*.astro";
+@source "../../src/components/**/*.{ts,tsx}";
+
 @custom-variant dark (&:is(.dark *));
 
 @theme {

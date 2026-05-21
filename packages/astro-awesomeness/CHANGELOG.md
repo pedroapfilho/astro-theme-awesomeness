@@ -1,5 +1,11 @@
 # astro-awesomeness
 
+## 0.1.2
+
+### Patch Changes
+
+- Ship `@source` directives in `globals.css` so consumer Tailwind v4 automatically scans the theme's `.astro`/`.tsx` files. Removes the need for consumers to add `@source "../../node_modules/astro-awesomeness/src/**/*.{astro,tsx,ts}"` themselves.
+
 ## 0.1.1
 
 ### Patch Changes
