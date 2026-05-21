@@ -1,5 +1,20 @@
 # astro-awesomeness
 
+## 0.1.3
+
+### Patch Changes
+
+- i18n-ready text props on theme primitives:
+  - `<ReadingTime>` accepts `label`
+  - `<Pagination>` accepts `prevLabel`, `nextLabel`, `pageLabel`, `ofLabel`
+  - `<TableOfContents>` accepts `heading`
+  - `<Header>` accepts a `<slot name="brand">` for custom logos, plus `themeToggleLabel`
+  - `<ThemeToggle>` accepts `ariaLabel`
+  - `<CommandMenu>` accepts `groupHeading`
+  - `<PostLayout>` accepts `updatedLabel`
+
+  All defaults stay English-only — existing consumers unaffected.
+
 ## 0.1.2
 
 ### Patch Changes

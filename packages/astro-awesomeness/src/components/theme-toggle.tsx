@@ -34,7 +34,11 @@ const subscribePrefersDark = (callback: () => void) => {
   };
 };
 
-const ThemeToggle = () => {
+type Props = {
+  ariaLabel?: string;
+};
+
+const ThemeToggle = ({ ariaLabel = "Toggle theme" }: Props) => {
   // useSyncExternalStore avoids hydration mismatch warnings while still letting
   // us read the actual system preference on the client.
   const prefersDark = useSyncExternalStore(subscribePrefersDark, getPrefersDark, () => false);
@@ -52,7 +56,7 @@ const ThemeToggle = () => {
   };
 
   return (
-    <Button aria-label="Toggle theme" onClick={handleClick} size="icon" variant="ghost">
+    <Button aria-label={ariaLabel} onClick={handleClick} size="icon" variant="ghost">
       {theme === "dark" ? <Sun /> : <Moon />}
     </Button>
   );

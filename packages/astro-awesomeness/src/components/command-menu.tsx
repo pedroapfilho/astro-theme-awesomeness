@@ -16,12 +16,14 @@ type CommandMenuItem = { description?: string; title: string; url: string };
 
 type CommandMenuProps = {
   emptyMessage?: string;
+  groupHeading?: string;
   items: Array<CommandMenuItem>;
   placeholder?: string;
 };
 
 const CommandMenu = ({
   emptyMessage = "No results.",
+  groupHeading = "Posts",
   items,
   placeholder = "Search posts…",
 }: CommandMenuProps) => {
@@ -52,7 +54,7 @@ const CommandMenu = ({
           <CommandInput placeholder={placeholder} />
           <CommandList>
             <CommandEmpty>{emptyMessage}</CommandEmpty>
-            <CommandGroup heading="Posts">
+            <CommandGroup heading={groupHeading}>
               {items.map((item) => (
                 <CommandItem
                   key={item.url}

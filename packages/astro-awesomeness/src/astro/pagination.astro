@@ -4,9 +4,22 @@ type Props = {
   lastPage: number;
   urlForPage: (page: number) => string;
   class?: string;
+  prevLabel?: string;
+  nextLabel?: string;
+  pageLabel?: string;
+  ofLabel?: string;
 };
 
-const { currentPage, lastPage, urlForPage, class: className = "" } = Astro.props;
+const {
+  currentPage,
+  lastPage,
+  urlForPage,
+  class: className = "",
+  prevLabel = "← Previous",
+  nextLabel = "Next →",
+  pageLabel = "Page",
+  ofLabel = "of",
+} = Astro.props;
 const hasPrev = currentPage > 1;
 const hasNext = currentPage < lastPage;
 ---
@@ -17,11 +30,11 @@ const hasNext = currentPage < lastPage;
       class="border-border hover:bg-muted inline-flex items-center rounded-md border px-3 py-1.5 text-sm transition-colors"
       rel="prev"
     >
-      ← Previous
+      {prevLabel}
     </a>
   ) : <span aria-hidden="true" />}
   <span class="text-muted-foreground text-sm">
-    Page {currentPage} of {lastPage}
+    {pageLabel} {currentPage} {ofLabel} {lastPage}
   </span>
   {hasNext ? (
     <a
@@ -29,7 +42,7 @@ const hasNext = currentPage < lastPage;
       class="border-border hover:bg-muted inline-flex items-center rounded-md border px-3 py-1.5 text-sm transition-colors"
       rel="next"
     >
-      Next →
+      {nextLabel}
     </a>
   ) : <span aria-hidden="true" />}
 </nav>

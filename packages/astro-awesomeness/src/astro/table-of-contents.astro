@@ -8,9 +8,16 @@ type Props = {
   minDepth?: number;
   maxDepth?: number;
   class?: string;
+  heading?: string;
 };
 
-const { headings, minDepth = 2, maxDepth = 3, class: className = "" } = Astro.props;
+const {
+  headings,
+  minDepth = 2,
+  maxDepth = 3,
+  class: className = "",
+  heading = "On this page",
+} = Astro.props;
 
 const visible: Array<Heading> = headings
   .filter((h) => h.depth >= minDepth && h.depth <= maxDepth)
@@ -18,7 +25,7 @@ const visible: Array<Heading> = headings
 ---
 {visible.length > 0 && (
   <nav class:list={["text-sm", className]} aria-label="Table of contents">
-    <p class="text-muted-foreground mb-2 font-medium tracking-wide uppercase">On this page</p>
+    <p class="text-muted-foreground mb-2 font-medium tracking-wide uppercase">{heading}</p>
     <ul class="space-y-1">
       {visible.map((heading) => (
         <li class:list={["leading-snug", heading.depth === 3 && "pl-4"]}>
