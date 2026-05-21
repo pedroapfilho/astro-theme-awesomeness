@@ -1,6 +1,6 @@
 {
   "name": "astro-awesomeness",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Astro 5 blog theme with shadcn primitives and a Tailwind v4 preset.",
   "keywords": [
     "astro",
@@ -12,8 +12,7 @@
   "license": "MIT",
   "files": [
     "dist",
-    "src/astro",
-    "src/layouts"
+    "src"
   ],
   "type": "module",
   "exports": {
