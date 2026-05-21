@@ -7,7 +7,10 @@ import { defineConfig } from "astro/config";
 const config = defineConfig({
   integrations: [react(), mdx(), sitemap()],
   site: "https://demo.astro-awesomeness.dev",
-  vite: { plugins: [tailwindcss()] },
+  vite: {
+    optimizeDeps: { exclude: ["astro-awesomeness"] },
+    plugins: [tailwindcss()],
+  },
 });
 
 export default config;
