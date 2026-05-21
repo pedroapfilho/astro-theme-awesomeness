@@ -14,7 +14,7 @@ const { post, locale } = Astro.props;
 const { title, description, pubDate, tags } = post.data;
 const href = `/blog/${post.id}`;
 ---
-<article class="border-border group border-b py-6 last:border-0">
+<article class="post-card border-border group border-b py-6 last:border-0">
   <a href={href} class="block">
     <h2 class="text-foreground group-hover:text-primary text-xl font-semibold tracking-tight transition-colors">
       {title}
@@ -26,3 +26,14 @@ const href = `/blog/${post.id}`;
   </a>
   {tags.length > 0 && <TagList tags={tags} class="mt-3" />}
 </article>
+
+<style>
+  /* Skip layout/paint for off-screen cards on long post lists. The first
+     three remain eagerly rendered so above-the-fold paint isn't blocked by
+     visibility containment evaluation. `contain-intrinsic-size: auto …`
+     lets the browser cache real measurements after first render. */
+  .post-card:nth-child(n + 4) {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 200px;
+  }
+</style>

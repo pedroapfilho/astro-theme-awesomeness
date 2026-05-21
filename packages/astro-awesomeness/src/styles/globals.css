@@ -66,11 +66,27 @@
   --color-ring: oklch(0.556 0 0);
 }
 
+/* Opt-in to cross-document view transitions on same-origin navigations.
+   Gated by prefers-reduced-motion: users who request reduced motion get
+   instant navigation. Browsers without support degrade to instant nav. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+}
+
 @layer base {
   *,
   *::before,
   *::after {
     box-sizing: border-box;
+  }
+  :root {
+    /* Inform the browser which schemes the page supports so native UI
+       (scrollbars, form controls, canvas) themes itself before paint and
+       avoids a flash of unstyled chrome. The `.dark` class still drives
+       our token overrides; this just covers native surfaces. */
+    color-scheme: light dark;
   }
   html {
     -webkit-text-size-adjust: 100%;
@@ -93,6 +109,23 @@
   button:not(:disabled),
   [role="button"]:not(:disabled) {
     cursor: pointer;
+  }
+
+  /* Balanced wrapping for short heading-like blocks. Limited to top-level
+     headings to avoid the perf cost on arbitrary text. */
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    text-wrap: balance;
+  }
+
+  /* Render `<time>` metadata with tabular figures so dates and reading-time
+     counts align between rows in lists. */
+  time {
+    font-variant-numeric: tabular-nums;
   }
 
   ::-webkit-scrollbar {
@@ -135,6 +168,13 @@
   }
   .prose h3 {
     font-size: 1.375rem;
+  }
+  .prose p,
+  .prose li,
+  .prose blockquote {
+    /* Prefer "pretty" line breaks (no orphan words) for long-form body text.
+       Falls back to the default greedy wrap in browsers without support. */
+    text-wrap: pretty;
   }
   .prose p {
     margin-top: 1em;

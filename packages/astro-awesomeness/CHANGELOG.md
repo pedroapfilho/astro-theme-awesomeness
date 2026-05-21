@@ -1,5 +1,19 @@
 # astro-awesomeness
 
+## 0.4.0
+
+### Minor Changes
+
+- Modern web platform audit pass:
+  - Declare `<meta name="color-scheme" content="light dark">` and set `:root { color-scheme: light dark }` so native scrollbars and form controls match the active theme before paint (no more dark-mode FOUC on chrome UI).
+  - Opt-in to cross-document view transitions (`@view-transition { navigation: auto }`) guarded by `prefers-reduced-motion: no-preference`. Same-origin link clicks now cross-fade in supporting browsers; everyone else gets the standard instant nav.
+  - Add `<script type="speculationrules">` to `base-layout` prefetching same-origin links with `moderate` eagerness — first hover/click intent now warms the next page.
+  - `text-wrap: balance` on `h1`–`h6` and `text-wrap: pretty` on `.prose p / li / blockquote` for sharper headings and no-orphan body copy.
+  - `font-variant-numeric: tabular-nums` on `<time>` so list dates align vertically.
+  - `content-visibility: auto` + `contain-intrinsic-size: auto 200px` on `<PostCard>` instances past the first three — skips layout/paint cost for off-screen cards on long post lists without delaying above-the-fold paint.
+
+  All additions are progressive enhancements — older browsers ignore them and the theme renders identically.
+
 ## 0.3.0
 
 ### Minor Changes

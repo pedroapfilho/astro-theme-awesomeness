@@ -28,6 +28,7 @@ const {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="light dark" />
     <meta name="generator" content={Astro.generator} />
     <Seo title={title} description={description} canonical={canonical} image={image} type={type} />
     <script is:inline>
@@ -38,6 +39,14 @@ const {
         document.documentElement.classList.toggle("dark", theme === "dark");
       })();
     </script>
+    <script type="speculationrules" is:inline set:html={JSON.stringify({
+      prefetch: [
+        {
+          where: { and: [{ href_matches: "/*" }, { not: { href_matches: "/*\\?*" } }] },
+          eagerness: "moderate",
+        },
+      ],
+    })} />
     <slot name="head" />
   </head>
   <body class="bg-background text-foreground min-h-dvh flex flex-col">
