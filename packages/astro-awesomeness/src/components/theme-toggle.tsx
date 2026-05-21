@@ -1,5 +1,5 @@
 import { Moon, Sun } from "lucide-react";
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useState, useSyncExternalStore } from "react";
 
 import { Button } from "./ui/button";
 
@@ -45,18 +45,15 @@ const ThemeToggle = ({ ariaLabel = "Toggle theme" }: Props) => {
   const [override, setOverride] = useState<Theme | null>(() => getStoredTheme());
   const theme: Theme = override ?? (prefersDark ? "dark" : "light");
 
-  useEffect(() => {
-    document.documentElement.classList.toggle("dark", theme === "dark");
-  }, [theme]);
-
-  const handleClick = () => {
+  const handleToggleTheme = () => {
     const next: Theme = theme === "dark" ? "light" : "dark";
     window.localStorage.setItem("theme", next);
+    document.documentElement.classList.toggle("dark", next === "dark");
     setOverride(next);
   };
 
   return (
-    <Button aria-label={ariaLabel} onClick={handleClick} size="icon" variant="ghost">
+    <Button aria-label={ariaLabel} onClick={handleToggleTheme} size="icon" variant="ghost">
       {theme === "dark" ? <Sun /> : <Moon />}
     </Button>
   );
