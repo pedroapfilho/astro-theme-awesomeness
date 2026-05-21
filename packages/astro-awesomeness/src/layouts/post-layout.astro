@@ -20,7 +20,7 @@ const { title, description, pubDate, updatedDate, tags } = post.data;
 <BaseLayout title={title} description={description} type="article" siteTitle={siteTitle}>
   <article class="mx-auto max-w-3xl px-4 py-10">
     <header class="mb-8">
-      <h1 class="text-foreground text-3xl font-bold tracking-tight sm:text-4xl">{title}</h1>
+      <h1 class="text-primary text-3xl font-bold tracking-tight sm:text-4xl">{title}</h1>
       <div class="text-muted-foreground mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
         <FormattedDate date={pubDate} locale={locale} />
         <span aria-hidden="true">·</span>

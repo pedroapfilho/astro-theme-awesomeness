@@ -142,14 +142,14 @@
     margin-bottom: 1em;
   }
   .prose a {
-    color: var(--color-accent-foreground);
+    color: var(--color-primary);
     text-decoration: underline;
     text-underline-offset: 0.2em;
     text-decoration-color: var(--color-border);
     transition: text-decoration-color 0.15s;
   }
   .prose a:hover {
-    text-decoration-color: var(--color-accent-foreground);
+    text-decoration-color: var(--color-primary);
   }
   .prose blockquote {
     margin: 1.5em 0;

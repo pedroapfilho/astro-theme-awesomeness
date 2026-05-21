@@ -22,7 +22,7 @@ const authorSchema = z.object({
   avatar: z.string().optional(),
   bio: z.string().optional(),
   name: z.string().min(1),
-  url: z.string().url().optional(),
+  url: z.url().optional(),
 });
 
 type Post = z.infer<typeof postSchema>;

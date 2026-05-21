@@ -1,5 +1,22 @@
 # astro-awesomeness
 
+## 0.2.0
+
+### Minor Changes
+
+- - Upgrade peer dependency `astro` to `^6.0.0` (latest Astro 6.x).
+  - Bump `zod` dependency to `^4.4.3` to match Astro 6's internal Zod 4 schema requirements (`BaseSchema = zod/v4/core $ZodType`). Content collection schemas now use Zod 4 idioms (`z.url()` instead of the deprecated `z.string().url()`).
+  - Make brand colors visible by default:
+    - `<Header>` site title now uses `text-primary`
+    - `<PostCard>` title hover uses `text-primary`
+    - `.prose a` links use `--color-primary`
+    - `<PostLayout>` and `<ListLayout>` page H1 use `text-primary`
+  - Bump transitive dependencies (`lucide-react`, `@types/react`, `@types/react-dom`, `happy-dom`, `vitest`, `@vitest/coverage-v8`) to latest within compatible majors.
+
+  Backwards compatible at the visual layer: shadcn's default `--color-primary` is near-foreground, so existing consumers see no change. Consumers who set `--color-primary` to a brand color now get visible brand tinting on H1s, header wordmark, post-card hover, and prose links.
+
+  Consumer action required: ensure your project has `astro@^6.0.0` and `zod@^4.0.0`. Astro 6 itself requires Node 22.12.0+.
+
 ## 0.1.3
 
 ### Patch Changes
