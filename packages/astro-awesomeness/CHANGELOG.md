@@ -1,5 +1,12 @@
 # astro-awesomeness
 
+## 0.3.0
+
+### Minor Changes
+
+- - `<Header>` accepts `showThemeToggle` prop (default `true`); pass `false` to render in light-only mode without the toggle island.
+  - Drop `--color-primary` override from `.dark` block so consumer `@theme { --color-primary: <brand> }` overrides survive dark mode.
+
 ## 0.2.0
 
 ### Minor Changes

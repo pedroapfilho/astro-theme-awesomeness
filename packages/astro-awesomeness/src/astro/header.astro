@@ -6,6 +6,7 @@ type Props = {
   homeHref?: string;
   class?: string;
   themeToggleLabel?: string;
+  showThemeToggle?: boolean;
 };
 
 const {
@@ -13,6 +14,7 @@ const {
   homeHref = "/",
   class: className = "",
   themeToggleLabel = "Toggle theme",
+  showThemeToggle = true,
 } = Astro.props;
 ---
 <header class:list={["border-border bg-background/80 sticky top-0 z-40 border-b backdrop-blur", className]}>
@@ -22,7 +24,7 @@ const {
     </a>
     <nav class="flex items-center gap-2">
       <slot name="nav" />
-      <ThemeToggle client:load ariaLabel={themeToggleLabel} />
+      {showThemeToggle && <ThemeToggle client:load ariaLabel={themeToggleLabel} />}
     </nav>
   </div>
 </header>
