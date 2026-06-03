@@ -39,8 +39,7 @@ type Props = {
 };
 
 const ThemeToggle = ({ ariaLabel = "Toggle theme" }: Props) => {
-  // useSyncExternalStore avoids hydration mismatch warnings while still letting
-  // us read the actual system preference on the client.
+  // useSyncExternalStore avoids hydration mismatch on system preference reads.
   const prefersDark = useSyncExternalStore(subscribePrefersDark, getPrefersDark, () => false);
   const [override, setOverride] = useState<Theme | null>(() => getStoredTheme());
   const theme: Theme = override ?? (prefersDark ? "dark" : "light");
