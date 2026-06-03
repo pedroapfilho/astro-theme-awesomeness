@@ -28,10 +28,7 @@ const href = `/blog/${post.id}`;
 </article>
 
 <style>
-  /* Skip layout/paint for off-screen cards on long post lists. The first
-     three remain eagerly rendered so above-the-fold paint isn't blocked by
-     visibility containment evaluation. `contain-intrinsic-size: auto …`
-     lets the browser cache real measurements after first render. */
+  /* Keep first 3 eager so above-the-fold paint isn't gated on containment checks. */
   .post-card:nth-child(n + 4) {
     content-visibility: auto;
     contain-intrinsic-size: auto 200px;
