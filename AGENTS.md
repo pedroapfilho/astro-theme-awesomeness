@@ -76,7 +76,7 @@ pnpm release                  # turbo build + changeset publish
 `astro-awesomeness` exposes these subpath entries (see `packages/astro-awesomeness/package.json`):
 
 - `astro-awesomeness` — `cn`, content schemas re-exports, lib utilities
-- `astro-awesomeness/components` — React islands (`CommandMenu`, `ThemeToggle`, ui/*)
+- `astro-awesomeness/components` — React islands (`CommandMenu`, `ThemeToggle`, ui/\*)
 - `astro-awesomeness/astro/*` — raw `.astro` components (header, seo, post-card, …)
 - `astro-awesomeness/layouts/*` — raw `.astro` layouts (base / list / post)
 - `astro-awesomeness/content` — `postSchema`, `tagSchema`
@@ -101,7 +101,7 @@ component files at build time. Don't move them into the bundled output.
 
 Validated by `~/dev/orchestrator/scripts/verify-*.sh` against
 `LIBRARY_SOURCE_OF_TRUTH=usebutr`. Skipped checks: e2e (no Playwright),
-auth-config, prisma-config, turbo-db-generate-ordering, i18n-*, landing-urls,
+auth-config, prisma-config, turbo-db-generate-ordering, i18n-\*, landing-urls,
 e2e-auth-emails. The library CI surface is 4 workflows (`test`, `lint`,
 `format`, `fallow`) — no `e2e.yml`.
 
