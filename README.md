@@ -1,6 +1,6 @@
-# astro-awesomeness
+# astro-theme-awesomeness
 
-Astro 5 blog theme. Tailwind v4 preset + shadcn primitives + zod content schemas.
+Monorepo for the `astro-awesomeness` Astro 5 blog theme. Tailwind v4 preset + shadcn primitives + zod content schemas.
 Per-blog customisation via `@theme` overrides — drop in your font and accent, ship.
 
 ## Quick start (consumer blog)

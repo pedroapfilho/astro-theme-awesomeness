@@ -1,6 +1,6 @@
 # AGENTS.md
 
-`astro-awesomeness-monorepo` — Turborepo home of the published Astro 5/6 blog
+`astro-theme-awesomeness` — Turborepo home of the published Astro 5/6 blog
 theme `astro-awesomeness` and the demo blog that exercises it. Library profile
 in the orchestrator: no DB, no auth, no Playwright, no email infra.
 
