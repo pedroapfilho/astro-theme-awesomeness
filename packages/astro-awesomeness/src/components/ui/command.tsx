@@ -26,6 +26,7 @@ function CommandDialog({
   title = "Command Palette",
   ...props
 }: React.ComponentProps<typeof Dialog> & {
+  children?: React.ReactNode;
   className?: string;
   description?: string;
   showCloseButton?: boolean;

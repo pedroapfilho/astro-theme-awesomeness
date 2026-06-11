@@ -44,10 +44,8 @@ const CommandMenu = ({
 
   return (
     <Dialog onOpenChange={setOpen} open={open}>
-      <DialogTrigger asChild>
-        <Button aria-label="Open search" size="icon" variant="ghost">
-          <Search />
-        </Button>
+      <DialogTrigger render={<Button aria-label="Open search" size="icon" variant="ghost" />}>
+        <Search />
       </DialogTrigger>
       <DialogContent className="p-0">
         <Command>
