@@ -36,25 +36,22 @@ const buttonVariants = cva(
   },
 );
 
-type ButtonProps = Omit<React.ComponentPropsWithoutRef<typeof ButtonPrimitive>, "className"> &
+type ButtonProps = Omit<React.ComponentProps<typeof ButtonPrimitive>, "className"> &
   VariantProps<typeof buttonVariants> & {
     className?: string;
   };
 
-const Button = React.forwardRef<React.ComponentRef<typeof ButtonPrimitive>, ButtonProps>(
-  ({ className, size = "default", variant = "default", ...props }, ref) => {
-    return (
-      <ButtonPrimitive
-        className={cn(buttonVariants({ className, size, variant }))}
-        data-size={size}
-        data-slot="button"
-        data-variant={variant}
-        ref={ref}
-        {...props}
-      />
-    );
-  },
-);
-Button.displayName = "Button";
+// React 19 passes `ref` as a regular prop, so no forwardRef wrapper is needed.
+const Button = ({ className, size = "default", variant = "default", ...props }: ButtonProps) => {
+  return (
+    <ButtonPrimitive
+      className={cn(buttonVariants({ className, size, variant }))}
+      data-size={size}
+      data-slot="button"
+      data-variant={variant}
+      {...props}
+    />
+  );
+};
 
 export { Button, buttonVariants };
