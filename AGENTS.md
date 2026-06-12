@@ -9,8 +9,8 @@ in the orchestrator: no DB, no auth, no Playwright, no email infra.
 - **Astro 5+** (peer dep `^6.0.0`) for the demo app and consumer blogs
 - **React 19** for interactive islands (theme toggle, command menu)
 - **Tailwind CSS v4** with a custom preset; per-blog font/accent overrides via `@theme`
-- **shadcn + radix-ui + lucide-react** primitives, **cmdk** for the command menu
-- **zod 4** for content collection schemas (`postSchema`, `tagSchema`)
+- **shadcn-style wrappers over @base-ui/react** + **lucide-react**, **cmdk** for the command menu
+- **zod 4** for content collection schemas (`postSchema`, `tagSchema`, `authorSchema`)
 - **tsdown** for the package build; `.astro` files ship as source via `./astro/*` and `./layouts/*` exports
 - **vitest 4** for unit tests (happy-dom)
 - **changesets** for versioned releases (demo app is ignored)

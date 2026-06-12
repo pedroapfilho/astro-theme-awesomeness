@@ -1,11 +1,12 @@
 import rss from "@astrojs/rss";
 import { getCollection } from "astro:content";
+import { notDraft } from "astro-awesomeness/content";
 
 export const GET = async (context: { site?: URL }) => {
   if (!context.site) {
     throw new Error("astro.config.ts must define `site` for RSS.");
   }
-  const posts = await getCollection("posts", ({ data }) => !data.draft);
+  const posts = await getCollection("posts", notDraft);
   return rss({
     description: "The reference blog for astro-awesomeness.",
     items: posts.map((post) => ({
