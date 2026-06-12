@@ -2,16 +2,14 @@
 import { getCollection } from "astro:content";
 import { notDraft } from "astro-awesomeness/content";
 import ListLayout from "astro-awesomeness/layouts/list-layout";
+import { PAGE_SIZE, urlForPage } from "../lib/pagination";
 import "../styles/global.css";
-
-const PAGE_SIZE = 5;
 
 const allPosts = (await getCollection("posts", notDraft)).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
 const posts = allPosts.slice(0, PAGE_SIZE);
 const lastPage = Math.max(1, Math.ceil(allPosts.length / PAGE_SIZE));
-const urlForPage = (n: number) => (n === 1 ? "/" : `/blog/page/${n}`);
 // A single page needs no "Page 1 of 1" footer; ListLayout skips Pagination without `page`.
 const page = lastPage > 1 ? { currentPage: 1, lastPage, url: {} } : undefined;
 ---
