@@ -2,18 +2,20 @@
 import type { GetStaticPathsOptions, Page } from "astro";
 import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
+import { notDraft } from "astro-awesomeness/content";
 import ListLayout from "astro-awesomeness/layouts/list-layout";
 import "../../../styles/global.css";
 
 export const getStaticPaths = async ({ paginate }: GetStaticPathsOptions) => {
-  const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
+  const posts = (await getCollection("posts", notDraft)).sort(
     (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
   );
-  return paginate(posts, { pageSize: 5 });
+  // Page 1 lives at "/" (see index.astro), so drop the duplicate /blog/page/1 route.
+  return paginate(posts, { pageSize: 5 }).filter(({ params }) => params.page !== "1");
 };
 
 type Props = { page: Page<CollectionEntry<"posts">> };
-const { page } = Astro.props as Props;
+const { page } = Astro.props;
 const urlForPage = (n: number) => (n === 1 ? "/" : `/blog/page/${n}`);
 ---
 <ListLayout

@@ -1,15 +1,23 @@
 ---
 import { getCollection } from "astro:content";
+import { notDraft } from "astro-awesomeness/content";
 import ListLayout from "astro-awesomeness/layouts/list-layout";
 import "../styles/global.css";
 
-const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
+const PAGE_SIZE = 5;
+
+const allPosts = (await getCollection("posts", notDraft)).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
 );
+const posts = allPosts.slice(0, PAGE_SIZE);
+const lastPage = Math.max(1, Math.ceil(allPosts.length / PAGE_SIZE));
+const urlForPage = (n: number) => (n === 1 ? "/" : `/blog/page/${n}`);
 ---
 <ListLayout
   title="Awesomeness demo"
   description="The reference blog for astro-awesomeness."
   posts={posts}
+  page={{ currentPage: 1, lastPage, url: {} }}
+  urlForPage={urlForPage}
   siteTitle="Awesomeness"
 />
