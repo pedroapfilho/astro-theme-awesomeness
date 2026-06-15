@@ -8,11 +8,12 @@ type PostEntry = { id: string; data: Post };
 type Props = {
   post: PostEntry;
   locale?: string;
+  postHref?: (post: PostEntry) => string;
 };
 
-const { post, locale } = Astro.props;
+const { post, locale, postHref } = Astro.props;
 const { title, description, pubDate, tags } = post.data;
-const href = `/blog/${post.id}`;
+const href = postHref ? postHref(post) : `/blog/${post.id}`;
 ---
 <article class="post-card border-border group border-b py-6 last:border-0">
   <a href={href} class="block">

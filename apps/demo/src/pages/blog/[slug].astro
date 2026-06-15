@@ -1,17 +1,27 @@
 ---
 import { getCollection, render } from "astro:content";
+import { lib } from "astro-awesomeness";
 import { notDraft } from "astro-awesomeness/content";
 import PostLayout from "astro-awesomeness/layouts/post-layout";
 import "../../styles/global.css";
 
 export const getStaticPaths = async () => {
   const posts = await getCollection("posts", notDraft);
-  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+  return posts.map((post) => ({
+    params: { slug: post.id },
+    props: { post, relatedPosts: lib.getRelatedPosts(post, posts, 3) },
+  }));
 };
 
-const { post } = Astro.props;
-const { Content } = await render(post);
+const { post, relatedPosts } = Astro.props;
+const { Content, headings } = await render(post);
 ---
-<PostLayout post={post} siteTitle="Awesomeness" rssHref="/rss.xml">
+<PostLayout
+  post={post}
+  siteTitle="Awesomeness"
+  rssHref="/rss.xml"
+  headings={headings}
+  relatedPosts={relatedPosts}
+>
   <Content />
 </PostLayout>
