@@ -12,6 +12,6 @@ export const getStaticPaths = async () => {
 const { post } = Astro.props;
 const { Content } = await render(post);
 ---
-<PostLayout post={post} siteTitle="Awesomeness">
+<PostLayout post={post} siteTitle="Awesomeness" rssHref="/rss.xml">
   <Content />
 </PostLayout>

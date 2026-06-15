@@ -5,9 +5,23 @@ type Props = {
   canonical?: string;
   image?: string;
   type?: "website" | "article";
+  siteName?: string;
+  locale?: string;
+  publishedTime?: Date;
+  modifiedTime?: Date;
 };
 
-const { title, description, canonical, image, type = "website" } = Astro.props;
+const {
+  title,
+  description,
+  canonical,
+  image,
+  type = "website",
+  siteName,
+  locale = "en_US",
+  publishedTime,
+  modifiedTime,
+} = Astro.props;
 const url = canonical ?? new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin).toString();
 ---
 <title>{title}</title>
@@ -18,6 +32,14 @@ const url = canonical ?? new URL(Astro.url.pathname, Astro.site ?? Astro.url.ori
 <meta property="og:title" content={title} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={url} />
+{siteName && <meta property="og:site_name" content={siteName} />}
+<meta property="og:locale" content={locale} />
+{type === "article" && publishedTime && (
+  <meta property="article:published_time" content={publishedTime.toISOString()} />
+)}
+{type === "article" && modifiedTime && (
+  <meta property="article:modified_time" content={modifiedTime.toISOString()} />
+)}
 {image && <meta property="og:image" content={image} />}
 
 <meta name="twitter:card" content={image ? "summary_large_image" : "summary"} />
