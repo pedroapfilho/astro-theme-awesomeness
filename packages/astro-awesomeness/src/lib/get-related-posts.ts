@@ -1,11 +1,11 @@
-type HasTags = { data: { tags: Array<string> }; slug: string };
+type HasTags = { data: { tags: Array<string> }; id: string };
 
 const getRelatedPosts = <T extends HasTags>(current: T, all: Array<T>, n: number) => {
   const currentTagSet = new Set(current.data.tags);
   const scored: Array<{ post: T; score: number }> = [];
 
   for (const post of all) {
-    if (post.slug === current.slug) {
+    if (post.id === current.id) {
       continue;
     }
     let score = 0;
