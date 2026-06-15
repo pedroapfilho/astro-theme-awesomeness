@@ -6,19 +6,47 @@ import FormattedDate from "../astro/formatted-date.astro";
 import ReadingTime from "../astro/reading-time.astro";
 import TagList from "../astro/tag-list.astro";
 import Prose from "../astro/prose.astro";
+import TableOfContents from "../astro/table-of-contents.astro";
+import PostCard from "../astro/post-card.astro";
 
+type PostEntry = { id: string; data: Post };
 type Props = {
   post: { id: string; data: Post; body?: string };
   locale?: string;
   siteTitle?: string;
   updatedLabel?: string;
+  rssHref?: string;
+  headings?: Array<{ depth: number; text: string; slug?: string }>;
+  relatedPosts?: Array<PostEntry>;
+  relatedHeading?: string;
+  postHref?: (post: PostEntry) => string;
 };
 
-const { post, locale, siteTitle, updatedLabel = "Updated" } = Astro.props;
+const {
+  post,
+  locale,
+  siteTitle,
+  updatedLabel = "Updated",
+  rssHref,
+  headings,
+  relatedPosts,
+  relatedHeading = "Related posts",
+  postHref,
+} = Astro.props;
 const { title, description, pubDate, updatedDate, tags } = post.data;
 ---
-<BaseLayout title={title} description={description} type="article" siteTitle={siteTitle}>
-  <article class="mx-auto max-w-3xl px-4 py-10">
+<BaseLayout
+  title={title}
+  description={description}
+  type="article"
+  siteTitle={siteTitle}
+  siteName={siteTitle}
+  rssHref={rssHref}
+  publishedTime={pubDate}
+  modifiedTime={updatedDate}
+>
+  <main id="main-content" tabindex="-1">
+    <article class="mx-auto max-w-3xl px-4 py-10">
     <header class="mb-8">
       <h1 class="text-primary text-3xl font-bold tracking-tight sm:text-4xl">{title}</h1>
       <div class="text-muted-foreground mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-sm">
@@ -35,8 +63,22 @@ const { title, description, pubDate, updatedDate, tags } = post.data;
       {tags.length > 0 && <TagList tags={tags} class="mt-4" />}
     </header>
 
+    {headings && headings.length > 0 && <TableOfContents headings={headings} class="mb-8" />}
+
     <Prose>
       <slot />
     </Prose>
-  </article>
+
+    {relatedPosts && relatedPosts.length > 0 && (
+      <section aria-labelledby="related-posts-heading" class="mt-12 border-border border-t pt-8">
+        <h2 id="related-posts-heading" class="text-primary text-2xl font-bold tracking-tight">
+          {relatedHeading}
+        </h2>
+        {relatedPosts.map((related) => (
+          <PostCard post={related} locale={locale} postHref={postHref} />
+        ))}
+      </section>
+    )}
+    </article>
+  </main>
 </BaseLayout>

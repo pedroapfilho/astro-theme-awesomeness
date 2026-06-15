@@ -9,7 +9,7 @@ import {
   CommandItem,
   CommandList,
 } from "./ui/command";
-import { Dialog, DialogContent, DialogTrigger } from "./ui/dialog";
+import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "./ui/dialog";
 import { Button } from "./ui/button";
 
 type CommandMenuItem = { description?: string; title: string; url: string };
@@ -19,6 +19,7 @@ type CommandMenuProps = {
   groupHeading?: string;
   items: Array<CommandMenuItem>;
   placeholder?: string;
+  title?: string;
 };
 
 const CommandMenu = ({
@@ -26,6 +27,7 @@ const CommandMenu = ({
   groupHeading = "Posts",
   items,
   placeholder = "Search posts…",
+  title = "Search posts",
 }: CommandMenuProps) => {
   const [open, setOpen] = useState(false);
 
@@ -48,6 +50,7 @@ const CommandMenu = ({
         <Search />
       </DialogTrigger>
       <DialogContent className="p-0">
+        <DialogTitle className="sr-only">{title}</DialogTitle>
         <Command>
           <CommandInput placeholder={placeholder} />
           <CommandList>

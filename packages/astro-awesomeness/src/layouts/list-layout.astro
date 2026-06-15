@@ -5,26 +5,30 @@ import BaseLayout from "./base-layout.astro";
 import PostCard from "../astro/post-card.astro";
 import Pagination from "../astro/pagination.astro";
 
+type PostEntry = { id: string; data: Post };
 type Props = {
   title: string;
   description: string;
-  posts: Array<{ id: string; data: Post }>;
+  posts: Array<PostEntry>;
   page?: { currentPage: number; lastPage: number; url: { prev?: string; next?: string } };
   urlForPage?: (page: number) => string;
   locale?: string;
   siteTitle?: string;
+  rssHref?: string;
+  postHref?: (post: PostEntry) => string;
 };
 
-const { title, description, posts, page, urlForPage, locale, siteTitle } = Astro.props;
+const { title, description, posts, page, urlForPage, locale, siteTitle, rssHref, postHref } =
+  Astro.props;
 ---
-<BaseLayout title={title} description={description} siteTitle={siteTitle}>
-  <main class="mx-auto max-w-3xl px-4 py-10">
+<BaseLayout title={title} description={description} siteTitle={siteTitle} rssHref={rssHref}>
+  <main id="main-content" tabindex="-1" class="mx-auto max-w-3xl px-4 py-10">
     <header class="mb-8">
       <h1 class="text-primary text-3xl font-bold tracking-tight">{title}</h1>
       <p class="text-muted-foreground mt-2">{description}</p>
     </header>
     <section>
-      {posts.map((post) => <PostCard post={post} locale={locale} />)}
+      {posts.map((post) => <PostCard post={post} locale={locale} postHref={postHref} />)}
     </section>
     {page && urlForPage && (
       <Pagination

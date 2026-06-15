@@ -11,6 +11,11 @@ type Props = {
   type?: "website" | "article";
   lang?: string;
   siteTitle?: string;
+  rssHref?: string;
+  siteName?: string;
+  locale?: string;
+  publishedTime?: Date;
+  modifiedTime?: Date;
 };
 
 const {
@@ -21,6 +26,11 @@ const {
   type = "website",
   lang = "en",
   siteTitle,
+  rssHref,
+  siteName,
+  locale,
+  publishedTime,
+  modifiedTime,
 } = Astro.props;
 ---
 <!doctype html>
@@ -30,7 +40,20 @@ const {
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light dark" />
     <meta name="generator" content={Astro.generator} />
-    <Seo title={title} description={description} canonical={canonical} image={image} type={type} />
+    <Seo
+      title={title}
+      description={description}
+      canonical={canonical}
+      image={image}
+      type={type}
+      siteName={siteName ?? siteTitle}
+      locale={locale}
+      publishedTime={publishedTime}
+      modifiedTime={modifiedTime}
+    />
+    {rssHref && (
+      <link rel="alternate" type="application/rss+xml" title={siteTitle ?? title} href={rssHref} />
+    )}
     <script is:inline>
       (() => {
         const stored = localStorage.getItem("theme");
@@ -50,6 +73,12 @@ const {
     <slot name="head" />
   </head>
   <body class="bg-background text-foreground min-h-dvh flex flex-col">
+    <a
+      href="#main-content"
+      class="bg-background text-foreground border-border focus:ring-ring sr-only z-50 rounded-md border px-3 py-2 focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:ring-2"
+    >
+      Skip to content
+    </a>
     {siteTitle && <Header siteTitle={siteTitle} />}
     <div class="flex-1">
       <slot />
