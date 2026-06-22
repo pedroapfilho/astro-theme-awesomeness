@@ -1,5 +1,51 @@
 # astro-awesomeness
 
+## 0.6.0
+
+### Minor Changes
+
+- f3e8719: feat(a11y,seo): skip link + main landmark, RSS autodiscovery, OG metadata
+  - Adds a skip-to-content link in `BaseLayout` and a real `<main id="main-content">`
+    landmark on `ListLayout` and `PostLayout` (post pages previously had no `<main>`).
+  - New optional `rssHref` prop threads `<link rel="alternate" type="application/rss+xml">`
+    autodiscovery through the exported layouts.
+  - `seo.astro` now emits `og:site_name`, `og:locale`, and `article:published_time` /
+    `article:modified_time` for article pages, via new optional `siteName`, `locale`,
+    `publishedTime`, and `modifiedTime` props (forwarded automatically by `PostLayout`).
+
+  All new props are optional with defaults, so existing consumers are unaffected.
+
+- f3e8719: fix: key getRelatedPosts on id to match Astro 5/6 entry shape
+
+  `getRelatedPosts` deduped the current post on `post.slug`, which Astro 5/6
+  content-layer entries do not have (they are keyed by `id`). Against real
+  entries every comparison was `undefined === undefined`, so the function
+  returned an empty array. It now keys on `id`, matching the rest of the theme.
+
+- f3e8719: feat(layouts): render TOC + related posts; postHref to compose with createPostUrl
+
+  Wires three shipped-but-unused capabilities into the theme:
+  - `PostLayout` now renders a table of contents (from `render(post).headings`)
+    via the optional `headings` prop, and a related-posts section via the optional
+    `relatedPosts` / `relatedHeading` props. The page computes related posts with
+    `getRelatedPosts`, keeping the layout pure.
+  - New optional `postHref?: (post) => string` callback on `PostCard`, `ListLayout`,
+    and `PostLayout` lets consumers compose `createPostUrl`'s `/<category>/<slug>/`
+    scheme with the cards the layouts render internally. Defaults to `/blog/${post.id}`,
+    preserving existing behaviour.
+
+  All new props are optional with defaults, so existing consumers are unaffected.
+
+### Patch Changes
+
+- a4da19b: Swap cn() to cnfast (drop-in, byte-identical, faster)
+- f3e8719: fix(a11y): label CommandMenu dialog for screen readers
+
+  `CommandMenu` rendered a dialog with no accessible name, so screen readers
+  announced only "dialog" (WCAG 4.1.2). It now renders a visually-hidden
+  `DialogTitle` as the first child of the dialog. Adds an optional `title` prop
+  (default `"Search posts"`) to override the accessible name.
+
 ## 0.5.0
 
 ### Minor Changes
