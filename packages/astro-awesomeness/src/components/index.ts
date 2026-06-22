@@ -1,4 +1,5 @@
-export { Button, buttonVariants } from "./ui/button";
+export { Button } from "./ui/button";
+export { buttonVariants } from "./ui/button-variants";
 export {
   Command,
   CommandEmpty,
