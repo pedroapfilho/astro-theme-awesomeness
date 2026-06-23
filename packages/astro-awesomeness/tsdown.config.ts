@@ -13,6 +13,7 @@ const config = defineConfig({
   ],
   external: ["astro", "react", "react-dom", "tailwindcss"],
   format: "esm",
+  minify: false,
   platform: "neutral",
   sourcemap: true,
   target: "es2022",
