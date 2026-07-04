@@ -24,7 +24,7 @@ const {
     </a>
     <nav class="flex items-center gap-2">
       <slot name="nav" />
-      {showThemeToggle && <ThemeToggle client:load ariaLabel={themeToggleLabel} />}
+      {showThemeToggle && <ThemeToggle client:idle ariaLabel={themeToggleLabel} />}
     </nav>
   </div>
 </header>
