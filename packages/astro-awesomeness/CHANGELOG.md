@@ -1,5 +1,31 @@
 # astro-awesomeness
 
+## 0.7.0
+
+### Minor Changes
+
+- f790923: Astro 7 support: widen the `astro` peer dependency to `^6.0.0 || ^7.0.0`.
+
+  The theme's components, layouts, and content schemas work unchanged on Astro 7
+  (verified against the demo app on `astro@7.0.6` with `@astrojs/mdx@7` and
+  `@astrojs/react@6`). Consumers on Astro 6 are unaffected.
+
+  Notes for consumers upgrading their site to Astro 7:
+
+  - Astro 7 renders `.md`/`.mdx` with Sätteri (its native Markdown pipeline)
+    instead of remark/rehype. If your site configures `remarkPlugins`/
+    `rehypePlugins`, install `@astrojs/markdown-remark` and set
+    `markdown: { processor: unified() }`, or port the plugins.
+  - The default `compressHTML` changed from `true` to `"jsx"` (JSX whitespace
+    rules between inline elements).
+  - Upgrade integrations together: `@astrojs/mdx@^7`, `@astrojs/react@^6`.
+
+  Runtime dependency bumps: `@base-ui/react` ^1.6.0, `lucide-react` ^1.23.0.
+
+### Patch Changes
+
+- db1ee29: Fix a React 19 recoverable hydration error in `ThemeToggle` for visitors with a stored theme: the localStorage override is now read after mount instead of during the hydration render, so the server HTML and the client render always match. Also hydrate the toggle with `client:idle` instead of `client:load` — it is not immediately-interactive UI, and the page theme itself is still applied pre-paint by the inline script in `BaseLayout`.
+
 ## 0.6.0
 
 ### Minor Changes
