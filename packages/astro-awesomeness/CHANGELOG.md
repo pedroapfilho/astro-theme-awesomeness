@@ -1,5 +1,11 @@
 # astro-awesomeness
 
+## 0.7.1
+
+### Patch Changes
+
+- 6cee510: Bump lucide-react to ^1.24.0
+
 ## 0.7.0
 
 ### Minor Changes
