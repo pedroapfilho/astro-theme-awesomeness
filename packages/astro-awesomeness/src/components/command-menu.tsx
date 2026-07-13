@@ -1,6 +1,7 @@
 import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 
+import { resolveNavigationUrl } from "../lib/resolve-navigation-url";
 import {
   Command,
   CommandEmpty,
@@ -60,7 +61,10 @@ const CommandMenu = ({
                 <CommandItem
                   key={item.url}
                   onSelect={() => {
-                    window.location.href = item.url;
+                    const destination = resolveNavigationUrl(item.url, window.location.href);
+                    if (destination) {
+                      window.location.href = destination;
+                    }
                   }}
                   value={item.title}
                 >
