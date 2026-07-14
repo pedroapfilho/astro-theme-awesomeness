@@ -35,7 +35,7 @@ const createPostUrl = (
           return { category, slug };
         }
       } catch {
-        // Malformed canonical_url — fall through to category-derived logic.
+        // Malformed canonical_url; fall through to category-derived logic.
       }
     }
     const first = post.data.categories?.at(0);
