@@ -1,12 +1,12 @@
 ---
-import { getCollection, render } from "astro:content";
+import { render } from "astro:content";
 import { lib } from "astro-awesomeness";
-import { notDraft } from "astro-awesomeness/content";
 import PostLayout from "astro-awesomeness/layouts/post-layout";
+import { getPublishedPosts } from "../../lib/posts";
 import "../../styles/global.css";
 
 export const getStaticPaths = async () => {
-  const posts = await getCollection("posts", notDraft);
+  const posts = await getPublishedPosts();
   return posts.map((post) => ({
     params: { slug: post.id },
     props: { post, relatedPosts: lib.getRelatedPosts(post, posts, 3) },

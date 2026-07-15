@@ -1,21 +1,17 @@
 ---
 import type { GetStaticPathsOptions, Page } from "astro";
-import type { CollectionEntry } from "astro:content";
-import { getCollection } from "astro:content";
-import { notDraft } from "astro-awesomeness/content";
 import ListLayout from "astro-awesomeness/layouts/list-layout";
 import { PAGE_SIZE, urlForPage } from "../../../lib/pagination";
+import { getSortedPosts, type PostEntry } from "../../../lib/posts";
 import "../../../styles/global.css";
 
 export const getStaticPaths = async ({ paginate }: GetStaticPathsOptions) => {
-  const posts = (await getCollection("posts", notDraft)).sort(
-    (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf(),
-  );
+  const posts = await getSortedPosts();
   // Page 1 lives at "/" (see index.astro), so drop the duplicate /blog/page/1 route.
   return paginate(posts, { pageSize: PAGE_SIZE }).filter(({ params }) => params.page !== "1");
 };
 
-type Props = { page: Page<CollectionEntry<"posts">> };
+type Props = { page: Page<PostEntry> };
 const { page } = Astro.props;
 // page.url.prev/first still point at /blog/page/1 (a dead route); navigation goes
 // through urlForPage instead, which maps page 1 back to "/".
