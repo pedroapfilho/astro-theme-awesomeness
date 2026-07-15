@@ -5,7 +5,6 @@
 @source "../**/*.{astro,tsx,ts,jsx,js,md,mdx}";
 
 @theme {
-  --font-sans: "Inter Variable", ui-sans-serif, system-ui, sans-serif;
   --color-accent: oklch(0.7 0.18 250);
   --color-accent-foreground: oklch(0.18 0 0);
 }

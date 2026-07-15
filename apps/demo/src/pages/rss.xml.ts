@@ -6,7 +6,8 @@ export const GET = async (context: { site?: URL }) => {
   if (!context.site) {
     throw new Error("astro.config.ts must define `site` for RSS.");
   }
-  const posts = await getCollection("posts", notDraft);
+  const allPosts = await getCollection("posts", notDraft);
+  const posts = allPosts.toSorted((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
   return rss({
     description: "The reference blog for astro-awesomeness.",
     items: posts.map((post) => ({
