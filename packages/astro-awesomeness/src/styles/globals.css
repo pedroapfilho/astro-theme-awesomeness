@@ -46,6 +46,11 @@
 }
 
 .dark {
+  /* `:root` opts into `light dark`, which follows the OS preference. When the
+     toggle forces dark on a light-OS visitor, native UI (scrollbars, form
+     controls) would stay light without this override. */
+  color-scheme: dark;
+
   --color-background: oklch(0.145 0 0);
   --color-foreground: oklch(0.985 0 0);
   --color-card: oklch(0.145 0 0);
