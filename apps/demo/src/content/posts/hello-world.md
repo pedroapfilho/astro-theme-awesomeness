@@ -1,6 +1,6 @@
 ---
 title: "Hello, world"
-description: "The first post on the demo blog — a sanity check for the theme primitives."
+description: "The first post on the demo blog: a sanity check for the theme primitives."
 pubDate: 2026-05-20
 tags: ["meta", "astro"]
 ---
@@ -12,7 +12,7 @@ are wired up correctly.
 ## What you should see
 
 - A sticky header with the site title and a dark-mode toggle.
-- Body text in the sans-serif you chose (`Inter Variable` for the demo).
+- Body text in the theme's sans-serif stack (override `--font-sans` in your `@theme` block).
 - Tag chips at the top.
 - A footer at the bottom.
 
