@@ -1,13 +1,12 @@
 import rss from "@astrojs/rss";
-import { getCollection } from "astro:content";
-import { notDraft } from "astro-awesomeness/content";
+
+import { getSortedPosts } from "../lib/posts";
 
 export const GET = async (context: { site?: URL }) => {
   if (!context.site) {
     throw new Error("astro.config.ts must define `site` for RSS.");
   }
-  const allPosts = await getCollection("posts", notDraft);
-  const posts = allPosts.toSorted((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
+  const posts = await getSortedPosts();
   return rss({
     description: "The reference blog for astro-awesomeness.",
     items: posts.map((post) => ({
