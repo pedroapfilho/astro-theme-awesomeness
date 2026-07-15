@@ -1,12 +1,12 @@
 # AGENTS.md
 
-`astro-theme-awesomeness` — Turborepo home of the published Astro 5/6 blog
-theme `astro-awesomeness` and the demo blog that exercises it. Library profile
-in the orchestrator: no DB, no auth, no Playwright, no email infra.
+`astro-theme-awesomeness` is the Turborepo home of the published Astro 6/7
+blog theme `astro-awesomeness` and the demo blog that exercises it. Library
+profile in the orchestrator: no DB, no auth, no Playwright, no email infra.
 
 ## Stack
 
-- **Astro 5+** (peer dep `^6.0.0`) for the demo app and consumer blogs
+- **Astro 6/7** (peer dep `^6.0.0 || ^7.0.0`) for the demo app and consumer blogs
 - **React 19** for interactive islands (theme toggle, command menu)
 - **Tailwind CSS v4** with a custom preset; per-blog font/accent overrides via `@theme`
 - **shadcn-style wrappers over @base-ui/react** + **lucide-react**, **cmdk** for the command menu
@@ -22,7 +22,7 @@ in the orchestrator: no DB, no auth, no Playwright, no email infra.
 
 ```
 apps/
-  demo/                       # Astro 5 reference blog — dev loop + showcase
+  demo/                       # Astro reference blog: dev loop + showcase
 packages/
   astro-awesomeness/          # published npm package (the theme)
     src/astro/                # .astro components (header, footer, seo, …)
@@ -33,7 +33,7 @@ packages/
     src/styles/               # globals.css (shipped as `astro-awesomeness/styles.css`)
     src/tailwind-preset.ts    # exported as `astro-awesomeness/tailwind`
   config-typescript/          # @repo/typescript-config (base, library, vite, astro)
-.changeset/                   # changeset config — ignores `demo`
+.changeset/                   # changeset config (ignores `demo`)
 oxlint.config.ts              # extends oxlint-config-awesomeness
 ```
 
@@ -75,16 +75,16 @@ pnpm release                  # turbo build + changeset publish
 
 `astro-awesomeness` exposes these subpath entries (see `packages/astro-awesomeness/package.json`):
 
-- `astro-awesomeness` — `cn`, content schemas re-exports, lib utilities
-- `astro-awesomeness/components` — React islands (`CommandMenu`, `ThemeToggle`, ui/\*)
-- `astro-awesomeness/astro/*` — raw `.astro` components (header, seo, post-card, …)
-- `astro-awesomeness/layouts/*` — raw `.astro` layouts (base / list / post)
-- `astro-awesomeness/content` — `postSchema`, `tagSchema`
-- `astro-awesomeness/lib` — utility surface
-- `astro-awesomeness/tailwind` — Tailwind v4 preset
-- `astro-awesomeness/styles.css` — globals (bundled CSS)
+- `astro-awesomeness`: `cn`, content schemas re-exports, lib utilities
+- `astro-awesomeness/components`: React islands (`CommandMenu`, `ThemeToggle`, ui/\*)
+- `astro-awesomeness/astro/*`: raw `.astro` components (header, seo, post-card, …)
+- `astro-awesomeness/layouts/*`: raw `.astro` layouts (base / list / post)
+- `astro-awesomeness/content`: `postSchema`, `tagSchema`
+- `astro-awesomeness/lib`: utility surface
+- `astro-awesomeness/tailwind`: Tailwind v4 preset
+- `astro-awesomeness/styles.css`: globals (bundled CSS)
 
-The Astro / layouts entries ship as source on purpose — Astro needs the
+The Astro / layouts entries ship as source on purpose; Astro needs the
 component files at build time. Don't move them into the bundled output.
 
 ## Conventions
@@ -95,17 +95,17 @@ component files at build time. Don't move them into the bundled output.
 - `.astro` components live in `src/astro/`; React islands in `src/components/`.
 - Content schemas in `src/content/`; consumer apps import via `astro-awesomeness/content`.
 - Vite is told to `optimizeDeps.exclude: ["astro-awesomeness"]` in the demo so
-  the workspace package isn't pre-bundled — keep that in any new consumer config.
+  the workspace package isn't pre-bundled; keep that in any new consumer config.
 
 ## Library profile (orchestrator)
 
 Validated by `~/dev/orchestrator/scripts/verify-*.sh` against
-`LIBRARY_SOURCE_OF_TRUTH=usebutr`. Skipped checks: e2e (no Playwright),
+`LIBRARY_SOURCE_OF_TRUTH=acme-package`. Skipped checks: e2e (no Playwright),
 auth-config, prisma-config, turbo-db-generate-ordering, i18n-\*, landing-urls,
 e2e-auth-emails. The library CI surface is 4 workflows (`test`, `lint`,
-`format`, `fallow`) — no `e2e.yml`.
+`format`, `fallow`), no `e2e.yml`.
 
-The repo has a recorded divergence: `astro-awesomeness.gitignore` (per-app
+The repo has a recorded divergence: `astro-theme-awesomeness.gitignore` (per-app
 gitignores allowed under the library profile). See `~/dev/orchestrator/divergences.json`.
 
 ## Notable decisions
@@ -114,8 +114,8 @@ gitignores allowed under the library profile). See `~/dev/orchestrator/divergenc
   surface; the `./astro/*` and `./layouts/*` subpath exports point at `src/`.
   Consumers compile through Astro themselves.
 - **Tailwind v4 preset over a config file.** Per-blog overrides happen via
-  `@theme` in the consumer's globals.css — no runtime config object.
-- **`peerDependencies` pin Astro `^6.0.0` and React `^19.0.0`.** Demo app's
+  `@theme` in the consumer's globals.css, no runtime config object.
+- **`peerDependencies` pin Astro `^6.0.0 || ^7.0.0` and React `^19.0.0`.** Demo app's
   direct deps match those peers; bump them together when upgrading.
 - **Changesets ignores `demo`.** Only `astro-awesomeness` is published; demo
   is a dev playground.
