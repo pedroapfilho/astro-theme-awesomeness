@@ -40,9 +40,8 @@ type Post = z.infer<typeof postSchema>;
 type Tag = z.infer<typeof tagSchema>;
 type Author = z.infer<typeof authorSchema>;
 
-// Predicate the 12 blog repos previously inlined ~72 times per repo
-// (`data.status !== "DRAFT" && !data.draft`). One source of truth so the
-// loader contract stays in sync with the consumer-side guard.
+// One source of truth for the draft guard so the loader contract stays in sync
+// with the consumer-side check (`data.status !== "DRAFT" && !data.draft`).
 const notDraft = <T extends { data: { draft?: boolean; status?: string } }>(post: T): boolean =>
   post.data.status !== "DRAFT" && !post.data.draft;
 
