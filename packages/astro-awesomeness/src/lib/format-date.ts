@@ -5,13 +5,9 @@ const defaultOptions: Intl.DateTimeFormatOptions = {
   year: "numeric",
 };
 
-// Hoisted so the default-arg call (the hot path) skips the JSON.stringify cache key.
-const defaultFormatter = new Intl.DateTimeFormat("en-US", defaultOptions);
-
 const formatterCache = new Map<string, Intl.DateTimeFormat>();
 
-const getFormatter = (locale: string, options: Intl.DateTimeFormatOptions) => {
-  const key = `${locale}:${JSON.stringify(options)}`;
+const getFormatter = (key: string, locale: string, options: Intl.DateTimeFormatOptions) => {
   let formatter = formatterCache.get(key);
   if (!formatter) {
     formatter = new Intl.DateTimeFormat(locale, options);
@@ -20,16 +16,14 @@ const getFormatter = (locale: string, options: Intl.DateTimeFormatOptions) => {
   return formatter;
 };
 
-const formatDate = (
-  date: Date,
-  locale: string = "en-US",
-  options: Intl.DateTimeFormatOptions = defaultOptions,
-) => {
-  const isDefaultCall = locale === "en-US" && options === defaultOptions;
-  if (isDefaultCall) {
-    return defaultFormatter.format(date);
+const formatDate = (date: Date, locale: string = "en-US", options?: Intl.DateTimeFormatOptions) => {
+  // Default-option calls (every blog passes only (date, locale)) key on locale
+  // alone, skipping the JSON.stringify the custom-option path needs.
+  if (!options) {
+    return getFormatter(locale, locale, defaultOptions).format(date);
   }
-  return getFormatter(locale, { ...defaultOptions, ...options }).format(date);
+  const merged = { ...defaultOptions, ...options };
+  return getFormatter(`${locale}:${JSON.stringify(merged)}`, locale, merged).format(date);
 };
 
 export { formatDate };
