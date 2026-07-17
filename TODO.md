@@ -6,21 +6,21 @@ reference blog). Statuses re-verified against the code on 2026-07-14.
 
 ## Shipped since the recon
 
-- **View transitions (was item 0).** `globals.css` opts into cross-document
+- **View transitions (was item 0):** `globals.css` opts into cross-document
   `@view-transition { navigation: auto }` under a `prefers-reduced-motion`
   guard. This also settles the old item 11: cross-document transitions apply
   to script navigations, so `CommandMenu`'s `window.location.href` (now gated
   by `resolveNavigationUrl`) gets transitions without `astro:transitions`.
-- **RSS autodiscovery (was item 2).** `base-layout.astro` emits
+- **RSS autodiscovery (was item 2):** `base-layout.astro` emits
   `<link rel="alternate" type="application/rss+xml">` when `rssHref` is passed.
-- **`color-scheme` (was item 3, CSS half).** `:root { color-scheme: light dark }`
+- **`color-scheme` (was item 3, CSS half):** `:root { color-scheme: light dark }`
   in `globals.css` plus `<meta name="color-scheme">` in `base-layout.astro`,
   and `.dark` forces `color-scheme: dark` so native UI follows the toggle.
-- **Skip-to-content link (was item 8).** `base-layout.astro` ships the link;
+- **Skip-to-content link (was item 8):** `base-layout.astro` ships the link;
   `list-layout.astro` and `post-layout.astro` carry `id="main-content"`.
-- **Font stack honesty (was item 6).** The demo no longer declares a webfont
+- **Font stack honesty (was item 6):** the demo no longer declares a webfont
   it never loads; the system-font stack from the theme applies.
-- **`content-visibility` (was item 7, card half).** `post-card.astro` applies
+- **`content-visibility` (was item 7, card half):** `post-card.astro` applies
   `content-visibility: auto` to cards after the third.
 
 ## Open items
