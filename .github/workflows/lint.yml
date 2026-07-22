@@ -14,4 +14,7 @@ jobs:
         with:
           runtime: node@24
           cache: true
+      # Type-aware linting resolves built workspace .d.ts files.
+      # Type-aware linting resolves astro-generated types.
+      - run: pnpm build
       - run: pnpm oxlint --format=github .

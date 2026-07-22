@@ -5,26 +5,26 @@ import { XIcon } from "lucide-react";
 import { cn } from "../../lib/cn";
 import { Button } from "./button";
 
-function Dialog({ ...props }: React.ComponentProps<typeof DialogPrimitive.Root>) {
+const Dialog = ({ ...props }: React.ComponentProps<typeof DialogPrimitive.Root>) => {
   return <DialogPrimitive.Root data-slot="dialog" {...props} />;
-}
+};
 
-function DialogTrigger({ ...props }: React.ComponentProps<typeof DialogPrimitive.Trigger>) {
+const DialogTrigger = ({ ...props }: React.ComponentProps<typeof DialogPrimitive.Trigger>) => {
   return <DialogPrimitive.Trigger data-slot="dialog-trigger" {...props} />;
-}
+};
 
-function DialogPortal({ ...props }: React.ComponentProps<typeof DialogPrimitive.Portal>) {
+const DialogPortal = ({ ...props }: React.ComponentProps<typeof DialogPrimitive.Portal>) => {
   return <DialogPrimitive.Portal data-slot="dialog-portal" {...props} />;
-}
+};
 
-function DialogClose({ ...props }: React.ComponentProps<typeof DialogPrimitive.Close>) {
+const DialogClose = ({ ...props }: React.ComponentProps<typeof DialogPrimitive.Close>) => {
   return <DialogPrimitive.Close data-slot="dialog-close" {...props} />;
-}
+};
 
-function DialogOverlay({
+const DialogOverlay = ({
   className,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Backdrop>) {
+}: React.ComponentProps<typeof DialogPrimitive.Backdrop>) => {
   return (
     <DialogPrimitive.Backdrop
       className={cn(
@@ -35,16 +35,16 @@ function DialogOverlay({
       {...props}
     />
   );
-}
+};
 
-function DialogContent({
+const DialogContent = ({
   children,
   className,
   showCloseButton = true,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Popup> & {
   showCloseButton?: boolean;
-}) {
+}) => {
   return (
     <DialogPortal data-slot="dialog-portal">
       <DialogOverlay />
@@ -70,9 +70,9 @@ function DialogContent({
       </DialogPrimitive.Popup>
     </DialogPortal>
   );
-}
+};
 
-function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
+const DialogHeader = ({ className, ...props }: React.ComponentProps<"div">) => {
   return (
     <div
       className={cn("flex flex-col gap-2 text-center sm:text-left", className)}
@@ -80,16 +80,16 @@ function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
       {...props}
     />
   );
-}
+};
 
-function DialogFooter({
+const DialogFooter = ({
   children,
   className,
   showCloseButton = false,
   ...props
 }: React.ComponentProps<"div"> & {
   showCloseButton?: boolean;
-}) {
+}) => {
   return (
     <div
       className={cn("flex flex-col-reverse gap-2 sm:flex-row sm:justify-end", className)}
@@ -102,9 +102,12 @@ function DialogFooter({
       )}
     </div>
   );
-}
+};
 
-function DialogTitle({ className, ...props }: React.ComponentProps<typeof DialogPrimitive.Title>) {
+const DialogTitle = ({
+  className,
+  ...props
+}: React.ComponentProps<typeof DialogPrimitive.Title>) => {
   return (
     <DialogPrimitive.Title
       className={cn("text-lg leading-none font-semibold", className)}
@@ -112,12 +115,12 @@ function DialogTitle({ className, ...props }: React.ComponentProps<typeof Dialog
       {...props}
     />
   );
-}
+};
 
-function DialogDescription({
+const DialogDescription = ({
   className,
   ...props
-}: React.ComponentProps<typeof DialogPrimitive.Description>) {
+}: React.ComponentProps<typeof DialogPrimitive.Description>) => {
   return (
     <DialogPrimitive.Description
       className={cn("text-sm text-muted-foreground", className)}
@@ -125,7 +128,7 @@ function DialogDescription({
       {...props}
     />
   );
-}
+};
 
 export {
   Dialog,

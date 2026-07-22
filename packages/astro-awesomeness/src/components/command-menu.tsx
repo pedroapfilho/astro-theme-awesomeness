@@ -62,7 +62,7 @@ const CommandMenu = ({
                   key={item.url}
                   onSelect={() => {
                     const destination = resolveNavigationUrl(item.url, window.location.href);
-                    if (destination) {
+                    if (destination !== null && destination !== "") {
                       window.location.href = destination;
                     }
                   }}
@@ -70,7 +70,7 @@ const CommandMenu = ({
                 >
                   <div className="flex flex-col">
                     <span>{item.title}</span>
-                    {item.description ? (
+                    {item.description !== undefined && item.description !== "" ? (
                       <span className="text-muted-foreground text-xs">{item.description}</span>
                     ) : null}
                   </div>
