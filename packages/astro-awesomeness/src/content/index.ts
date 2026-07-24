@@ -41,7 +41,7 @@ type Tag = z.infer<typeof tagSchema>;
 type Author = z.infer<typeof authorSchema>;
 
 // One source of truth for the draft guard so the loader contract stays in sync
-// with the consumer-side check (`data.status !== "DRAFT" && data.draft !== true`).
+// with the consumer-side check (`data.status !== "DRAFT" && !data.draft`).
 const notDraft = (post: { data: { draft?: boolean; status?: string } }): boolean =>
   post.data.status !== "DRAFT" && post.data.draft !== true;
 
