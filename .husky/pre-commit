@@ -1,1 +1,5 @@
+# oxlint is type-aware here, so without workspace .d.ts and the astro-generated
+# types on disk it reports unresolved types as lint violations. Mirrors the
+# build step in .github/workflows/lint.yml; turbo replays it from cache.
+pnpm build --output-logs=errors-only
 pnpm lint-staged
