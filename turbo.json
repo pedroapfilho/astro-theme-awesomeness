@@ -8,7 +8,7 @@
     },
     "dev": { "cache": false, "persistent": true },
     "start": { "cache": false, "persistent": true },
-    "lint": {},
+    "lint": { "dependsOn": ["^build"] },
     "typecheck": { "dependsOn": ["^build"] },
     "test": { "dependsOn": ["^build"], "outputs": ["coverage/**"] },
     "test:coverage": { "dependsOn": ["^build"], "outputs": ["coverage/**"] },

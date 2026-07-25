@@ -26,12 +26,12 @@ const createPostUrl = (
 ): PostUrlBuilder => {
   const postParams = (post: PostLike): PostParams => {
     const canonical = post.data.seo?.canonical_url;
-    if (canonical) {
+    if (canonical !== undefined && canonical !== "") {
       try {
         const segments = new URL(canonical).pathname.split("/").filter(Boolean);
         const category = segments.at(-2);
         const slug = segments.at(-1);
-        if (category && slug) {
+        if (category !== undefined && slug !== undefined) {
           return { category, slug };
         }
       } catch {
@@ -39,7 +39,10 @@ const createPostUrl = (
       }
     }
     const first = post.data.categories?.at(0);
-    const category = first ? (categorySlugMap[first] ?? slugify(first)) : defaultCategory;
+    const category =
+      first !== undefined && first !== ""
+        ? (categorySlugMap[first] ?? slugify(first))
+        : defaultCategory;
     return { category, slug: post.id };
   };
 
