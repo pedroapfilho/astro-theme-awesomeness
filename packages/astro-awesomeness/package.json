@@ -1,6 +1,6 @@
 {
   "name": "astro-awesomeness",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "description": "Astro 6/7 blog theme with shadcn primitives and a Tailwind v4 preset.",
   "keywords": [
     "astro",
