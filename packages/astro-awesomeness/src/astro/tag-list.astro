@@ -1,5 +1,5 @@
 ---
-import { slugify } from "../lib/slugify";
+import { DEFAULT_TAG_BASE, tagUrl } from "../lib/tag-url";
 
 type Props = {
   tags: Array<string>;
@@ -7,13 +7,13 @@ type Props = {
   class?: string;
 };
 
-const { tags, base = "/tags", class: className = "" } = Astro.props;
+const { tags, base = DEFAULT_TAG_BASE, class: className = "" } = Astro.props;
 ---
 <ul class:list={["flex flex-wrap gap-2", className]}>
   {tags.map((tag) => (
     <li>
       <a
-        href={`${base}/${slugify(tag)}`}
+        href={tagUrl(tag, base)}
         class="border-border bg-muted text-muted-foreground hover:bg-accent hover:text-accent-foreground inline-flex items-center rounded-md border px-2 py-0.5 text-xs transition-colors"
       >
         {tag}
