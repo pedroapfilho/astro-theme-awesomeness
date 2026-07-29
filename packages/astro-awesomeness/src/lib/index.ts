@@ -5,3 +5,4 @@ export type { PostLike, PostParams, PostUrlBuilder } from "./post-url";
 export { createPostUrl } from "./post-url";
 export { readingTime } from "./reading-time";
 export { slugify } from "./slugify";
+export { DEFAULT_TAG_BASE, tagUrl } from "./tag-url";
