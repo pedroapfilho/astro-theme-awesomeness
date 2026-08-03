@@ -1,7 +1,8 @@
 ---
 import { lib } from "astro-awesomeness";
+import { byPubDateDesc } from "astro-awesomeness/content";
 import ListLayout from "astro-awesomeness/layouts/list-layout";
-import { byPubDateDesc, getPublishedPosts, type PostEntry } from "../../lib/posts";
+import { getPublishedPosts, type PostEntry } from "../../lib/posts";
 import "../../styles/global.css";
 
 export const getStaticPaths = async () => {

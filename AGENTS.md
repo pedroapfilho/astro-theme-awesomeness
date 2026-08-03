@@ -79,7 +79,7 @@ pnpm release                  # turbo build + changeset publish
 - `astro-awesomeness/components`: React islands (`CommandMenu`, `ThemeToggle`, ui/\*)
 - `astro-awesomeness/astro/*`: raw `.astro` components (header, seo, post-card, …)
 - `astro-awesomeness/layouts/*`: raw `.astro` layouts (base / list / post)
-- `astro-awesomeness/content`: `postSchema`, `tagSchema`
+- `astro-awesomeness/content`: `postSchema`, `tagSchema`, `authorSchema`, `notDraft`, `byPubDateDesc`
 - `astro-awesomeness/lib`: utility surface
 - `astro-awesomeness/tailwind`: Tailwind v4 preset
 - `astro-awesomeness/styles.css`: globals (bundled CSS)

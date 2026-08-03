@@ -16,6 +16,7 @@ type Props = {
   locale?: string;
   publishedTime?: Date;
   modifiedTime?: Date;
+  colorScheme?: "auto" | "light" | "dark";
 };
 
 const {
@@ -31,7 +32,20 @@ const {
   locale,
   publishedTime,
   modifiedTime,
+  colorScheme = "auto",
 } = Astro.props;
+
+// Emitted through set:html rather than as literal script children so the two
+// branches stay one <script> tag; Astro does not evaluate expressions inside
+// script contents.
+const colorSchemeScript = colorScheme === "auto"
+  ? `(() => {
+        const stored = localStorage.getItem("theme");
+        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
+        const theme = stored === "dark" || stored === "light" ? stored : prefersDark ? "dark" : "light";
+        document.documentElement.classList.toggle("dark", theme === "dark");
+      })();`
+  : `document.documentElement.classList.toggle("dark", ${colorScheme === "dark"});`;
 ---
 <!doctype html>
 <html lang={lang}>
@@ -54,14 +68,7 @@ const {
     {rssHref && (
       <link rel="alternate" type="application/rss+xml" title={siteTitle ?? title} href={rssHref} />
     )}
-    <script is:inline>
-      (() => {
-        const stored = localStorage.getItem("theme");
-        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        const theme = stored === "dark" || stored === "light" ? stored : prefersDark ? "dark" : "light";
-        document.documentElement.classList.toggle("dark", theme === "dark");
-      })();
-    </script>
+    <script is:inline set:html={colorSchemeScript} />
     <script type="speculationrules" is:inline set:html={JSON.stringify({
       prefetch: [
         {
