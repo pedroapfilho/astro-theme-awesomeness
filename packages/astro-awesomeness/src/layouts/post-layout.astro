@@ -2,6 +2,8 @@
 import type { Post } from "../content/index";
 
 import BaseLayout from "./base-layout.astro";
+import Footer from "../astro/footer.astro";
+import Header from "../astro/header.astro";
 import FormattedDate from "../astro/formatted-date.astro";
 import ReadingTime from "../astro/reading-time.astro";
 import TagList from "../astro/tag-list.astro";
@@ -45,6 +47,8 @@ const { title, description, pubDate, updatedDate, tags } = post.data;
   publishedTime={pubDate}
   modifiedTime={updatedDate}
 >
+  <Fragment slot="header">{siteTitle && <Header siteTitle={siteTitle} />}</Fragment>
+  <Fragment slot="footer">{siteTitle && <Footer siteTitle={siteTitle} />}</Fragment>
   <main id="main-content" tabindex="-1">
     <article class="mx-auto max-w-3xl px-4 py-10">
     <header class="mb-8">

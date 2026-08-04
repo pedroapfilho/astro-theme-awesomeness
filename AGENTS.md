@@ -7,9 +7,9 @@ profile in the orchestrator: no DB, no auth, no Playwright, no email infra.
 ## Stack
 
 - **Astro 6/7** (peer dep `^6.0.0 || ^7.0.0`) for the demo app and consumer blogs
-- **React 19** for interactive islands (theme toggle, command menu)
+- **React 19** for the one interactive island (theme toggle)
 - **Tailwind CSS v4** with a custom preset; per-blog font/accent overrides via `@theme`
-- **shadcn-style wrappers over @base-ui/react** + **lucide-react**, **cmdk** for the command menu
+- **shadcn-style wrappers over @base-ui/react** + **lucide-react**
 - **zod 4** for content collection schemas (`postSchema`, `tagSchema`, `authorSchema`)
 - **tsdown** for the package build; `.astro` files ship as source via `./astro/*` and `./layouts/*` exports
 - **vitest 4** for unit tests (happy-dom)
@@ -26,7 +26,7 @@ apps/
 packages/
   astro-awesomeness/          # published npm package (the theme)
     src/astro/                # .astro components (header, footer, seo, …)
-    src/components/           # React islands (command-menu, theme-toggle, ui/)
+    src/components/           # React islands (theme-toggle, ui/)
     src/layouts/              # base / list / post layouts (.astro)
     src/content/              # zod schemas for posts + tags
     src/lib/                  # cn, format-date, get-related-posts, reading-time, slugify
@@ -76,9 +76,11 @@ pnpm release                  # turbo build + changeset publish
 `astro-awesomeness` exposes these subpath entries (see `packages/astro-awesomeness/package.json`):
 
 - `astro-awesomeness`: `cn`, content schemas re-exports, lib utilities
-- `astro-awesomeness/components`: React islands (`CommandMenu`, `ThemeToggle`, ui/\*)
+- `astro-awesomeness/components`: React islands (`ThemeToggle`, `Button`, `buttonVariants`)
 - `astro-awesomeness/astro/*`: raw `.astro` components (header, seo, post-card, …)
-- `astro-awesomeness/layouts/*`: raw `.astro` layouts (base / list / post)
+- `astro-awesomeness/layouts/*`: raw `.astro` layouts (base / list / post). `base-layout`
+  renders chrome only through its `header` and `footer` slots, so importing it alone
+  pulls in no React.
 - `astro-awesomeness/content`: `postSchema`, `tagSchema`, `authorSchema`, `notDraft`, `byPubDateDesc`
 - `astro-awesomeness/lib`: utility surface
 - `astro-awesomeness/tailwind`: Tailwind v4 preset
