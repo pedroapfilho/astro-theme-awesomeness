@@ -5,7 +5,7 @@ const postSchema = z.object({
   categories: z.array(z.string()).default([]),
   cover: z.string().optional(),
   coverAlt: z.string().optional(),
-  description: z.string().min(1),
+  description: z.string().default(""),
   draft: z.boolean().default(false),
   heroImageHeight: z.number().int().optional(),
   heroImageUrl: z.url().optional(),
@@ -45,5 +45,10 @@ type Author = z.infer<typeof authorSchema>;
 const notDraft = (post: { data: { draft?: boolean; status?: string } }): boolean =>
   post.data.status !== "DRAFT" && post.data.draft !== true;
 
-export { authorSchema, notDraft, postSchema, tagSchema };
+// Typed structurally instead of against `CollectionEntry` so this module never
+// imports `astro:content`: that is a virtual module tsdown cannot resolve.
+const byPubDateDesc = (a: { data: { pubDate: Date } }, b: { data: { pubDate: Date } }): number =>
+  b.data.pubDate.valueOf() - a.data.pubDate.valueOf();
+
+export { authorSchema, byPubDateDesc, notDraft, postSchema, tagSchema };
 export type { Author, Post, Tag };

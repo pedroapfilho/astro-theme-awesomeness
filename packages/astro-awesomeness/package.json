@@ -55,7 +55,6 @@
     "dev": "tsdown --watch",
     "build": "tsdown",
     "prepack": "pnpm run build",
-    "prepare": "pnpm run build",
     "typecheck": "tsc --noEmit",
     "lint": "oxlint src",
     "test": "vitest run",

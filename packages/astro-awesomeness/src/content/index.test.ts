@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { authorSchema, postSchema, tagSchema } from "./index";
+import { authorSchema, byPubDateDesc, postSchema, tagSchema } from "./index";
 
 describe("postSchema", () => {
   it("accepts a minimal post", () => {
@@ -51,6 +51,45 @@ describe("postSchema", () => {
       title: "Hello",
     });
     expect(result.success).toBe(true);
+  });
+
+  it("defaults a missing description to an empty string", () => {
+    const result = postSchema.safeParse({ pubDate: new Date(), title: "Hello" });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.description).toBe("");
+    }
+  });
+
+  it("accepts a top-level author", () => {
+    const result = postSchema.safeParse({
+      author: "Pedro",
+      pubDate: new Date(),
+      title: "Hello",
+    });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.author).toBe("Pedro");
+    }
+  });
+});
+
+const entry = (iso: string) => ({ data: { pubDate: new Date(iso) } });
+
+describe("byPubDateDesc", () => {
+  it("sorts newest first", () => {
+    const sorted = [entry("2026-01-01"), entry("2026-03-01"), entry("2026-02-01")].toSorted(
+      byPubDateDesc,
+    );
+    expect(sorted.map((post) => post.data.pubDate.toISOString().slice(0, 10))).toEqual([
+      "2026-03-01",
+      "2026-02-01",
+      "2026-01-01",
+    ]);
+  });
+
+  it("returns 0 for equal dates so the sort stays stable", () => {
+    expect(byPubDateDesc(entry("2026-01-01"), entry("2026-01-01"))).toBe(0);
   });
 });
 
