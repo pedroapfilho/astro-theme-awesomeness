@@ -43,6 +43,31 @@ The 12 consumer blogs need no changes for either break. They import
 `lang` and `image`, they render their own local header, and none of them import
 `astro-awesomeness/components`.
 
+**React is now an optional peer.** `react` and `react-dom` keep their `^19.0.0`
+peer ranges but are marked `optional` in `peerDependenciesMeta`, because whether
+you need React now depends on which entry you import:
+
+- **Only `astro-awesomeness/layouts/base-layout`, `astro-awesomeness/astro/*`
+  (except `header`), `/content`, `/lib`, `/tailwind` or `/styles.css`:** you may
+  drop `react`, `react-dom` and `@astrojs/react` entirely, and remove `react()`
+  from your `astro.config` integrations. Verified against a scratch consumer with
+  none of them installed: `astro build` succeeds and emits zero `<astro-island>`
+  markers.
+- **The bundled `layouts/list-layout` or `layouts/post-layout`, or
+  `astro/header`, or anything from `astro-awesomeness/components`:** you still
+  need React and the `@astrojs/react` renderer. Those render
+  `<ThemeToggle client:idle />`. Without the renderer, `astro build` fails with
+  `NoMatchingRenderer: Unable to render ThemeToggle` (exit 1) and points you at
+  `@astrojs/react`.
+
+One honest limitation: the optional peer changes what the package _requires_ of
+you, not what ends up in `node_modules`. `@base-ui/react` and `lucide-react` are
+still hard dependencies of this package (`Button` and `ThemeToggle` need them) and
+both declare `react` as a required peer, so package managers will still place
+react, react-dom, scheduler and use-sync-external-store inside this package's own
+subtree. They are not hoisted to your project root, so your code cannot import
+them, and none of it reaches your built output.
+
 This release also carries the three unreleased minor additions on `main`
 (`byPubDateDesc`, the `colorScheme` prop, the widened `postSchema` plus
 `requireEnv`), so the next published version is a single major.

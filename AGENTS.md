@@ -121,6 +121,12 @@ gitignores allowed under the library profile). See `~/dev/orchestrator/divergenc
   `@theme` in the consumer's globals.css, no runtime config object.
 - **`peerDependencies` pin Astro `^6.0.0 || ^7.0.0` and React `^19.0.0`.** Demo app's
   direct deps match those peers; bump them together when upgrading.
+- **React is an `optional` peer.** Only `layouts/list-layout`, `layouts/post-layout`,
+  `astro/header` and the `./components` entry need React, because they render
+  `<ThemeToggle client:idle />`. A consumer on `layouts/base-layout` alone needs
+  none of it, which is what all 12 blogs do. Keep the peer range: the optionality
+  lives in `peerDependenciesMeta`, and dropping either would misdescribe the
+  bundled layouts.
 - **Changesets ignores `demo`.** Only `astro-awesomeness` is published; demo
   is a dev playground.
 
