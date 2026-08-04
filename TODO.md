@@ -8,9 +8,11 @@ reference blog). Statuses re-verified against the code on 2026-07-14.
 
 - **View transitions (was item 0):** `globals.css` opts into cross-document
   `@view-transition { navigation: auto }` under a `prefers-reduced-motion`
-  guard. This also settles the old item 11: cross-document transitions apply
-  to script navigations, so `CommandMenu`'s `window.location.href` (now gated
-  by `resolveNavigationUrl`) gets transitions without `astro:transitions`.
+  guard.
+- **Item 11 (`CommandMenu` and `astro:transitions`) is moot:** `CommandMenu`,
+  the `Command`/`Dialog` primitives it wrapped, `resolveNavigationUrl` and the
+  `cmdk` dependency were all removed. Nothing rendered them, in the demo or in
+  any of the 12 consumer blogs.
 - **RSS autodiscovery (was item 2):** `base-layout.astro` emits
   `<link rel="alternate" type="application/rss+xml">` when `rssHref` is passed.
 - **`color-scheme` (was item 3, CSS half):** `:root { color-scheme: light dark }`

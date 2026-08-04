@@ -2,6 +2,8 @@
 import type { Post } from "../content/index";
 
 import BaseLayout from "./base-layout.astro";
+import Footer from "../astro/footer.astro";
+import Header from "../astro/header.astro";
 import PostCard from "../astro/post-card.astro";
 import Pagination from "../astro/pagination.astro";
 
@@ -22,6 +24,8 @@ const { title, description, posts, page, urlForPage, locale, siteTitle, rssHref,
   Astro.props;
 ---
 <BaseLayout title={title} description={description} siteTitle={siteTitle} rssHref={rssHref}>
+  <Fragment slot="header">{siteTitle && <Header siteTitle={siteTitle} />}</Fragment>
+  <Fragment slot="footer">{siteTitle && <Footer siteTitle={siteTitle} />}</Fragment>
   <main id="main-content" tabindex="-1" class="mx-auto max-w-3xl px-4 py-10">
     <header class="mb-8">
       <h1 class="text-primary text-3xl font-bold tracking-tight">{title}</h1>
