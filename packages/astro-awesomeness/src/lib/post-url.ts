@@ -54,5 +54,61 @@ const createPostUrl = (
   return { postParams, postUrl };
 };
 
+// Escapes rather than literal glyphs so nothing invisible or ambiguous sits in
+// source. `mdash` is deliberately absent: U+2014 is banned across these blogs, so
+// an encoded em-dash stays encoded rather than being decoded into a banned
+// character.
+const NAMED_ENTITIES: Record<string, string> = {
+  amp: "&",
+  apos: "'",
+  gt: ">",
+  hellip: "\u2026",
+  ldquo: "\u201c",
+  lsquo: "\u2018",
+  lt: "<",
+  nbsp: "\u00a0",
+  ndash: "\u2013",
+  quot: '"',
+  rdquo: "\u201d",
+  rsquo: "\u2019",
+};
+
+const MAX_CODE_POINT = 1_114_111;
+const EM_DASH = 8212;
+const HEX_RADIX = 16;
+const ENTITY_PATTERN = /&(?:#(?<decimal>\d+)|#x(?<hex>[\dA-F]+)|(?<named>[A-Z]+));/giv;
+
+// `String.fromCodePoint` throws on anything past the Unicode range, which would
+// take a whole static build down over one malformed entity. U+2014 is refused for
+// the same reason `mdash` is absent above: a numeric escape must not become the
+// way the banned glyph reaches a page.
+const fromCodePoint = (codePoint: number, entity: string): string =>
+  Number.isInteger(codePoint) && codePoint <= MAX_CODE_POINT && codePoint !== EM_DASH
+    ? String.fromCodePoint(codePoint)
+    : entity;
+
+const decodeEntity = (entity: string, decimal?: string, hex?: string, named?: string): string => {
+  if (decimal !== undefined) {
+    return fromCodePoint(Number(decimal), entity);
+  }
+  if (hex !== undefined) {
+    return fromCodePoint(Number.parseInt(hex, HEX_RADIX), entity);
+  }
+  if (named === undefined) {
+    return entity;
+  }
+  // Bare indexing would resolve `&constructor;` up the prototype chain and
+  // render `Function.prototype.toString` output into the page.
+  const key = named.toLowerCase();
+  return Object.hasOwn(NAMED_ENTITIES, key) ? (NAMED_ENTITIES[key] ?? entity) : entity;
+};
+
+// WordPress migrations stored category names HTML-encoded and the content API
+// returns `post.data.categories` the same way, so both `category-slugs.json` keys
+// and post frontmatter carry raw entities. Display-only on purpose: `createPostUrl`
+// resolves a slug by the raw, still-encoded name, so a decoded name must never
+// reach that lookup or every affected post URL moves.
+const categoryLabel = (name: string): string => name.replaceAll(ENTITY_PATTERN, decodeEntity);
+
 export type { PostLike, PostParams, PostUrlBuilder };
-export { createPostUrl };
+export { categoryLabel, createPostUrl };
