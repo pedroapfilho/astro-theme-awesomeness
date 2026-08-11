@@ -17,8 +17,6 @@ const getFormatter = (key: string, locale: string, options: Intl.DateTimeFormatO
 };
 
 const formatDate = (date: Date, locale: string = "en-US", options?: Intl.DateTimeFormatOptions) => {
-  // Default-option calls (every blog passes only (date, locale)) key on locale
-  // alone, skipping the JSON.stringify the custom-option path needs.
   if (!options) {
     return getFormatter(locale, locale, defaultOptions).format(date);
   }

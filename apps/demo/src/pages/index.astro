@@ -7,7 +7,6 @@ import "../styles/global.css";
 const allPosts = await getSortedPosts();
 const posts = allPosts.slice(0, PAGE_SIZE);
 const lastPage = Math.max(1, Math.ceil(allPosts.length / PAGE_SIZE));
-// A single page needs no "Page 1 of 1" footer; ListLayout skips Pagination without `page`.
 const page = lastPage > 1 ? { currentPage: 1, lastPage, url: {} } : undefined;
 ---
 <ListLayout

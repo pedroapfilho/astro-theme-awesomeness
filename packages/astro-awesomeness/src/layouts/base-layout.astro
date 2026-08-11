@@ -33,9 +33,6 @@ const {
   colorScheme = "auto",
 } = Astro.props;
 
-// Emitted through set:html rather than as literal script children so the two
-// branches stay one <script> tag; Astro does not evaluate expressions inside
-// script contents.
 const colorSchemeScript = colorScheme === "auto"
   ? `(() => {
         const stored = localStorage.getItem("theme");

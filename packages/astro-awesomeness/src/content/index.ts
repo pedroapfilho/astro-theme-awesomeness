@@ -40,13 +40,9 @@ type Post = z.infer<typeof postSchema>;
 type Tag = z.infer<typeof tagSchema>;
 type Author = z.infer<typeof authorSchema>;
 
-// One source of truth for the draft guard so the loader contract stays in sync
-// with the consumer-side check (`data.status !== "DRAFT" && !data.draft`).
 const notDraft = (post: { data: { draft?: boolean; status?: string } }): boolean =>
   post.data.status !== "DRAFT" && post.data.draft !== true;
 
-// Typed structurally instead of against `CollectionEntry` so this module never
-// imports `astro:content`: that is a virtual module tsdown cannot resolve.
 const byPubDateDesc = (a: { data: { pubDate: Date } }, b: { data: { pubDate: Date } }): number =>
   b.data.pubDate.valueOf() - a.data.pubDate.valueOf();
 
