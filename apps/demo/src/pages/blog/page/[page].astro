@@ -7,14 +7,11 @@ import "../../../styles/global.css";
 
 export const getStaticPaths = async ({ paginate }: GetStaticPathsOptions) => {
   const posts = await getSortedPosts();
-  // Page 1 lives at "/" (see index.astro), so drop the duplicate /blog/page/1 route.
   return paginate(posts, { pageSize: PAGE_SIZE }).filter(({ params }) => params.page !== "1");
 };
 
 type Props = { page: Page<PostEntry> };
 const { page } = Astro.props;
-// page.url.prev/first still point at /blog/page/1 (a dead route); navigation goes
-// through urlForPage instead, which maps page 1 back to "/".
 ---
 <ListLayout
   title="All posts"

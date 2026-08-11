@@ -10,7 +10,6 @@ type ButtonProps = Omit<React.ComponentProps<typeof ButtonPrimitive>, "className
     className?: string;
   };
 
-// React 19 passes `ref` as a regular prop, so no forwardRef wrapper is needed.
 const Button = ({ className, size = "default", variant = "default", ...props }: ButtonProps) => {
   return (
     <ButtonPrimitive

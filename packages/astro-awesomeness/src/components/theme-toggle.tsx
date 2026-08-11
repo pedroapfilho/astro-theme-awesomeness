@@ -23,7 +23,6 @@ const subscribeStoredTheme = (callback: () => void) => {
     return () => {};
   }
   storedThemeListeners.add(callback);
-  // "storage" only fires in other tabs; same-tab writes notify via setStoredTheme.
   window.addEventListener("storage", callback);
   return () => {
     storedThemeListeners.delete(callback);
@@ -61,11 +60,6 @@ type Props = {
 };
 
 const ThemeToggle = ({ ariaLabel = "Toggle theme" }: Props) => {
-  // useSyncExternalStore avoids hydration mismatch on both reads: the server
-  // snapshots (false / null) match the server HTML, then React re-syncs to the
-  // real values right after hydration. Reading localStorage during the initial
-  // render instead (e.g. in a useState initializer) makes React 19 log a
-  // recoverable hydration error for every visitor with a stored theme.
   const prefersDark = useSyncExternalStore(subscribePrefersDark, getPrefersDark, () => false);
   const override = useSyncExternalStore(subscribeStoredTheme, getStoredTheme, () => null);
   const theme: Theme = override ?? (prefersDark ? "dark" : "light");
