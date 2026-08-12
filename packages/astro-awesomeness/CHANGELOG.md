@@ -1,5 +1,11 @@
 # astro-awesomeness
 
+## 1.1.2
+
+### Patch Changes
+
+- 8f17e8a: Reserve the scrollbar gutter on `html` so locking page scroll (opening a dialog or menu) no longer shifts the layout sideways.
+
 ## 1.1.1
 
 ### Patch Changes
