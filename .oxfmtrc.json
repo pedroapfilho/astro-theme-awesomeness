@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxfmt/configuration_schema.json",
-  "ignorePatterns": [".github/workflows/pullfrog.yml"],
+  "ignorePatterns": [],
   "experimental": {
     "sortImports": true,
     "sortTailwindcss": {
