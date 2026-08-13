@@ -1,8 +1,9 @@
 export { cn } from "./cn";
+export { categoryLabel } from "./category-label";
 export { formatDate } from "./format-date";
 export { getRelatedPosts } from "./get-related-posts";
 export type { PostLike, PostParams, PostUrlBuilder } from "./post-url";
-export { categoryLabel, createPostUrl } from "./post-url";
+export { createPostUrl } from "./post-url";
 export { readingTime } from "./reading-time";
 export { requireEnv } from "./require-env";
 export { slugify } from "./slugify";
