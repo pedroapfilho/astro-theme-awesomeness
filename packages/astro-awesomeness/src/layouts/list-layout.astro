@@ -11,6 +11,7 @@ type PostEntry = { id: string; data: Post };
 type Props = {
   title: string;
   description: string;
+  eyebrow?: string;
   posts: Array<PostEntry>;
   page?: { currentPage: number; lastPage: number; url: { prev?: string; next?: string } };
   urlForPage?: (page: number) => string;
@@ -20,18 +21,25 @@ type Props = {
   postHref?: (post: PostEntry) => string;
 };
 
-const { title, description, posts, page, urlForPage, locale, siteTitle, rssHref, postHref } =
+const { title, description, eyebrow, posts, page, urlForPage, locale, siteTitle, rssHref, postHref } =
   Astro.props;
 ---
 <BaseLayout title={title} description={description} siteTitle={siteTitle} rssHref={rssHref}>
   <Fragment slot="header">{siteTitle && <Header siteTitle={siteTitle} />}</Fragment>
   <Fragment slot="footer">{siteTitle && <Footer siteTitle={siteTitle} />}</Fragment>
-  <main id="main-content" tabindex="-1" class="mx-auto max-w-3xl px-4 py-10">
-    <header class="mb-8">
-      <h1 class="text-primary text-3xl font-bold tracking-tight">{title}</h1>
-      <p class="text-muted-foreground mt-2">{description}</p>
+  <main id="main-content" tabindex="-1" class="mx-auto w-full max-w-5xl px-5 py-12 sm:px-8 sm:py-20">
+    <header class="mb-12 grid gap-8 border-b border-border pb-12 md:grid-cols-[1.2fr_0.8fr] md:items-end">
+      <div>
+        {eyebrow && (
+          <p class="text-muted-foreground font-mono text-xs font-semibold tracking-[0.16em]">{eyebrow}</p>
+        )}
+        <h1 class="text-foreground mt-4 max-w-[14ch] font-serif text-5xl leading-[0.95] font-semibold tracking-[-0.045em] sm:text-7xl">
+          {title}
+        </h1>
+      </div>
+      <p class="text-muted-foreground max-w-[38ch] text-lg text-pretty md:justify-self-end">{description}</p>
     </header>
-    <section>
+    <section class="post-grid">
       {posts.map((post) => <PostCard post={post} locale={locale} postHref={postHref} />)}
     </section>
     {page && urlForPage && (
@@ -43,3 +51,41 @@ const { title, description, posts, page, urlForPage, locale, siteTitle, rssHref,
     )}
   </main>
 </BaseLayout>
+
+<style is:global>
+  .post-grid {
+    display: grid;
+    gap: 1px;
+    overflow: hidden;
+    border: 1px solid var(--color-border);
+    background: var(--color-border);
+  }
+
+  .post-grid .post-card {
+    border: 0;
+    background: var(--color-background);
+    padding: 1.75rem;
+  }
+
+  .post-grid .post-card:first-child h2 {
+    max-width: 18ch;
+    font-family: var(--font-serif);
+    font-size: clamp(1.75rem, 4vw, 2.75rem);
+    line-height: 1.05;
+  }
+
+  @media (min-width: 48rem) {
+    .post-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .post-grid .post-card:first-child {
+      grid-column: 1 / -1;
+      min-height: 18rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: end;
+      padding: 3rem;
+    }
+  }
+</style>
