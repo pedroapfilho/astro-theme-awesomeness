@@ -19,6 +19,8 @@ out/
 
 # Test coverage
 coverage/
+playwright-report/
+test-results/
 
 # Fallow cache
 .fallow/

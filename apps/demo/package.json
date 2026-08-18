@@ -11,6 +11,7 @@
     "typecheck": "NODE_OPTIONS=--import=../../scripts/astro-check-typescript.mjs astro check",
     "lint": "oxlint src",
     "test": "echo \"no tests\" && exit 0",
+    "test:e2e": "playwright test",
     "clean": "rm -rf .astro .turbo dist node_modules"
   },
   "dependencies": {
@@ -29,6 +30,7 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
+    "@playwright/test": "^1.62.1",
     "@repo/typescript-config": "workspace:*",
     "typescript": "^7.0.2",
     "zod-compiler": "^1.27.0"
