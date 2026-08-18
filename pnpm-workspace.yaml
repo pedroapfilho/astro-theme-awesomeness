@@ -7,6 +7,12 @@ allowBuilds:
   fallow: true
   sharp: true
 minimumReleaseAgeExclude:
+  - "@dashfoo/*"
+  - "@easeia/*"
+  - "@usebutr/*"
+  - "@walletwright/*"
+  - astro-awesomeness
+  - oxlint-config-awesomeness
   - "@oxlint-tsgolint/darwin-arm64@7.0.2001"
   - "@oxlint-tsgolint/darwin-x64@7.0.2001"
   - "@oxlint-tsgolint/linux-arm64@7.0.2001"
@@ -14,5 +20,4 @@ minimumReleaseAgeExclude:
   - "@oxlint-tsgolint/win32-arm64@7.0.2001"
   - "@oxlint-tsgolint/win32-x64@7.0.2001"
   - oxlint-tsgolint@7.0.2001
-  - oxlint-config-awesomeness@3.4.2
   - oxlint-plugin-react-doctor@0.9.6
