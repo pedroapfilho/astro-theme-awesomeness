@@ -30,6 +30,7 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
     "@repo/typescript-config": "workspace:*",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "zod-compiler": "^1.27.0"
   }
 }
