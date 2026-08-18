@@ -8,7 +8,7 @@
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "typecheck": "astro check",
+    "typecheck": "NODE_OPTIONS=--import=../../scripts/astro-check-typescript.mjs astro check",
     "lint": "oxlint src",
     "test": "echo \"no tests\" && exit 0",
     "clean": "rm -rf .astro .turbo dist node_modules"
@@ -30,6 +30,6 @@
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
     "@repo/typescript-config": "workspace:*",
-    "typescript": "^6.0.3"
+    "typescript": "^7.0.2"
   }
 }
