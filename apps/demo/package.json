@@ -11,24 +11,26 @@
     "typecheck": "NODE_OPTIONS=--import=../../scripts/astro-check-typescript.mjs astro check",
     "lint": "oxlint src",
     "test": "echo \"no tests\" && exit 0",
+    "test:e2e": "playwright test",
     "clean": "rm -rf .astro .turbo dist node_modules"
   },
   "dependencies": {
-    "@astrojs/mdx": "^7.0.2",
-    "@astrojs/react": "^6.0.1",
+    "@astrojs/mdx": "^7.0.7",
+    "@astrojs/react": "^6.0.4",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.3",
     "@tailwindcss/vite": "^4.3.2",
     "@types/react": "^19.2.17",
     "@types/react-dom": "^19.2.3",
-    "astro": "^7.0.7",
+    "astro": "^7.2.4",
     "astro-awesomeness": "workspace:*",
     "react": "^19.2.7",
     "react-dom": "^19.2.7",
     "tailwindcss": "^4.3.2"
   },
   "devDependencies": {
-    "@astrojs/check": "^0.9.9",
+    "@astrojs/check": "^0.9.10",
+    "@playwright/test": "^1.62.1",
     "@repo/typescript-config": "workspace:*",
     "typescript": "^7.0.2",
     "zod-compiler": "^1.27.0"
