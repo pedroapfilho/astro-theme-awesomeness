@@ -61,15 +61,15 @@ describe("postSchema", () => {
     }
   });
 
-  it("accepts a top-level author", () => {
+  it("accepts a top-level author entity", () => {
     const result = postSchema.safeParse({
-      author: "Pedro",
+      author: { bio: "Records rooms.", name: "Pedro", url: "https://example.com/pedro" },
       pubDate: new Date(),
       title: "Hello",
     });
     expect(result.success).toBe(true);
     if (result.success) {
-      expect(result.data.author).toBe("Pedro");
+      expect(result.data.author?.name).toBe("Pedro");
     }
   });
 });
@@ -106,8 +106,10 @@ describe("authorSchema", () => {
   it("accepts a minimal author", () => {
     expect(authorSchema.safeParse({ name: "Pedro" }).success).toBe(true);
   });
-  it("validates url field as URL string", () => {
-    const result = authorSchema.safeParse({ name: "Pedro", url: "not-a-url" });
-    expect(result.success).toBe(false);
+  it("rejects an empty name", () => {
+    expect(authorSchema.safeParse({ name: "" }).success).toBe(false);
+  });
+  it("tolerates a malformed url so a typo never fails a site build", () => {
+    expect(authorSchema.safeParse({ name: "Pedro", url: "not-a-url" }).success).toBe(true);
   });
 });
