@@ -9,6 +9,7 @@ type Props = {
   locale?: string;
   publishedTime?: Date;
   modifiedTime?: Date;
+  authorName?: string;
 };
 
 const {
@@ -21,11 +22,13 @@ const {
   locale = "en_US",
   publishedTime,
   modifiedTime,
+  authorName,
 } = Astro.props;
 const url = canonical ?? new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin).toString();
 ---
 <title>{title}</title>
 <meta name="description" content={description} />
+{authorName && <meta name="author" content={authorName} />}
 <link rel="canonical" href={url} />
 
 <meta property="og:type" content={type} />

@@ -1,7 +1,17 @@
 import { z } from "zod";
 
+// Mirrors @easeia/astro-content's BuildAuthor after its loader strips nulls
+// to undefined. Plain strings (not z.url()) on purpose: a typo in the admin's
+// author URL must not fail 12 site builds.
+const authorSchema = z.object({
+  bio: z.string().optional(),
+  name: z.string().min(1),
+  photoUrl: z.string().optional(),
+  url: z.string().optional(),
+});
+
 const postSchema = z.object({
-  author: z.string().optional(),
+  author: authorSchema.optional(),
   categories: z.array(z.string()).default([]),
   cover: z.string().optional(),
   coverAlt: z.string().optional(),
@@ -27,13 +37,6 @@ const postSchema = z.object({
 const tagSchema = z.object({
   description: z.string().optional(),
   name: z.string().min(1),
-});
-
-const authorSchema = z.object({
-  avatar: z.string().optional(),
-  bio: z.string().optional(),
-  name: z.string().min(1),
-  url: z.url().optional(),
 });
 
 type Post = z.infer<typeof postSchema>;

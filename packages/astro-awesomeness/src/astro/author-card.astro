@@ -1,0 +1,33 @@
+---
+import type { Author } from "../content";
+
+type Props = {
+  author: Author;
+  class?: string;
+};
+
+const { author, class: className = "" } = Astro.props;
+---
+<aside class:list={["border-border bg-muted/50 flex gap-4 rounded-lg border p-4", className]}>
+  {author.photoUrl && (
+    <img
+      src={author.photoUrl}
+      alt={author.name}
+      width="56"
+      height="56"
+      loading="lazy"
+      decoding="async"
+      class="border-border size-14 shrink-0 rounded-full border object-cover"
+    />
+  )}
+  <div class="flex flex-col gap-1">
+    {author.url ? (
+      <a href={author.url} rel="author" class="text-foreground font-semibold hover:underline">
+        {author.name}
+      </a>
+    ) : (
+      <span class="text-foreground font-semibold">{author.name}</span>
+    )}
+    {author.bio && <p class="text-muted-foreground text-sm">{author.bio}</p>}
+  </div>
+</aside>

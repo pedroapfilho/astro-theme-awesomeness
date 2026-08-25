@@ -14,6 +14,7 @@ type Props = {
   locale?: string;
   publishedTime?: Date;
   modifiedTime?: Date;
+  authorName?: string;
   colorScheme?: "auto" | "light" | "dark";
 };
 
@@ -30,6 +31,7 @@ const {
   locale,
   publishedTime,
   modifiedTime,
+  authorName,
   colorScheme = "auto",
 } = Astro.props;
 
@@ -59,6 +61,7 @@ const colorSchemeScript = colorScheme === "auto"
       locale={locale}
       publishedTime={publishedTime}
       modifiedTime={modifiedTime}
+      authorName={authorName}
     />
     {rssHref && (
       <link rel="alternate" type="application/rss+xml" title={siteTitle ?? title} href={rssHref} />
