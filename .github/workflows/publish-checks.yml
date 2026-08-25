@@ -1,4 +1,4 @@
-name: Test
+name: Publish Checks
 on:
   push:
     branches: [main]
@@ -6,15 +6,18 @@ on:
   # Dispatched by release.yml for the changeset-release/main PR, whose
   # pull_request runs are parked unexecuted behind an approval gate.
   workflow_dispatch:
+
+permissions:
+  contents: read
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
-permissions:
-  contents: read
+
 jobs:
-  vitest:
+  packaging:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@d23441a48e516b6c34aea4fa41551a30e30af803 # v6.1.0
         with:
@@ -23,4 +26,12 @@ jobs:
         with:
           runtime: node@24
           cache: true
-      - run: pnpm test
+      - run: pnpm typecheck
+      - run: pnpm build
+      # Packaging hygiene for the published packages (ESM-only).
+      - name: publint
+        run: (cd packages/astro-awesomeness && pnpm dlx publint --strict)
+      - name: are-the-types-wrong
+        run: |
+          # styles.css is a CSS-only export with no types/JS for attw to resolve.
+          (cd packages/astro-awesomeness && pnpm dlx @arethetypeswrong/cli --pack --profile esm-only --exclude-entrypoints ./styles.css)
