@@ -1,5 +1,11 @@
 # astro-awesomeness
 
+## 1.2.0
+
+### Minor Changes
+
+- 49a5816: Author entity support: `postSchema.author` is now a structured object (`{ name, bio?, photoUrl?, url? }`) matching `@easeia/astro-content` 0.5.0 frontmatter, replacing the old plain-string field. New `astro/author-byline.astro` and `astro/author-card.astro` components, and an `authorName` prop on `Seo`/`BaseLayout` that emits `<meta name="author">`.
+
 ## 1.1.2
 
 ### Patch Changes
