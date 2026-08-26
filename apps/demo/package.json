@@ -33,6 +33,6 @@
     "@playwright/test": "^1.62.1",
     "@repo/typescript-config": "workspace:*",
     "typescript": "^7.0.2",
-    "zod-compiler": "^1.27.0"
+    "zod-compiler": "^1.28.0"
   }
 }
