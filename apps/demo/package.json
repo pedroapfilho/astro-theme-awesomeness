@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "astro dev",
+    "dev": "portless run --name astro-theme-awesomeness.demo astro dev",
     "start": "astro dev",
     "build": "astro build",
     "preview": "astro preview",

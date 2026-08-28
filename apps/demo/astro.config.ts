@@ -11,6 +11,7 @@ const config = defineConfig({
   vite: {
     optimizeDeps: { exclude: ["astro-awesomeness"] },
     plugins: [zodCompiler(), tailwindcss()],
+    server: { allowedHosts: [".localhost"] },
   },
 });
 
