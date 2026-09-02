@@ -66,3 +66,4 @@ minimumReleaseAgeExclude:
   - "@bruits/satteri-win32-x64-msvc@0.10.3"
   - astro@7.2.4
   - satteri@0.10.3
+  - cn@0.2.4
