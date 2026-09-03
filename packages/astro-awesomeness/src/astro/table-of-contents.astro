@@ -1,5 +1,6 @@
 ---
 import { slugify } from "../lib/slugify";
+import { cn } from "../lib/cn";
 
 type Heading = { depth: number; text: string; slug: string };
 
@@ -24,11 +25,11 @@ const visible: Array<Heading> = headings
   .map((h) => ({ depth: h.depth, text: h.text, slug: h.slug ?? slugify(h.text) }));
 ---
 {visible.length > 0 && (
-  <nav class:list={["text-sm", className]} aria-label="Table of contents">
+  <nav class={cn("text-sm", className)} aria-label="Table of contents">
     <p class="text-muted-foreground mb-2 font-medium tracking-wide uppercase">{heading}</p>
     <ul class="space-y-1">
       {visible.map((item) => (
-        <li class:list={["leading-snug", item.depth === 3 && "pl-4"]}>
+        <li class={cn("leading-snug", item.depth === 3 && "pl-4")}>
           <a
             href={`#${item.slug}`}
             class="text-muted-foreground hover:text-foreground block transition-colors"

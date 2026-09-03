@@ -1,10 +1,11 @@
 ---
+import { cn } from "../lib/cn";
 type Props = {
   class?: string;
 };
 
 const { class: className = "" } = Astro.props;
 ---
-<div class:list={["prose", className]}>
+<div class={cn("prose", className)}>
   <slot />
 </div>

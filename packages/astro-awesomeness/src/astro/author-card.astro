@@ -1,5 +1,6 @@
 ---
 import type { Author } from "../content";
+import { cn } from "../lib/cn";
 
 type Props = {
   author: Author;
@@ -8,7 +9,7 @@ type Props = {
 
 const { author, class: className = "" } = Astro.props;
 ---
-<aside class:list={["border-border bg-muted/50 flex gap-4 rounded-lg border p-4", className]}>
+<aside class={cn("border-border bg-muted/50 flex gap-4 rounded-lg border p-4", className)}>
   {author.photoUrl && (
     <img
       src={author.photoUrl}

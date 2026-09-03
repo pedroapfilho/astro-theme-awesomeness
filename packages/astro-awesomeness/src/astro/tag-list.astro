@@ -1,5 +1,6 @@
 ---
 import { DEFAULT_TAG_BASE, tagUrl } from "../lib/tag-url";
+import { cn } from "../lib/cn";
 
 type Props = {
   tags: Array<string>;
@@ -9,7 +10,7 @@ type Props = {
 
 const { tags, base = DEFAULT_TAG_BASE, class: className = "" } = Astro.props;
 ---
-<ul class:list={["flex flex-wrap gap-2", className]}>
+<ul class={cn("flex flex-wrap gap-2", className)}>
   {tags.map((tag) => (
     <li>
       <a

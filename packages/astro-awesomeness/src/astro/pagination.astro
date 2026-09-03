@@ -1,4 +1,5 @@
 ---
+import { cn } from "../lib/cn";
 type Props = {
   currentPage: number;
   lastPage: number;
@@ -23,7 +24,7 @@ const {
 const hasPrev = currentPage > 1;
 const hasNext = currentPage < lastPage;
 ---
-<nav class:list={["mt-8 flex items-center justify-between", className]} aria-label="Pagination">
+<nav class={cn("mt-8 flex items-center justify-between", className)} aria-label="Pagination">
   {hasPrev ? (
     <a
       href={urlForPage(currentPage - 1)}
