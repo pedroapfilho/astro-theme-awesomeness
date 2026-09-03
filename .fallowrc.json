@@ -2,5 +2,7 @@
   "$schema": "https://raw.githubusercontent.com/fallow-rs/fallow/main/schema.json",
   "entry": ["oxlint.config.ts", "scripts/astro-check-typescript.mjs", "**/tsdown.config.ts"],
   "ignorePatterns": ["apps/demo/src/styles/global.css"],
-  "ignoreDependencies": ["@typescript/typescript6", "@vitest/coverage-v8", "jsdom"]
+  "ignoreDependencies": ["@typescript/typescript6", "@vitest/coverage-v8", "jsdom"],
+  "typeAware": { "enabled": true, "require": "best-effort" },
+  "rules": { "private-type-leaks": "off" }
 }
