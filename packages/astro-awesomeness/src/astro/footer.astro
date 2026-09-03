@@ -1,4 +1,5 @@
 ---
+import { cn } from "../lib/cn";
 type Props = {
   siteTitle: string;
   class?: string;
@@ -7,7 +8,7 @@ type Props = {
 const { siteTitle, class: className = "" } = Astro.props;
 const year = new Date().getFullYear();
 ---
-<footer class:list={["border-border text-muted-foreground mt-16 border-t py-6 text-sm", className]}>
+<footer class={cn("border-border text-muted-foreground mt-16 border-t py-6 text-sm", className)}>
   <div class="mx-auto flex max-w-5xl flex-col items-center justify-between gap-2 px-5 sm:flex-row sm:px-8">
     <p>© {year} {siteTitle}</p>
     <slot name="links" />

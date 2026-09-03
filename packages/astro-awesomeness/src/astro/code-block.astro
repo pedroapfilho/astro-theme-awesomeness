@@ -1,5 +1,6 @@
 ---
 import { Code } from "astro:components";
+import { cn } from "../lib/cn";
 
 type Props = {
   code: string;
@@ -9,6 +10,6 @@ type Props = {
 
 const { code, lang = "ts", class: className = "" } = Astro.props;
 ---
-<div class:list={["bg-muted border-border overflow-hidden rounded-md border", className]}>
+<div class={cn("bg-muted border-border overflow-hidden rounded-md border", className)}>
   <Code code={code} lang={lang} theme="github-dark" />
 </div>

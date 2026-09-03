@@ -1,5 +1,6 @@
 ---
 import type { Author } from "../content";
+import { cn } from "../lib/cn";
 
 type Props = {
   author: Author;
@@ -8,7 +9,7 @@ type Props = {
 
 const { author, class: className = "" } = Astro.props;
 ---
-<div class:list={["flex items-center gap-2", className]}>
+<div class={cn("flex items-center gap-2", className)}>
   {author.photoUrl && (
     <img
       src={author.photoUrl}
