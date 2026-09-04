@@ -1,5 +1,12 @@
 # astro-awesomeness
 
+## 1.2.1
+
+### Patch Changes
+
+- 32b7e90: Compose class names in the Astro components with `cn` instead of `class:list`, so consumer overrides resolve Tailwind conflicts.
+- bbeb60c: Replace `cnfast` with the new `cn` Tailwind class-merging engine.
+
 ## 1.2.0
 
 ### Minor Changes
