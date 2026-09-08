@@ -4,15 +4,15 @@ import type { Post } from "../content/index";
 import FormattedDate from "./formatted-date.astro";
 import TagList from "./tag-list.astro";
 
-type PostEntry = { id: string; data: Post };
+type PostEntry = { data: Post; id: string };
 type Props = {
-  post: PostEntry;
   locale?: string;
+  post: PostEntry;
   postHref?: (post: PostEntry) => string;
 };
 
-const { post, locale, postHref } = Astro.props;
-const { title, description, pubDate, tags } = post.data;
+const { locale, post, postHref } = Astro.props;
+const { description, pubDate, tags, title } = post.data;
 const href = postHref ? postHref(post) : `/blog/${post.id}`;
 ---
 <article class="post-card border-border group border-b py-6 last:border-0">

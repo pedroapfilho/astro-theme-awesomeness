@@ -2,12 +2,12 @@
 import { readingTime } from "../lib/reading-time";
 
 type Props = {
-  text: string;
-  label?: string;
   class?: string;
+  label?: string;
+  text: string;
 };
 
-const { text, label = "min read", class: className = "" } = Astro.props;
+const { class: className = "", label = "min read", text } = Astro.props;
 const { minutes } = readingTime(text);
 ---
 <span class={className}>{minutes} {label}</span>

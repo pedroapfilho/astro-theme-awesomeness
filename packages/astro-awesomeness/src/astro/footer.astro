@@ -1,11 +1,12 @@
 ---
 import { cn } from "../lib/cn";
+
 type Props = {
-  siteTitle: string;
   class?: string;
+  siteTitle: string;
 };
 
-const { siteTitle, class: className = "" } = Astro.props;
+const { class: className = "", siteTitle } = Astro.props;
 const year = new Date().getFullYear();
 ---
 <footer class={cn("border-border text-muted-foreground mt-16 border-t py-6 text-sm", className)}>

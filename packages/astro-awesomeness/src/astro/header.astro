@@ -3,19 +3,19 @@ import { ThemeToggle } from "../components/theme-toggle";
 import { cn } from "../lib/cn";
 
 type Props = {
-  siteTitle: string;
-  homeHref?: string;
   class?: string;
-  themeToggleLabel?: string;
+  homeHref?: string;
   showThemeToggle?: boolean;
+  siteTitle: string;
+  themeToggleLabel?: string;
 };
 
 const {
-  siteTitle,
-  homeHref = "/",
   class: className = "",
-  themeToggleLabel = "Toggle theme",
+  homeHref = "/",
   showThemeToggle = true,
+  siteTitle,
+  themeToggleLabel = "Toggle theme",
 } = Astro.props;
 ---
 <header class={cn("border-border bg-background/80 sticky top-0 z-40 border-b backdrop-blur", className)}>

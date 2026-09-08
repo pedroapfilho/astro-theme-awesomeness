@@ -1,28 +1,28 @@
 ---
 type Props = {
-  title: string;
-  description: string;
-  canonical?: string;
-  image?: string;
-  type?: "website" | "article";
-  siteName?: string;
-  locale?: string;
-  publishedTime?: Date;
-  modifiedTime?: Date;
   authorName?: string;
+  canonical?: string;
+  description: string;
+  image?: string;
+  locale?: string;
+  modifiedTime?: Date;
+  publishedTime?: Date;
+  siteName?: string;
+  title: string;
+  type?: "website" | "article";
 };
 
 const {
-  title,
-  description,
-  canonical,
-  image,
-  type = "website",
-  siteName,
-  locale = "en_US",
-  publishedTime,
-  modifiedTime,
   authorName,
+  canonical,
+  description,
+  image,
+  locale = "en_US",
+  modifiedTime,
+  publishedTime,
+  siteName,
+  title,
+  type = "website",
 } = Astro.props;
 const url = canonical ?? new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin).toString();
 ---

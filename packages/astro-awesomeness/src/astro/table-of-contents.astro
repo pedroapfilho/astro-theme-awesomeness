@@ -2,27 +2,29 @@
 import { slugify } from "../lib/slugify";
 import { cn } from "../lib/cn";
 
-type Heading = { depth: number; text: string; slug: string };
+type Heading = { depth: number; slug: string; text: string };
 
 type Props = {
-  headings: Array<{ depth: number; text: string; slug?: string }>;
-  minDepth?: number;
-  maxDepth?: number;
   class?: string;
   heading?: string;
+  headings: Array<{ depth: number; slug?: string; text: string }>;
+  maxDepth?: number;
+  minDepth?: number;
 };
 
 const {
-  headings,
-  minDepth = 2,
-  maxDepth = 3,
   class: className = "",
   heading = "On this page",
+  headings,
+  maxDepth = 3,
+  minDepth = 2,
 } = Astro.props;
 
-const visible: Array<Heading> = headings
-  .filter((h) => h.depth >= minDepth && h.depth <= maxDepth)
-  .map((h) => ({ depth: h.depth, text: h.text, slug: h.slug ?? slugify(h.text) }));
+const visible: Array<Heading> = headings.flatMap((h) =>
+  h.depth >= minDepth && h.depth <= maxDepth
+    ? [{ depth: h.depth, slug: h.slug ?? slugify(h.text), text: h.text }]
+    : [],
+);
 ---
 {visible.length > 0 && (
   <nav class={cn("text-sm", className)} aria-label="Table of contents">
