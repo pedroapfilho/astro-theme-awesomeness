@@ -33,6 +33,7 @@ packages/
     src/styles/               # globals.css (shipped as `astro-awesomeness/styles.css`)
     src/tailwind-preset.ts    # exported as `astro-awesomeness/tailwind`
   config-typescript/          # @repo/typescript-config (base, library, vite, astro)
+  config-vitest/              # @repo/config-vitest (react, node, setup-react)
 .changeset/                   # changeset config (ignores `demo`)
 oxlint.config.ts              # extends oxlint-config-awesomeness
 ```
@@ -101,8 +102,8 @@ component files at build time. Don't move them into the bundled output.
 
 ## Library profile (orchestrator)
 
-Validated by `~/dev/orchestrator/scripts/verify-*.sh` against
-`LIBRARY_SOURCE_OF_TRUTH=acme-package`. Skipped checks: e2e (no Playwright),
+Validated by `orchestrator verify` against
+its profile base, `acme-package`. Skipped checks: e2e (no Playwright),
 auth-config, prisma-config, turbo-db-generate-ordering, i18n-\*, landing-urls,
 e2e-auth-emails. Seven workflows gate PRs on actions @v6: `test`, `lint`,
 `format` and `fallow` (the library-profile standard) plus `build`, `typecheck`
@@ -110,7 +111,7 @@ and a `react-doctor` scan. `release.yml` is the eighth, on pushes to main only.
 There is no `e2e.yml`.
 
 The repo has a recorded divergence: `astro-theme-awesomeness.gitignore` (per-app
-gitignores allowed under the library profile). See `~/dev/orchestrator/divergences.json`.
+gitignores allowed under the library profile). See `fleet.json` (`orchestrator divergences`).
 
 ## Notable decisions
 
