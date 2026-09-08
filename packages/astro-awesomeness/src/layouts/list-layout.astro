@@ -7,22 +7,32 @@ import Header from "../astro/header.astro";
 import PostCard from "../astro/post-card.astro";
 import Pagination from "../astro/pagination.astro";
 
-type PostEntry = { id: string; data: Post };
+type PostEntry = { data: Post; id: string };
 type Props = {
-  title: string;
   description: string;
   eyebrow?: string;
-  posts: Array<PostEntry>;
-  page?: { currentPage: number; lastPage: number; url: { prev?: string; next?: string } };
-  urlForPage?: (page: number) => string;
   locale?: string;
-  siteTitle?: string;
-  rssHref?: string;
+  page?: { currentPage: number; lastPage: number; url: { next?: string; prev?: string } };
   postHref?: (post: PostEntry) => string;
+  posts: Array<PostEntry>;
+  rssHref?: string;
+  siteTitle?: string;
+  title: string;
+  urlForPage?: (page: number) => string;
 };
 
-const { title, description, eyebrow, posts, page, urlForPage, locale, siteTitle, rssHref, postHref } =
-  Astro.props;
+const {
+  description,
+  eyebrow,
+  locale,
+  page,
+  postHref,
+  posts,
+  rssHref,
+  siteTitle,
+  title,
+  urlForPage,
+} = Astro.props;
 ---
 <BaseLayout title={title} description={description} siteTitle={siteTitle} rssHref={rssHref}>
   <Fragment slot="header">{siteTitle && <Header siteTitle={siteTitle} />}</Fragment>

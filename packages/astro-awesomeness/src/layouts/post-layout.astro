@@ -11,31 +11,31 @@ import Prose from "../astro/prose.astro";
 import TableOfContents from "../astro/table-of-contents.astro";
 import PostCard from "../astro/post-card.astro";
 
-type PostEntry = { id: string; data: Post };
+type PostEntry = { data: Post; id: string };
 type Props = {
-  post: { id: string; data: Post; body?: string };
+  headings?: Array<{ depth: number; slug?: string; text: string }>;
   locale?: string;
+  post: { body?: string; data: Post; id: string };
+  postHref?: (post: PostEntry) => string;
+  relatedHeading?: string;
+  relatedPosts?: Array<PostEntry>;
+  rssHref?: string;
   siteTitle?: string;
   updatedLabel?: string;
-  rssHref?: string;
-  headings?: Array<{ depth: number; text: string; slug?: string }>;
-  relatedPosts?: Array<PostEntry>;
-  relatedHeading?: string;
-  postHref?: (post: PostEntry) => string;
 };
 
 const {
-  post,
+  headings,
   locale,
+  post,
+  postHref,
+  relatedHeading = "Related posts",
+  relatedPosts,
+  rssHref,
   siteTitle,
   updatedLabel = "Updated",
-  rssHref,
-  headings,
-  relatedPosts,
-  relatedHeading = "Related posts",
-  postHref,
 } = Astro.props;
-const { title, description, pubDate, updatedDate, tags } = post.data;
+const { description, pubDate, tags, title, updatedDate } = post.data;
 ---
 <BaseLayout
   title={title}

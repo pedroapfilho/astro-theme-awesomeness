@@ -1,25 +1,26 @@
 ---
 import { cn } from "../lib/cn";
+
 type Props = {
+  class?: string;
   currentPage: number;
   lastPage: number;
-  urlForPage: (page: number) => string;
-  class?: string;
-  prevLabel?: string;
   nextLabel?: string;
-  pageLabel?: string;
   ofLabel?: string;
+  pageLabel?: string;
+  prevLabel?: string;
+  urlForPage: (page: number) => string;
 };
 
 const {
+  class: className = "",
   currentPage,
   lastPage,
-  urlForPage,
-  class: className = "",
-  prevLabel = "← Previous",
   nextLabel = "Next →",
-  pageLabel = "Page",
   ofLabel = "of",
+  pageLabel = "Page",
+  prevLabel = "← Previous",
+  urlForPage,
 } = Astro.props;
 const hasPrev = currentPage > 1;
 const hasNext = currentPage < lastPage;
