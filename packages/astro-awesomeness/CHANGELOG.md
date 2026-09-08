@@ -1,5 +1,11 @@
 # astro-awesomeness
 
+## 1.2.2
+
+### Patch Changes
+
+- b910623: Build table-of-contents headings in one pass while preserving heading order, depth bounds, and custom slugs. Include Astro frontmatter in the lint checks.
+
 ## 1.2.1
 
 ### Patch Changes
