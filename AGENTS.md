@@ -138,3 +138,9 @@ gitignores allowed under the library profile). See `fleet.json` (`orchestrator d
 - Tailwind v4: https://tailwindcss.com
 - Orchestrator (verification + standards): `~/dev/orchestrator`
 - Consumer blogs (12 repos, `blog` profile): see orchestrator's `CLAUDE.md` for the list
+
+## Design-system linting
+
+Run `pnpm lint` after changes and fix every error. `oxlint.config.ts` registers `@shadcn/lint` and enforces component contracts, known Tailwind classes, and readable component class names. Use component variants for appearance and layout classes at call sites. The config lists the primitive directories that own their internal styles; unknown-class checking stays enabled there. Keep theme discovery local to each app. Exact class-merging fixture allowances apply only to the named test files.
+
+The shared package's `components.json` points to the demo's complete Tailwind entry, because the distributed stylesheet is a theme fragment that consumers load after Tailwind. Build the theme package before linting. The `a` and `b` allowances are limited to `cn.test.ts`, which tests opaque class merging. Astro template markup is outside Oxlint's JS-plugin coverage; keep `astro check` for template typing.

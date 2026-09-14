@@ -3,7 +3,19 @@ import awesomeness from "oxlint-config-awesomeness";
 
 export default defineConfig({
   extends: [awesomeness],
+  jsPlugins: ["@shadcn/lint"],
   overrides: [
+    {
+      files: ["packages/astro-awesomeness/src/lib/cn.test.ts"],
+      rules: { "shadcn/no-unknown-classes": ["error", { allow: ["a", "b"] }] },
+    },
+    {
+      files: ["packages/astro-awesomeness/src/components/ui/**"],
+      rules: {
+        "shadcn/no-restyle": "off",
+        "shadcn/require-static-classes": "off",
+      },
+    },
     {
       files: ["**/*.astro"],
       rules: {
@@ -14,4 +26,20 @@ export default defineConfig({
       },
     },
   ],
+  rules: {
+    "shadcn/no-restyle": [
+      "error",
+      {
+        allow: ["layout"],
+        contracts: [
+          {
+            allow: ["layout", "gap-*"],
+            pattern: "^PopoverTrigger$",
+          },
+        ],
+      },
+    ],
+    "shadcn/no-unknown-classes": "error",
+    "shadcn/require-static-classes": "error",
+  },
 });

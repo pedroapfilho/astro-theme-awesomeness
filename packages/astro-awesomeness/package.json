@@ -44,7 +44,7 @@
     },
     "./tailwind": {
       "types": "./dist/tailwind-preset.d.ts",
-      "import": "./dist/tailwind-preset.js"
+      "default": "./dist/tailwind-preset.js"
     },
     "./styles.css": "./dist/styles/globals.css"
   },
