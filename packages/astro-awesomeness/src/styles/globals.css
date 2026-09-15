@@ -13,6 +13,12 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme {
+  --tracking-eyebrow: 0.16em;
+  --tracking-list-title: -0.045em;
+  --leading-list-title: 0.95;
+  --measure-list-title: 14ch;
+  --measure-list-intro: 38ch;
+
   --color-background: oklch(1 0 0);
   --color-foreground: oklch(0.145 0 0);
   --color-card: oklch(1 0 0);
@@ -263,4 +269,52 @@
     border-bottom: 1px solid var(--color-border);
     text-align: left;
   }
+}
+
+@utility post-grid {
+  display: grid;
+  gap: 1px;
+  overflow: hidden;
+  border: 1px solid var(--color-border);
+  background: var(--color-border);
+}
+
+.post-grid .post-card {
+  border: 0;
+  background: var(--color-background);
+  padding: 1.75rem;
+}
+
+.post-grid .post-card:first-child h2 {
+  max-width: 18ch;
+  font-family: var(--font-serif);
+  font-size: clamp(1.75rem, 4vw, 2.75rem);
+  line-height: 1.05;
+}
+
+@media (min-width: 48rem) {
+  .post-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .post-grid .post-card:first-child {
+    grid-column: 1 / -1;
+    min-height: 18rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+    padding: 3rem;
+  }
+}
+
+/* Keep first 3 eager so above-the-fold paint isn't gated on containment checks. */
+@utility post-card {
+  &:nth-child(n + 4) {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 200px;
+  }
+}
+
+@utility grid-cols-list-heading {
+  grid-template-columns: 1.2fr 0.8fr;
 }
