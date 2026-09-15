@@ -27,11 +27,3 @@ const href = postHref ? postHref(post) : `/blog/${post.id}`;
   </a>
   {tags.length > 0 && <TagList tags={tags} class="mt-3" />}
 </article>
-
-<style>
-  /* Keep first 3 eager so above-the-fold paint isn't gated on containment checks. */
-  .post-card:nth-child(n + 4) {
-    content-visibility: auto;
-    contain-intrinsic-size: auto 200px;
-  }
-</style>

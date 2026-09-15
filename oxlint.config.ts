@@ -6,17 +6,6 @@ export default defineConfig({
   jsPlugins: ["@shadcn/lint"],
   overrides: [
     {
-      files: ["packages/astro-awesomeness/src/lib/cn.test.ts"],
-      rules: { "shadcn/no-unknown-classes": ["error", { allow: ["a", "b"] }] },
-    },
-    {
-      files: ["packages/astro-awesomeness/src/components/ui/**"],
-      rules: {
-        "shadcn/no-restyle": "off",
-        "shadcn/require-static-classes": "off",
-      },
-    },
-    {
       files: ["**/*.astro"],
       rules: {
         // Astro frontmatter runs per render, not once when a server module loads.
@@ -44,5 +33,8 @@ export default defineConfig({
     ],
     "shadcn/no-unknown-classes": "error",
     "shadcn/require-static-classes": "error",
+  },
+  settings: {
+    shadcn: { componentImports: ["^astro-awesomeness/(astro|layouts|components)(/|$)"] },
   },
 });

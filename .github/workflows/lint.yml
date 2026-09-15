@@ -45,7 +45,7 @@ jobs:
         id: fallow
         continue-on-error: true
         run: pnpm fallow:dead
-      - run: pnpm oxlint --format=github .
+      - run: pnpm oxlint --format=github . && pnpm lint:astro && pnpm test:lint
   oxfmt:
     needs: oxlint
     if: ${{ always() }}
