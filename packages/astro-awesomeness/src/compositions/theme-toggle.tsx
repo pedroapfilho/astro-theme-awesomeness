@@ -1,7 +1,7 @@
 import { Moon, Sun } from "lucide-react";
 import { useSyncExternalStore } from "react";
 
-import { Button } from "./ui/button";
+import { Button } from "../components/button";
 
 type Theme = "light" | "dark";
 
@@ -59,7 +59,16 @@ type Props = {
   ariaLabel?: string;
 };
 
+const subscribeHydration = () => () => {};
+const getHydratedSnapshot = () => true;
+const getServerHydratedSnapshot = () => false;
+
 const ThemeToggle = ({ ariaLabel = "Toggle theme" }: Props) => {
+  const isHydrated = useSyncExternalStore(
+    subscribeHydration,
+    getHydratedSnapshot,
+    getServerHydratedSnapshot,
+  );
   const prefersDark = useSyncExternalStore(subscribePrefersDark, getPrefersDark, () => false);
   const override = useSyncExternalStore(subscribeStoredTheme, getStoredTheme, () => null);
   const theme: Theme = override ?? (prefersDark ? "dark" : "light");
@@ -71,7 +80,13 @@ const ThemeToggle = ({ ariaLabel = "Toggle theme" }: Props) => {
   };
 
   return (
-    <Button aria-label={ariaLabel} onClick={handleToggleTheme} size="icon" variant="ghost">
+    <Button
+      aria-label={ariaLabel}
+      disabled={!isHydrated}
+      onClick={handleToggleTheme}
+      size="icon"
+      variant="ghost"
+    >
       {theme === "dark" ? <Sun /> : <Moon />}
     </Button>
   );

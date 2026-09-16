@@ -1,6 +1,6 @@
 {
   "$schema": "https://ui.shadcn.com/schema.json",
-  "style": "new-york",
+  "style": "base-nova",
   "rsc": false,
   "tsx": true,
   "tailwind": {
@@ -11,8 +11,8 @@
   },
   "aliases": {
     "components": "~/components",
-    "utils": "~/lib/utils",
-    "ui": "~/components/ui",
+    "utils": "~/lib/cn",
+    "ui": "~/components",
     "lib": "~/lib",
     "hooks": "~/hooks"
   },

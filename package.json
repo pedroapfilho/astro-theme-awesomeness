@@ -23,7 +23,8 @@
     "fallow:audit": "fallow audit --base main",
     "prepare": "husky",
     "lint:astro": "node --import=./scripts/astro-check-typescript.mjs --experimental-strip-types scripts/lint-astro.mjs",
-    "test:lint": "node --import=./scripts/astro-check-typescript.mjs --experimental-strip-types --test scripts/lint-astro.test.mjs"
+    "test:lint": "node --import=./scripts/astro-check-typescript.mjs --experimental-strip-types --test scripts/lint-astro.test.mjs",
+    "check:shadcn": "node scripts/check-shadcn.mjs"
   },
   "devDependencies": {
     "@changesets/cli": "^3.0.2",
