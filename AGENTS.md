@@ -26,7 +26,8 @@ apps/
 packages/
   astro-awesomeness/          # published npm package (the theme)
     src/astro/                # .astro components (header, footer, seo, …)
-    src/components/           # React islands (theme-toggle, ui/)
+    src/components/           # shadcn React primitives and public entry
+    src/compositions/         # product React islands (theme-toggle)
     src/layouts/              # base / list / post layouts (.astro)
     src/content/              # zod schemas for posts + tags
     src/lib/                  # cn, format-date, get-related-posts, reading-time, slugify
@@ -95,7 +96,7 @@ component files at build time. Don't move them into the bundled output.
 - All source files kebab-case; types/classes PascalCase; vars/fns camelCase.
 - `types` over `interfaces`; arrow functions; exports at end of file.
 - No `as any`, strict TS, no silent failures.
-- `.astro` components live in `src/astro/`; React islands in `src/components/`.
+- `.astro` components live in `src/astro/`; React primitives in `src/components/` and product islands in `src/compositions/`.
 - Content schemas in `src/content/`; consumer apps import via `astro-awesomeness/content`.
 - Vite is told to `optimizeDeps.exclude: ["astro-awesomeness"]` in the demo so
   the workspace package isn't pre-bundled; keep that in any new consumer config.
@@ -144,3 +145,5 @@ gitignores allowed under the library profile). See `fleet.json` (`orchestrator d
 Run `pnpm lint` after changes and fix every error. `oxlint.config.ts` registers `@shadcn/lint` and enforces all six rules as errors: component contracts, known Tailwind classes, static component class names, semantic colors, theme or scale values, and class-based styling. Use CSS custom properties for runtime geometry and named theme tokens for custom values. Use component variants for appearance and layout classes at call sites. All six rules also apply inside primitive directories. Shared styles belong to component variants or the owning stylesheet. Keep theme discovery local to each app. Exact class-merging fixture allowances apply only to the named test files.
 
 The shared package's `components.json` points to the demo's complete Tailwind entry, because the distributed stylesheet is a theme fragment that consumers load after Tailwind. Build the theme package before linting. The `a` and `b` allowances are limited to `cn.test.ts`, which tests opaque class merging. The root lint command also runs all six rules on tracked Astro templates through `astro-eslint-parser`, sharing `oxlint.config.ts`. Run `pnpm test:lint` to verify template coverage and keep `astro check` for template typing.
+
+Keep the Base Nova Button and its colocated variant factory aligned with upstream. See `packages/astro-awesomeness/SHADCN.md` and run `pnpm check:shadcn` before committing. Preserve consumer brands and the static Astro/optional React boundary.

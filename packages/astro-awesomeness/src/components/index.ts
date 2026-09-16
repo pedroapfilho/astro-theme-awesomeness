@@ -1,3 +1,2 @@
-export { Button } from "./ui/button";
-export { buttonVariants } from "./ui/button-variants";
-export { ThemeToggle } from "./theme-toggle";
+export { Button, buttonVariants } from "./button";
+export { ThemeToggle } from "../compositions/theme-toggle";

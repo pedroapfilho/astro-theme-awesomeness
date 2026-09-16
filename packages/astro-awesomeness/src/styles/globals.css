@@ -2,6 +2,7 @@
    It contributes tokens, base styles, prose, and the dark variant. */
 
 @import "tw-animate-css";
+@import "shadcn/tailwind.css";
 
 /* Scan our own .astro/.tsx files so consumer Tailwind generates utilities
    used by the theme. Paths resolve from dist/styles/globals.css after build:
@@ -9,6 +10,7 @@
 @source "../../src/astro/**/*.astro";
 @source "../../src/layouts/**/*.astro";
 @source "../../src/components/**/*.{ts,tsx}";
+@source "../../src/compositions/**/*.{ts,tsx}";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -30,7 +32,7 @@
   --color-secondary: oklch(0.97 0 0);
   --color-secondary-foreground: oklch(0.205 0 0);
   --color-muted: oklch(0.97 0 0);
-  --color-muted-foreground: oklch(0.556 0 0);
+  --color-muted-foreground: oklch(0.54 0 0);
   --color-accent: oklch(0.97 0 0);
   --color-accent-foreground: oklch(0.205 0 0);
   --color-destructive: oklch(0.577 0.245 27.325);
@@ -317,4 +319,11 @@
 
 @utility grid-cols-list-heading {
   grid-template-columns: 1.2fr 0.8fr;
+}
+
+@theme inline {
+  --radius-control-sm: min(var(--radius-md), 10px);
+  --radius-control: min(var(--radius-md), 12px);
+  --text-control: 0.8rem;
+  --color-secondary-hover: color-mix(in oklch, var(--color-secondary), var(--color-foreground) 5%);
 }
