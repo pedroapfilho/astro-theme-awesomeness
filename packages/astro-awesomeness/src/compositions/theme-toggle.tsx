@@ -82,7 +82,6 @@ const ThemeToggle = ({ ariaLabel = "Toggle theme" }: Props) => {
   return (
     <Button
       aria-label={ariaLabel}
-      className="min-h-11 min-w-11 sm:min-h-0 sm:min-w-0"
       disabled={!isHydrated}
       onClick={handleToggleTheme}
       size="icon"
