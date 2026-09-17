@@ -67,9 +67,10 @@ describe("createCategoryIndex", () => {
     expect(categoryName("locacao-de-espacos")).toBe("Locação de Espaços");
   });
 
-  it("labels an unknown slug with the slug itself", () => {
-    const { categoryName } = createCategoryIndex(map, DEFAULT, []);
-    expect(categoryName("nada")).toBe("nada");
+  it("humanizes a slug no post names", () => {
+    const { categoryName, postCategory } = createCategoryIndex(map, DEFAULT, []);
+    expect(categoryName("sem-categoria")).toBe("Sem categoria");
+    expect(postCategory(post("orphan", []))).toEqual({ name: "Sem categoria", slug: DEFAULT });
   });
 
   it("groups by the canonical category and sorts each bucket newest first", () => {
@@ -81,7 +82,7 @@ describe("createCategoryIndex", () => {
     const buckets = groupByCategory();
     expect(buckets.map((b) => b.slug)).toEqual(["arquitetura", "sem-categoria"]);
     expect(buckets[0]?.posts.map((p) => p.id)).toEqual(["new", "old"]);
-    expect(buckets[1]?.name).toBe("sem-categoria");
+    expect(buckets[1]?.name).toBe("Sem categoria");
   });
 
   it("adds a post to each secondary category bucket only when asked", () => {

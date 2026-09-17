@@ -14,6 +14,11 @@ type GroupOptions = {
   includeSecondaryCategories?: boolean;
 };
 
+const humanize = (slug: string): string => {
+  const words = slug.replaceAll("-", " ");
+  return words.charAt(0).toUpperCase() + words.slice(1);
+};
+
 const createCategoryIndex = <P extends CategoryPostLike>(
   categorySlugMap: Record<string, string>,
   defaultCategory: string,
@@ -42,7 +47,8 @@ const createCategoryIndex = <P extends CategoryPostLike>(
     const names = [...(namesBySlug.get(slug) ?? [])];
     const native = names.find((name) => slugify(categoryLabel(name)) === slug);
     const mapped = names.find((name) => categorySlug(name) === slug);
-    return categoryLabel(native ?? mapped ?? names[0] ?? slug);
+    const name = native ?? mapped ?? names[0];
+    return name === undefined ? humanize(slug) : categoryLabel(name);
   };
 
   const postCategory = (post: PostLike): PostCategory => {
