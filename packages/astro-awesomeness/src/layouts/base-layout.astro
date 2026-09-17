@@ -10,6 +10,7 @@ type Props = {
   lang?: string;
   locale?: string;
   modifiedTime?: Date;
+  noindex?: boolean;
   publishedTime?: Date;
   rssHref?: string;
   siteName?: string;
@@ -27,6 +28,7 @@ const {
   lang = "en",
   locale,
   modifiedTime,
+  noindex,
   publishedTime,
   rssHref,
   siteName,
@@ -34,6 +36,9 @@ const {
   title,
   type = "website",
 } = Astro.props;
+
+const SKIP_LABELS = new Map([["pt", "Pular para o conteúdo"]]);
+const skipLabel = SKIP_LABELS.get(lang.split("-")[0] ?? "") ?? "Skip to content";
 
 const colorSchemeScript =
   colorScheme === "auto"
@@ -59,10 +64,12 @@ const colorSchemeScript =
       image={image}
       type={type}
       siteName={siteName ?? siteTitle}
+      siteTitle={siteTitle}
       locale={locale}
       publishedTime={publishedTime}
       modifiedTime={modifiedTime}
       authorName={authorName}
+      noindex={noindex}
     />
     {rssHref && (
       <link rel="alternate" type="application/rss+xml" title={siteTitle ?? title} href={rssHref} />
@@ -83,7 +90,7 @@ const colorSchemeScript =
       href="#main-content"
       class="bg-background text-foreground border-border focus:ring-ring sr-only z-50 rounded-md border px-3 py-2 focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:ring-2"
     >
-      Skip to content
+      {skipLabel}
     </a>
     <slot name="header" />
     <div class="flex-1">

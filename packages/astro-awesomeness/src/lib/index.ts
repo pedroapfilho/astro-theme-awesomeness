@@ -1,4 +1,6 @@
 export { cn } from "./cn";
+export type { CategoryBucket, CategoryPostLike, PostCategory } from "./category-index";
+export { createCategoryIndex } from "./category-index";
 export { categoryLabel } from "./category-label";
 export { formatDate } from "./format-date";
 export { getRelatedPosts } from "./get-related-posts";
@@ -7,4 +9,4 @@ export { createPostUrl } from "./post-url";
 export { readingTime } from "./reading-time";
 export { requireEnv } from "./require-env";
 export { slugify } from "./slugify";
-export { DEFAULT_TAG_BASE, tagUrl } from "./tag-url";
+export { DEFAULT_TAG_BASE, tagLabel, tagUrl, uniqueTags } from "./tag-url";

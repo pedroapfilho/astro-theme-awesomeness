@@ -6,8 +6,10 @@ type Props = {
   image?: string;
   locale?: string;
   modifiedTime?: Date;
+  noindex?: boolean;
   publishedTime?: Date;
   siteName?: string;
+  siteTitle?: string;
   title: string;
   type?: "website" | "article";
 };
@@ -19,17 +21,20 @@ const {
   image,
   locale = "en_US",
   modifiedTime,
+  noindex = false,
   publishedTime,
   siteName,
+  siteTitle,
   title,
   type = "website",
 } = Astro.props;
 const url = canonical ?? new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin).toString();
+const documentTitle = siteTitle !== undefined && title !== siteTitle ? `${title} · ${siteTitle}` : title;
 ---
-<title>{title}</title>
+<title>{documentTitle}</title>
 <meta name="description" content={description} />
 {authorName && <meta name="author" content={authorName} />}
-<link rel="canonical" href={url} />
+{noindex ? <meta name="robots" content="noindex,follow" /> : <link rel="canonical" href={url} />}
 
 <meta property="og:type" content={type} />
 <meta property="og:title" content={title} />

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { DEFAULT_TAG_BASE, tagUrl } from "./tag-url";
+import { DEFAULT_TAG_BASE, tagLabel, tagUrl, uniqueTags } from "./tag-url";
 
 describe("tagUrl", () => {
   it("defaults to the /tag base every consuming blog routes on", () => {
@@ -19,5 +19,36 @@ describe("tagUrl", () => {
 
   it("slugifies accents and spaces the same way the route params do", () => {
     expect(tagUrl("Área Externa")).toBe("/tag/area-externa/");
+  });
+});
+
+describe("tagLabel", () => {
+  it("drops a leading hashtag and nothing else", () => {
+    expect(tagLabel("#construção")).toBe("construção");
+    expect(tagLabel("construção")).toBe("construção");
+    expect(tagLabel("c#")).toBe("c#");
+  });
+});
+
+describe("uniqueTags", () => {
+  it("collapses tags that share a slug onto the first occurrence", () => {
+    expect(
+      uniqueTags([
+        "#construção",
+        "construção",
+        "#LocaçõesDeEspaços",
+        "#locaçõesdeespaços",
+        "Tendências2025",
+        "#tendências2025",
+        "decoração",
+      ]),
+    ).toEqual(["#construção", "#LocaçõesDeEspaços", "Tendências2025", "decoração"]);
+  });
+
+  it("keeps tags whose slugs differ", () => {
+    expect(uniqueTags(["arquitetura", "arquitetura de luxo"])).toEqual([
+      "arquitetura",
+      "arquitetura de luxo",
+    ]);
   });
 });
