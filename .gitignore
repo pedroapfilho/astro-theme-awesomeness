@@ -41,3 +41,6 @@ pnpm-debug.log*
 # Editors
 .vscode/
 .idea/
+
+# CI selection and execution reports
+.ci-results/
