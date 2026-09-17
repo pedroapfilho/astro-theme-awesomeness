@@ -68,7 +68,7 @@ jobs:
       - run: node .github/ci/ci.mjs run packaging -- pnpm build --filter="./packages/*"
       # Packaging hygiene for the published packages (ESM-only).
       - name: publint
-        run: node .github/ci/ci.mjs run packaging -- (cd packages/astro-awesomeness && pnpm dlx publint --strict)
+        run: node .github/ci/ci.mjs run packaging -- bash -e -o pipefail -c '(cd packages/astro-awesomeness && pnpm dlx publint --strict)'
       - name: are-the-types-wrong
         run: |-
           node .github/ci/ci.mjs run packaging -- bash -e -o pipefail -c '# styles.css is a CSS-only export with no types/JS for attw to resolve.
