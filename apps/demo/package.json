@@ -16,13 +16,13 @@
   },
   "dependencies": {
     "@astrojs/mdx": "^8.0.1",
-    "@astrojs/react": "^6.0.5",
+    "@astrojs/react": "^6.0.6",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.4",
     "@tailwindcss/vite": "^4.3.2",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
-    "astro": "^7.2.10",
+    "astro": "^7.3.3",
     "astro-awesomeness": "workspace:*",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
@@ -33,6 +33,6 @@
     "@playwright/test": "^1.63.0",
     "@repo/typescript-config": "workspace:*",
     "typescript": "^7.0.2",
-    "zod-compiler": "^2.0.4"
+    "zod-compiler": "^2.0.5"
   }
 }
