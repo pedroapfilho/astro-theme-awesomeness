@@ -37,7 +37,7 @@ const createCategoryIndex = <P extends CategoryPostLike>(
     for (const name of names) {
       register(categorySlug(name), name);
     }
-    const first = names[0];
+    const first = names.at(0);
     if (first !== undefined && !names.some((name) => categorySlug(name) === category)) {
       register(category, first);
     }
@@ -47,7 +47,7 @@ const createCategoryIndex = <P extends CategoryPostLike>(
     const names = [...(namesBySlug.get(slug) ?? [])];
     const native = names.find((name) => slugify(categoryLabel(name)) === slug);
     const mapped = names.find((name) => categorySlug(name) === slug);
-    const name = native ?? mapped ?? names[0];
+    const name = native ?? mapped ?? names.at(0);
     return name === undefined ? humanize(slug) : categoryLabel(name);
   };
 
