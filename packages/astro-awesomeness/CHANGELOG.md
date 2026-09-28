@@ -1,5 +1,11 @@
 # astro-awesomeness
 
+## 2.0.1
+
+### Patch Changes
+
+- 336ffa5: Bump runtime dependencies to their current releases: cn 0.4.0, lucide-react 1.48.0 and zod 4.6.5.
+
 ## 2.0.0
 
 ### Major Changes
