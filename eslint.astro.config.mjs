@@ -1,6 +1,7 @@
 import { plugin as shadcn } from "@shadcn/lint";
 import tsParser from "@typescript-eslint/parser";
 import * as astroParser from "astro-eslint-parser";
+import shadcnPreset from "oxlint-config-awesomeness/shadcn";
 
 import config from "./oxlint.config.ts";
 
@@ -40,10 +41,12 @@ export default [
     },
     rules: {
       ...Object.fromEntries(
-        Object.entries(config.rules).filter(([name]) => name.startsWith("shadcn/")),
+        Object.entries({ ...shadcnPreset.rules, ...config.rules }).filter(([name]) =>
+          name.startsWith("shadcn/"),
+        ),
       ),
       "astro/verifiable-attributes": "error",
     },
-    settings: config.settings ?? {},
+    settings: config.settings,
   },
 ];
