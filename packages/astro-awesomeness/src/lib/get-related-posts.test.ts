@@ -20,8 +20,7 @@ describe("getRelatedPosts", () => {
   });
   it("limits to n", () => {
     const related = getRelatedPosts(a, [a, b, c, d], 1);
-    expect(related).toHaveLength(1);
-    expect(related[0].id).toBe("d");
+    expect(related.map((p) => p.id)).toEqual(["d"]);
   });
   it("falls back to other posts when no overlap exists", () => {
     const lonely: TestPost = { data: { tags: ["nothing"] }, id: "lonely" };
