@@ -106,10 +106,11 @@ component files at build time. Don't move them into the bundled output.
 Validated by `orchestrator verify` against
 its profile base, `acme-package`. Skipped checks: e2e (no Playwright),
 auth-config, prisma-config, turbo-db-generate-ordering, i18n-\*, landing-urls,
-e2e-auth-emails. Seven workflows gate PRs on actions @v6: `test`, `lint`,
-`format` and `fallow` (the library-profile standard) plus `build`, `typecheck`
-and a `react-doctor` scan. `release.yml` is the eighth, on pushes to main only.
-There is no `e2e.yml`.
+e2e-auth-emails. Six workflows gate PRs: `lint` (formatting, dead code and
+oxlint as steps of one job), `test`, `typecheck`, `build`, `publish-checks` and
+a `react-doctor` scan. They run on pull requests, a weekly schedule and manual
+dispatch, never on pushes to main. `release.yml` is the seventh, on pushes to
+main only. There is no `e2e.yml`.
 
 The repo has a recorded divergence: `astro-theme-awesomeness.gitignore` (per-app
 gitignores allowed under the library profile). See `fleet.json` (`orchestrator divergences`).
