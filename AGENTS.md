@@ -2,7 +2,7 @@
 
 `astro-theme-awesomeness` is the Turborepo home of the published Astro 6/7
 blog theme `astro-awesomeness` and the demo blog that exercises it. Library
-profile in the orchestrator: no DB, no auth, no Playwright, no email infra.
+profile in the orchestrator: no DB, no auth, no email infra.
 
 ## Stack
 
@@ -104,13 +104,13 @@ component files at build time. Don't move them into the bundled output.
 ## Library profile (orchestrator)
 
 Validated by `orchestrator verify` against
-its profile base, `acme-package`. Skipped checks: e2e (no Playwright),
+its profile base, `acme-package`. Skipped checks: e2e (saas-only),
 auth-config, prisma-config, turbo-db-generate-ordering, i18n-\*, landing-urls,
-e2e-auth-emails. Six workflows gate PRs: `lint` (formatting, dead code and
-oxlint as steps of one job), `test`, `typecheck`, `build`, `publish-checks` and
-a `react-doctor` scan. They run on pull requests, a weekly schedule and manual
-dispatch, never on pushes to main. `release.yml` is the seventh, on pushes to
-main only. There is no `e2e.yml`.
+e2e-auth-emails. Seven workflows gate PRs: `lint` (formatting, dead code and
+oxlint as steps of one job), `test`, `typecheck`, `build`, `e2e` (the demo's
+Playwright suite), `publish-checks` and a `react-doctor` scan. They run on pull requests, a weekly schedule and manual
+dispatch, never on pushes to main. `release.yml` is the eighth, on pushes to
+main only.
 
 The repo has a recorded divergence: `astro-theme-awesomeness.gitignore` (per-app
 gitignores allowed under the library profile). See `fleet.json` (`orchestrator divergences`).
