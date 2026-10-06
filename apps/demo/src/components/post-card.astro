@@ -1,0 +1,19 @@
+---
+import type { CollectionEntry } from "astro:content";
+import FormattedDate from "astro-awesomeness/astro/formatted-date";
+import { index } from "../lib/content";
+
+type Props = { post: CollectionEntry<"posts"> };
+const { post } = Astro.props;
+const category = index.postCategory(post);
+---
+<article class="border-border border-b py-8 first:pt-0 last:border-b-0">
+  <div class="text-muted-foreground mb-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm">
+    <a href={category.href} class="hover:text-foreground transition-colors">{category.name}</a>
+    <FormattedDate date={post.data.pubDate} />
+  </div>
+  <h2 class="max-w-3xl font-serif text-2xl font-semibold tracking-tight sm:text-3xl">
+    <a href={index.postUrl(post)} class="hover:underline underline-offset-4">{post.data.title}</a>
+  </h2>
+  <p class="text-muted-foreground mt-3 max-w-2xl text-pretty">{post.data.description}</p>
+</article>

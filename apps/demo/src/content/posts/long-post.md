@@ -2,7 +2,9 @@
 title: "A longer post for reading-time"
 description: "A few hundred words so the reading-time component shows >1 minute."
 pubDate: 2026-05-22
-tags: ["meta"]
+tags: ["meta", "#astro", "astro"]
+status: PUBLISHED
+categories: ["Notes &#8211; Field"]
 ---
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.

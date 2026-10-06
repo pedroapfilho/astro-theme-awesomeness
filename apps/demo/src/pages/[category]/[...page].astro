@@ -1,0 +1,17 @@
+---
+import type { GetStaticPaths, InferGetStaticPropsType } from "astro";
+import ListLayout from "../../components/list-layout.astro";
+import { index } from "../../lib/content";
+
+export const getStaticPaths = (({ paginate }) => index.categories().flatMap((category) =>
+  paginate(category.posts, {
+    pageSize: 2,
+    params: { category: category.slug },
+    props: { categoryName: category.name },
+  }),
+)) satisfies GetStaticPaths;
+
+type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+const { categoryName, page }: Props = Astro.props;
+---
+<ListLayout title={categoryName} description={`Stories in ${categoryName}.`} posts={page.data} page={page} />

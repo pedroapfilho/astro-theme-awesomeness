@@ -7,12 +7,12 @@ profile in the orchestrator: no DB, no auth, no email infra.
 ## Stack
 
 - **Astro 6/7** (peer dep `^6.0.0 || ^7.0.0`) for the demo app and consumer blogs
-- **React 19** for the one interactive island (theme toggle)
-- **Tailwind CSS v4** with a custom preset; per-blog font/accent overrides via `@theme`
+- **React 19** for the optional theme-toggle island and Button
+- **Tailwind CSS v4** with a shared stylesheet; per-blog font/accent overrides via `@theme`
 - **shadcn-style wrappers over @base-ui/react** + **lucide-react**
-- **zod 4** for content collection schemas (`postSchema`, `tagSchema`, `authorSchema`)
+- **zod 4** for content collection schemas (`postSchema`, `authorSchema`)
 - **tsdown** for the package build; `.astro` files ship as source via `./astro/*` and `./layouts/*` exports
-- **vitest 4** for unit tests (happy-dom)
+- **Vitest 5** for package unit tests in Node; the shared React preset uses jsdom
 - **changesets** for versioned releases (demo app is ignored)
 - **oxlint + oxfmt** via `oxlint-config-awesomeness`
 - **fallow** for dead-code / dupes / health audits
@@ -23,16 +23,19 @@ profile in the orchestrator: no DB, no auth, no email infra.
 ```
 apps/
   demo/                       # Astro reference blog: dev loop + showcase
+    src/lib/content.ts        # one createContentIndex binding for all routes and layouts
+    src/components/           # demo-owned header, cards and list/post layouts
+    src/content/posts/        # local posts with CMS-shaped frontmatter
+    src/pages/                # posts, category, article, tag, RSS and 404 routes
 packages/
   astro-awesomeness/          # published npm package (the theme)
-    src/astro/                # .astro components (header, footer, seo, …)
+    src/astro/                # static building blocks (footer, seo, pagination, …)
     src/components/           # shadcn React primitives and public entry
     src/compositions/         # product React islands (theme-toggle)
-    src/layouts/              # base / list / post layouts (.astro)
-    src/content/              # zod schemas for posts + tags
-    src/lib/                  # cn, format-date, get-related-posts, reading-time, slugify
+    src/layouts/              # base-layout.astro: page/article metadata and slots
+    src/content/              # post/author schemas and normalized heroImage
+    src/lib/                  # content index, cn and internal component helpers
     src/styles/               # globals.css (shipped as `astro-awesomeness/styles.css`)
-    src/tailwind-preset.ts    # exported as `astro-awesomeness/tailwind`
   config-typescript/          # @repo/typescript-config (base, library, vite, astro)
   config-vitest/              # @repo/config-vitest (react, node, setup-react)
 .changeset/                   # changeset config (ignores `demo`)
@@ -77,16 +80,18 @@ pnpm release                  # turbo build + changeset publish
 
 `astro-awesomeness` exposes these subpath entries (see `packages/astro-awesomeness/package.json`):
 
-- `astro-awesomeness`: `cn`, content schemas re-exports, lib utilities
 - `astro-awesomeness/components`: React islands (`ThemeToggle`, `Button`, `buttonVariants`)
-- `astro-awesomeness/astro/*`: raw `.astro` components (header, seo, post-card, …)
-- `astro-awesomeness/layouts/*`: raw `.astro` layouts (base / list / post). `base-layout`
-  renders chrome only through its `header` and `footer` slots, so importing it alone
-  pulls in no React.
-- `astro-awesomeness/content`: `postSchema`, `tagSchema`, `authorSchema`, `notDraft`, `byPubDateDesc`
-- `astro-awesomeness/lib`: utility surface
-- `astro-awesomeness/tailwind`: Tailwind v4 preset
-- `astro-awesomeness/styles.css`: globals (bundled CSS)
+- `astro-awesomeness/astro/*`: raw `.astro` components: `author-byline`, `author-card`,
+  `footer`, `formatted-date`, `pagination`, `prose`, `reading-time`, `seo`, `tag-list`
+- `astro-awesomeness/layouts/base-layout`: page/article document layout with `head`,
+  `header`, default and `footer` slots; no React imports
+- `astro-awesomeness/content`: `postSchema`, `authorSchema`, and `Post`/`Author` types
+- `astro-awesomeness/lib`: `cn`, `createContentIndex`, and its types (`CategoryOptions`,
+  `ContentBucket`, `ContentIndex`, `ContentIndexOptions`, `ContentPost`, `FeedItem`,
+  `PostCategory`, `PostParams`)
+- `astro-awesomeness/styles.css`: tokens, base styles, prose and the dark variant
+
+There is no root entry or Tailwind preset export. Import each public subpath explicitly.
 
 The Astro / layouts entries ship as source on purpose; Astro needs the
 component files at build time. Don't move them into the bundled output.
@@ -120,16 +125,31 @@ gitignores allowed under the library profile). See `fleet.json` (`orchestrator d
 - **`.astro` ships as source, not compiled.** tsdown only emits the JS/TS
   surface; the `./astro/*` and `./layouts/*` subpath exports point at `src/`.
   Consumers compile through Astro themselves.
-- **Tailwind v4 preset over a config file.** Per-blog overrides happen via
-  `@theme` in the consumer's globals.css, no runtime config object.
+- **Tailwind v4 stylesheet.** Import `astro-awesomeness/styles.css` after Tailwind.
+  It registers the dark variant and scans the package's source components.
+  Per-blog overrides happen via `@theme`; there is no `@plugin` preset.
 - **`peerDependencies` pin Astro `^6.0.0 || ^7.0.0` and React `^19.0.0`.** Demo app's
   direct deps match those peers; bump them together when upgrading.
-- **React is an `optional` peer.** Only `layouts/list-layout`, `layouts/post-layout`,
-  `astro/header` and the `./components` entry need React, because they render
-  `<ThemeToggle client:idle />`. A consumer on `layouts/base-layout` alone needs
-  none of it, which is what all 12 blogs do. Keep the peer range: the optionality
-  lives in `peerDependenciesMeta`, and dropping either would misdescribe the
-  bundled layouts.
+- **React and React DOM are optional peers.** Only the `./components` entry needs
+  them. All shared Astro components and BaseLayout stay static; consumers own
+  their header and opt into `<ThemeToggle client:idle />`. Keep the peer ranges
+  and `peerDependenciesMeta` declarations together.
+- **Astro i18n owns locale.** Components read `Astro.currentLocale` for document
+  language, Open Graph locale, dates and built-in labels. The demo config uses
+  `i18n: { defaultLocale: "en-US", locales: ["en-US"] }` and `trailingSlash: "always"`.
+  Labels support English and Portuguese, defaulting to English for other locales.
+- **One content index per site.** Bind `createContentIndex` in `src/lib/content.ts`.
+  It filters drafts, orders posts by publication date with an ID tie-breaker, and
+  owns post URLs, route params, category/tag buckets, related posts and feed items.
+  Use its methods everywhere so archives, links and RSS agree.
+- **Routes own SEO identity.** BaseLayout and Seo accept either `siteTitle`, `title`
+  and `description` for a page, or `siteTitle` and `post` for an article. Canonical,
+  `og:url` and JSON-LD `mainEntityOfPage.@id` derive from the route pathname on
+  `Astro.site`. `seo.canonical_url` influences content route selection only.
+- **Consumers own presentation.** The demo provides its own list/post layouts and
+  header around BaseLayout. Shared components do not prescribe a blog shell.
+  `colorScheme="light"` or `"dark"` fixes the scheme without a theme initialization
+  script; `"auto"` follows a stored preference or the system preference.
 - **Changesets ignores `demo`.** Only `astro-awesomeness` is published; demo
   is a dev playground.
 

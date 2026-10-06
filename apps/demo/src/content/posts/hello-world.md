@@ -2,7 +2,9 @@
 title: "Hello, world"
 description: "The first post on the demo blog: a sanity check for the theme primitives."
 pubDate: 2026-05-20
-tags: ["meta", "astro"]
+tags: ["meta", "#astro", "astro"]
+status: PUBLISHED
+categories: ["Notes &#8211; Field"]
 ---
 
 This is the demo blog for `astro-awesomeness`. If this page renders with the
