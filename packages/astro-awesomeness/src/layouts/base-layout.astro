@@ -1,80 +1,30 @@
 ---
 import Seo from "../astro/seo.astro";
+import type { MetadataProps } from "../lib/article-metadata";
+import { cn } from "../lib/cn";
+import { getColorSchemeScript, type ColorScheme } from "../lib/color-scheme";
+import { getSiteLocale } from "../lib/site-locale";
 
-type Props = {
-  authorName?: string;
-  canonical?: string;
-  colorScheme?: "auto" | "light" | "dark";
-  description: string;
-  image?: string;
-  lang?: string;
-  locale?: string;
-  modifiedTime?: Date;
-  noindex?: boolean;
-  publishedTime?: Date;
+type Props = MetadataProps & {
+  colorScheme?: ColorScheme;
   rssHref?: string;
-  siteName?: string;
-  siteTitle?: string;
-  title: string;
-  type?: "website" | "article";
 };
 
-const {
-  authorName,
-  canonical,
-  colorScheme = "auto",
-  description,
-  image,
-  lang = "en",
-  locale,
-  modifiedTime,
-  noindex,
-  publishedTime,
-  rssHref,
-  siteName,
-  siteTitle,
-  title,
-  type = "website",
-} = Astro.props;
-
-const SKIP_LABELS = new Map([["pt", "Pular para o conteúdo"]]);
-const skipLabel = SKIP_LABELS.get(lang.split("-")[0] ?? "") ?? "Skip to content";
-
-const colorSchemeScript =
-  colorScheme === "auto"
-    ? `(() => {
-        const stored = localStorage.getItem("theme");
-        const prefersDark = window.matchMedia("(prefers-color-scheme: dark)").matches;
-        const theme = stored === "dark" || stored === "light" ? stored : prefersDark ? "dark" : "light";
-        document.documentElement.classList.toggle("dark", theme === "dark");
-      })();`
-    : `document.documentElement.classList.toggle("dark", ${colorScheme === "dark"});`;
+const { colorScheme = "auto", rssHref, siteTitle } = Astro.props;
+const { lang, strings } = getSiteLocale(Astro.currentLocale);
 ---
 <!doctype html>
-<html lang={lang}>
+<html lang={lang} class={cn(colorScheme === "dark" && "dark")}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="color-scheme" content="light dark" />
+    <meta name="color-scheme" content={colorScheme === "auto" ? "light dark" : colorScheme} />
     <meta name="generator" content={Astro.generator} />
-    <Seo
-      title={title}
-      description={description}
-      canonical={canonical}
-      image={image}
-      type={type}
-      siteName={siteName ?? siteTitle}
-      siteTitle={siteTitle}
-      locale={locale}
-      publishedTime={publishedTime}
-      modifiedTime={modifiedTime}
-      authorName={authorName}
-      noindex={noindex}
-    />
+    <Seo {...Astro.props} />
     {rssHref && (
-      <link rel="alternate" type="application/rss+xml" title={siteTitle ?? title} href={rssHref} />
+      <link rel="alternate" type="application/rss+xml" title={siteTitle} href={rssHref} />
     )}
-    <script is:inline set:html={colorSchemeScript} />
+    {colorScheme === "auto" && <script is:inline set:html={getColorSchemeScript()} />}
     <script type="speculationrules" is:inline set:html={JSON.stringify({
       prefetch: [
         {
@@ -90,7 +40,7 @@ const colorSchemeScript =
       href="#main-content"
       class="bg-background text-foreground border-border focus:ring-ring sr-only z-50 rounded-md border px-3 py-2 focus:not-sr-only focus:fixed focus:top-2 focus:left-2 focus:ring-2"
     >
-      {skipLabel}
+      {strings.skipLink}
     </a>
     <slot name="header" />
     <div class="flex-1">

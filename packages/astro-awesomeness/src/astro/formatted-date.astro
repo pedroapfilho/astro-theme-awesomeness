@@ -1,14 +1,15 @@
 ---
 import { formatDate } from "../lib/format-date";
+import { getSiteLocale } from "../lib/site-locale";
 
 type Props = {
   class?: string;
   date: Date;
-  locale?: string;
 };
 
-const { class: className = "", date, locale = "en-US" } = Astro.props;
+const { class: className = "", date } = Astro.props;
+const { lang } = getSiteLocale(Astro.currentLocale);
 const iso = date.toISOString();
-const formatted = formatDate(date, locale);
+const formatted = formatDate(date, lang);
 ---
 <time datetime={iso} class={className}>{formatted}</time>
