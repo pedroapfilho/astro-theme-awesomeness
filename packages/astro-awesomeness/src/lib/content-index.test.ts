@@ -35,11 +35,6 @@ type FixturePost = ReturnType<typeof cmsPost>;
 const indexFor = (posts: Array<FixturePost>) =>
   createContentIndex({ categorySlugMap, defaultCategory, posts });
 
-const tagNames = (posts: Array<FixturePost>) =>
-  indexFor(posts)
-    .tags()
-    .map(({ name, slug }) => [slug, name]);
-
 const fixture = () => {
   const old = cmsPost("old", { tags: ["Astro", "#construção"] });
   const current = cmsPost("current", {
@@ -109,10 +104,55 @@ describe("createContentIndex", () => {
 
   it("keeps non-draft statuses and an omitted status publishable", () => {
     const posts = [
-      cmsPost("unknown", { status: "OTHER" }),
       cmsPost("absent", { status: undefined }),
+      cmsPost("unknown", { status: "OTHER" }),
     ];
     expect(indexFor(posts).posts).toEqual(posts);
+  });
+
+  it("returns identical outputs across loader permutations with publication date ties", () => {
+    const { current, newest, old, posts, scheduled, tie, unrelated } = fixture();
+    const matchingTie = cmsPost("a-match", {
+      pubDate: "2026-01-06T12:00:00.000Z",
+      tags: ["ASTRO", "#Construção"],
+    });
+    const paddingTie = cmsPost("a-padding", {
+      pubDate: "2026-01-08T12:00:00.000Z",
+      tags: ["C#"],
+    });
+    const collection = [...posts, matchingTie, paddingTie];
+    const ordered = [paddingTie, unrelated, scheduled, matchingTie, newest, tie, current, old];
+    const index = indexFor(ordered);
+    const expected = {
+      categories: index.categories(),
+      feedItems: index.feedItems(),
+      posts: ordered,
+      relatedPosts: [matchingTie, newest, old, scheduled, tie, paddingTie, unrelated],
+      secondaryCategories: index.categories({ includeSecondaryCategories: true }),
+      tags: index.tags(),
+    };
+    expect(expected.tags.find(({ slug }) => slug === "construcao")?.name).toBe("Construção");
+    expect(expected.tags.find(({ slug }) => slug === "c")?.name).toBe("C#");
+
+    for (const permutation of [
+      collection,
+      collection.toReversed(),
+      [...collection.slice(3), ...collection.slice(0, 3)],
+      [
+        ...collection.filter((_, position) => position % 2 === 0),
+        ...collection.filter((_, position) => position % 2 !== 0),
+      ],
+    ]) {
+      const shuffled = indexFor(permutation);
+      expect({
+        categories: shuffled.categories(),
+        feedItems: shuffled.feedItems(),
+        posts: shuffled.posts,
+        relatedPosts: shuffled.relatedPosts(current, 9),
+        secondaryCategories: shuffled.categories({ includeSecondaryCategories: true }),
+        tags: shuffled.tags(),
+      }).toEqual(expected);
+    }
   });
 
   it("preserves collection entry types and object identity through every post result", () => {
@@ -287,23 +327,6 @@ describe("createContentIndex", () => {
     ]);
   });
 
-  it("selects tag names from the newest post regardless of loader order", () => {
-    const { posts } = fixture();
-    expect(tagNames(posts.toReversed())).toEqual(tagNames(posts));
-  });
-
-  it("breaks equal-date tag label ties by entry id without changing post order", () => {
-    const first = cmsPost("a", { tags: ["Astro", "astro"] });
-    const second = cmsPost("b", { tags: ["astro"] });
-    expect(indexFor([second, first]).tags()[0]).toEqual({
-      href: "/tag/astro/",
-      name: "Astro",
-      posts: [second, first],
-      slug: "astro",
-    });
-    expect(indexFor([first, second]).tags()[0]?.name).toBe("Astro");
-  });
-
   it("ranks related posts by unique shared slugs, breaks ties newest first, and pads with newest", () => {
     const { current, newest, old, posts, scheduled, tie, unrelated } = fixture();
     const index = indexFor(posts);
@@ -312,13 +335,13 @@ describe("createContentIndex", () => {
     expect(index.relatedPosts(current, 0)).toEqual([]);
   });
 
-  it("preserves date ties among equally related posts and excludes by entry id", () => {
+  it("orders equal-date related posts by entry id and excludes matching ids", () => {
     const current = cmsPost("current", { tags: ["ASTRO"] });
     const first = cmsPost("first", { tags: ["#Astro", "astro"] });
     const second = cmsPost("second", { tags: ["astro"] });
     expect(indexFor([second, current, first]).relatedPosts({ ...current }, 9)).toEqual([
-      second,
       first,
+      second,
     ]);
   });
 

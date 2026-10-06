@@ -42,8 +42,13 @@ type ContentIndex<P extends ContentPost> = {
 const notDraft = (post: ContentPost): boolean =>
   post.data.status !== "DRAFT" && post.data.draft !== true;
 
-const byPubDateDesc = (a: ContentPost, b: ContentPost): number =>
-  b.data.pubDate.valueOf() - a.data.pubDate.valueOf();
+const byPubDateDesc = (a: ContentPost, b: ContentPost): number => {
+  const dateOrder = b.data.pubDate.valueOf() - a.data.pubDate.valueOf();
+  if (dateOrder !== 0 || a.id === b.id) {
+    return dateOrder;
+  }
+  return a.id < b.id ? -1 : 1;
+};
 
 const humanize = (slug: string): string => {
   const words = slug.replaceAll("-", " ");
@@ -129,23 +134,21 @@ const createContentIndex = <P extends ContentPost>({
   };
 
   const tags = (): Array<ContentBucket<P>> => {
-    const buckets = new Map<string, { bucket: ContentBucket<P>; labelPost: P }>();
+    const buckets = new Map<string, ContentBucket<P>>();
     for (const post of posts) {
       for (const tag of uniqueTags(post.data.tags)) {
         const slug = slugify(tag);
-        const group = buckets.get(slug) ?? {
-          bucket: { href: tagUrl(tag), name: tagLabel(tag), posts: [], slug },
-          labelPost: post,
+        const bucket = buckets.get(slug) ?? {
+          href: tagUrl(tag),
+          name: tagLabel(tag),
+          posts: [],
+          slug,
         };
-        if (byPubDateDesc(post, group.labelPost) === 0 && post.id < group.labelPost.id) {
-          group.bucket.name = tagLabel(tag);
-          group.labelPost = post;
-        }
-        group.bucket.posts.push(post);
-        buckets.set(slug, group);
+        bucket.posts.push(post);
+        buckets.set(slug, bucket);
       }
     }
-    return [...buckets.values()].map(({ bucket }) => bucket);
+    return [...buckets.values()];
   };
 
   const relatedPosts = (current: P, count: number): Array<P> => {
