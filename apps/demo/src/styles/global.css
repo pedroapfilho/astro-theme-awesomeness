@@ -1,6 +1,5 @@
 @import "tailwindcss";
 @import "astro-awesomeness/styles.css";
-@plugin "astro-awesomeness/tailwind";
 
 @source "../**/*.{astro,tsx,ts,jsx,js,md,mdx}";
 

@@ -1,50 +1,38 @@
 ---
+import type { Page } from "astro";
 import { cn } from "../lib/cn";
+import { getSiteLocale } from "../lib/site-locale";
 
 type Props = {
   class?: string;
-  currentPage: number;
-  lastPage: number;
-  nextLabel?: string;
-  ofLabel?: string;
-  pageLabel?: string;
-  prevLabel?: string;
-  urlForPage: (page: number) => string;
+  page: Page;
 };
 
-const {
-  class: className = "",
-  currentPage,
-  lastPage,
-  nextLabel = "Next →",
-  ofLabel = "of",
-  pageLabel = "Page",
-  prevLabel = "← Previous",
-  urlForPage,
-} = Astro.props;
-const hasPrev = currentPage > 1;
-const hasNext = currentPage < lastPage;
+const { class: className = "", page } = Astro.props;
+const { strings } = getSiteLocale(Astro.currentLocale);
 ---
-<nav class={cn("mt-8 flex items-center justify-between", className)} aria-label="Pagination">
-  {hasPrev ? (
-    <a
-      href={urlForPage(currentPage - 1)}
-      class="border-border hover:bg-muted inline-flex items-center rounded-md border px-3 py-1.5 text-sm transition-colors"
-      rel="prev"
-    >
-      {prevLabel}
-    </a>
-  ) : <span aria-hidden="true" />}
-  <span class="text-muted-foreground text-sm">
-    {pageLabel} {currentPage} {ofLabel} {lastPage}
-  </span>
-  {hasNext ? (
-    <a
-      href={urlForPage(currentPage + 1)}
-      class="border-border hover:bg-muted inline-flex items-center rounded-md border px-3 py-1.5 text-sm transition-colors"
-      rel="next"
-    >
-      {nextLabel}
-    </a>
-  ) : <span aria-hidden="true" />}
-</nav>
+{page.lastPage > 1 && (
+  <nav class={cn("mt-8 flex items-center justify-between", className)} aria-label={strings.pagination}>
+    {page.url.prev ? (
+      <a
+        href={page.url.prev}
+        class="border-border hover:bg-muted inline-flex items-center rounded-md border px-3 py-1.5 text-sm transition-colors"
+        rel="prev"
+      >
+        {strings.previous}
+      </a>
+    ) : <span aria-hidden="true" />}
+    <span class="text-muted-foreground text-sm">
+      {strings.page} {page.currentPage} {strings.of} {page.lastPage}
+    </span>
+    {page.url.next ? (
+      <a
+        href={page.url.next}
+        class="border-border hover:bg-muted inline-flex items-center rounded-md border px-3 py-1.5 text-sm transition-colors"
+        rel="next"
+      >
+        {strings.next}
+      </a>
+    ) : <span aria-hidden="true" />}
+  </nav>
+)}
