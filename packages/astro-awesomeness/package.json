@@ -1,6 +1,6 @@
 {
   "name": "astro-awesomeness",
-  "version": "3.0.0",
+  "version": "3.0.1",
   "description": "Astro 6/7 blog building blocks, a content index, and Tailwind v4 styles.",
   "keywords": [
     "astro",
