@@ -1,9 +1,6 @@
 import { slugify } from "./slugify";
 
-const DEFAULT_TAG_BASE = "/tag";
-
-const tagUrl = (tag: string, base: string = DEFAULT_TAG_BASE): string =>
-  `${base.replace(/\/+$/v, "")}/${slugify(tag)}/`;
+const tagUrl = (tag: string): string => `/tag/${slugify(tag)}/`;
 
 const tagLabel = (tag: string): string => tag.replace(/^#/v, "");
 
@@ -19,4 +16,4 @@ const uniqueTags = (tags: Array<string>): Array<string> => {
   });
 };
 
-export { DEFAULT_TAG_BASE, tagLabel, tagUrl, uniqueTags };
+export { tagLabel, tagUrl, uniqueTags };

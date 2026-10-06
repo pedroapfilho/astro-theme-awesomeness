@@ -6,7 +6,6 @@ const config = defineConfig({
   deps: { neverBundle: ["astro", "react", "react-dom", "tailwindcss"] },
   dts: true,
   entry: [
-    "src/index.ts",
     "src/components/index.ts",
     "src/content/index.ts",
     "src/lib/index.ts",
