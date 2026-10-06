@@ -1,0 +1,15 @@
+---
+import Footer from "astro-awesomeness/astro/footer";
+import BaseLayout from "astro-awesomeness/layouts/base-layout";
+import SiteHeader from "../components/site-header.astro";
+import "../styles/global.css";
+---
+<BaseLayout siteTitle="Awesomeness" title="Page not found" description="This page could not be found." noindex>
+  <SiteHeader slot="header" />
+  <main id="main-content" class="mx-auto max-w-5xl px-5 py-16 sm:px-8">
+    <h1 class="font-serif text-4xl font-semibold tracking-tight">Page not found</h1>
+    <p class="text-muted-foreground mt-5">The page may have moved, or the address may be incomplete.</p>
+    <a href="/" class="mt-8 inline-block underline underline-offset-4">Back to the latest posts</a>
+  </main>
+  <Footer slot="footer" siteTitle="Awesomeness" />
+</BaseLayout>

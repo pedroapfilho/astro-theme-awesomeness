@@ -1,0 +1,16 @@
+---
+import { render } from "astro:content";
+import PostLayout from "../../components/post-layout.astro";
+import { index } from "../../lib/content";
+
+export const getStaticPaths = () => index.posts.map((post) => ({
+  params: index.postParams(post),
+  props: { post, relatedPosts: index.relatedPosts(post, 2) },
+}));
+
+const { post, relatedPosts } = Astro.props;
+const { Content } = await render(post);
+---
+<PostLayout post={post} relatedPosts={relatedPosts}>
+  <Content />
+</PostLayout>

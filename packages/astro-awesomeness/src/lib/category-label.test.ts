@@ -1,9 +1,6 @@
 import { describe, expect, it } from "vitest";
 
 import { categoryLabel } from "./category-label";
-import { createPostUrl } from "./post-url";
-
-const DEFAULT = "sem-categoria";
 
 describe("categoryLabel", () => {
   it("decodes the named entities the WordPress migrations emit", () => {
@@ -44,13 +41,5 @@ describe("categoryLabel", () => {
     expect(categoryLabel("&bogus;")).toBe("&bogus;");
     expect(categoryLabel("Arquitetura")).toBe("Arquitetura");
     expect(categoryLabel("")).toBe("");
-  });
-
-  it("stays display-only: decoding a name must not change the URL it resolves to", () => {
-    const encodedMap = { "Arte &amp; Design": "arte-e-design" };
-    const { postUrl } = createPostUrl(encodedMap, DEFAULT);
-    const post = { data: { categories: ["Arte &amp; Design"] }, id: "casa" };
-    expect(postUrl(post)).toBe("/arte-e-design/casa/");
-    expect(Object.hasOwn(encodedMap, categoryLabel("Arte &amp; Design"))).toBe(false);
   });
 });

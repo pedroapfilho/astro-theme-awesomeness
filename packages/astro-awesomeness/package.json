@@ -1,7 +1,7 @@
 {
   "name": "astro-awesomeness",
   "version": "2.0.1",
-  "description": "Astro 6/7 blog theme with shadcn primitives and a Tailwind v4 preset.",
+  "description": "Astro 6/7 blog building blocks, a content index, and Tailwind v4 styles.",
   "keywords": [
     "astro",
     "astro-theme",
@@ -24,10 +24,6 @@
     "*.css"
   ],
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "import": "./dist/index.js"
-    },
     "./components": {
       "types": "./dist/components/index.d.ts",
       "import": "./dist/components/index.js"
@@ -41,10 +37,6 @@
     "./lib": {
       "types": "./dist/lib/index.d.ts",
       "import": "./dist/lib/index.js"
-    },
-    "./tailwind": {
-      "types": "./dist/tailwind-preset.d.ts",
-      "default": "./dist/tailwind-preset.js"
     },
     "./styles.css": "./dist/styles/globals.css"
   },

@@ -1,0 +1,13 @@
+---
+import { ThemeToggle } from "astro-awesomeness/components";
+---
+<header class="border-border bg-background sticky top-0 z-40 border-b">
+  <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-5 py-4 sm:px-8">
+    <a href="/" class="font-serif text-2xl font-semibold tracking-tight">Awesomeness</a>
+    <nav aria-label="Main navigation" class="flex items-center gap-5 text-sm">
+      <a href="/posts/" class="text-muted-foreground hover:text-foreground transition-colors">All posts</a>
+      <a href="/rss.xml" class="text-muted-foreground hover:text-foreground transition-colors">RSS</a>
+      <ThemeToggle client:idle />
+    </nav>
+  </div>
+</header>

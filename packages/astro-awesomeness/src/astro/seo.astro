@@ -1,56 +1,31 @@
 ---
-type Props = {
-  authorName?: string;
-  canonical?: string;
-  description: string;
-  image?: string;
-  locale?: string;
-  modifiedTime?: Date;
-  noindex?: boolean;
-  publishedTime?: Date;
-  siteName?: string;
-  siteTitle?: string;
-  title: string;
-  type?: "website" | "article";
-};
+import { buildMetadata, type MetadataProps } from "../lib/article-metadata";
+import { getSiteLocale } from "../lib/site-locale";
 
-const {
-  authorName,
-  canonical,
-  description,
-  image,
-  locale = "en_US",
-  modifiedTime,
-  noindex = false,
-  publishedTime,
-  siteName,
-  siteTitle,
-  title,
-  type = "website",
-} = Astro.props;
-const url = canonical ?? new URL(Astro.url.pathname, Astro.site ?? Astro.url.origin).toString();
-const documentTitle = siteTitle !== undefined && title !== siteTitle ? `${title} · ${siteTitle}` : title;
+type Props = MetadataProps;
+
+const metadata = buildMetadata(Astro.props, Astro.url, Astro.site);
+const { ogLocale } = getSiteLocale(Astro.currentLocale);
 ---
-<title>{documentTitle}</title>
-<meta name="description" content={description} />
-{authorName && <meta name="author" content={authorName} />}
-{noindex ? <meta name="robots" content="noindex,follow" /> : <link rel="canonical" href={url} />}
+<title>{metadata.documentTitle}</title>
+<meta name="description" content={metadata.description} />
+{metadata.authorName && <meta name="author" content={metadata.authorName} />}
+{metadata.noindex ? <meta name="robots" content="noindex,follow" /> : <link rel="canonical" href={metadata.canonical} />}
 
-<meta property="og:type" content={type} />
-<meta property="og:title" content={title} />
-<meta property="og:description" content={description} />
-<meta property="og:url" content={url} />
-{siteName && <meta property="og:site_name" content={siteName} />}
-<meta property="og:locale" content={locale} />
-{type === "article" && publishedTime && (
-  <meta property="article:published_time" content={publishedTime.toISOString()} />
-)}
-{type === "article" && modifiedTime && (
-  <meta property="article:modified_time" content={modifiedTime.toISOString()} />
-)}
-{image && <meta property="og:image" content={image} />}
+<meta property="og:type" content={metadata.type} />
+<meta property="og:title" content={metadata.title} />
+<meta property="og:description" content={metadata.description} />
+<meta property="og:url" content={metadata.canonical} />
+<meta property="og:site_name" content={metadata.siteTitle} />
+<meta property="og:locale" content={ogLocale} />
+{metadata.publishedTime && <meta property="article:published_time" content={metadata.publishedTime} />}
+{metadata.modifiedTime && <meta property="article:modified_time" content={metadata.modifiedTime} />}
+{metadata.image && <meta property="og:image" content={metadata.image} />}
 
-<meta name="twitter:card" content={image ? "summary_large_image" : "summary"} />
-<meta name="twitter:title" content={title} />
-<meta name="twitter:description" content={description} />
-{image && <meta name="twitter:image" content={image} />}
+<meta name="twitter:card" content={metadata.image ? "summary_large_image" : "summary"} />
+<meta name="twitter:title" content={metadata.title} />
+<meta name="twitter:description" content={metadata.description} />
+{metadata.image && <meta name="twitter:image" content={metadata.image} />}
+{metadata.jsonLd && (
+  <script is:inline type="application/ld+json" set:html={JSON.stringify(metadata.jsonLd).replaceAll("<", "\\u003c")} />
+)}

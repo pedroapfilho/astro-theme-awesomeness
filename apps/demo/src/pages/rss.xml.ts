@@ -1,21 +1,17 @@
 import rss from "@astrojs/rss";
 
-import { getSortedPosts } from "../lib/posts";
+import { index } from "../lib/content";
 
-export const GET = async (context: { site?: URL }) => {
+const GET = (context: { site?: URL }) => {
   if (!context.site) {
     throw new Error("astro.config.ts must define `site` for RSS.");
   }
-  const posts = await getSortedPosts();
   return rss({
     description: "The reference blog for astro-awesomeness.",
-    items: posts.map((post) => ({
-      description: post.data.description,
-      link: `/blog/${post.id}/`,
-      pubDate: post.data.pubDate,
-      title: post.data.title,
-    })),
+    items: index.feedItems(),
     site: context.site,
-    title: "Awesomeness demo",
+    title: "Awesomeness",
   });
 };
+
+export { GET };

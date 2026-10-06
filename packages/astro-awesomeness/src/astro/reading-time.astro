@@ -1,13 +1,14 @@
 ---
 import { readingTime } from "../lib/reading-time";
+import { getSiteLocale } from "../lib/site-locale";
 
 type Props = {
   class?: string;
-  label?: string;
   text: string;
 };
 
-const { class: className = "", label = "min read", text } = Astro.props;
+const { class: className = "", text } = Astro.props;
+const { strings } = getSiteLocale(Astro.currentLocale);
 const { minutes } = readingTime(text);
 ---
-<span class={className}>{minutes} {label}</span>
+<span class={className}>{minutes} {strings.readingTime}</span>

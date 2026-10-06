@@ -1,6 +1,8 @@
-import { describe, expect, it } from "vitest";
+import { defineCollection } from "astro/content/config";
+import { describe, expect, expectTypeOf, it } from "vitest";
 
-import { authorSchema, byPubDateDesc, postSchema, tagSchema } from "./index";
+import type { Post } from "./index";
+import { authorSchema, postSchema } from "./index";
 
 describe("postSchema", () => {
   it("accepts a minimal post", () => {
@@ -72,33 +74,83 @@ describe("postSchema", () => {
       expect(result.data.author?.name).toBe("Pedro");
     }
   });
-});
 
-const entry = (iso: string) => ({ data: { pubDate: new Date(iso) } });
-
-describe("byPubDateDesc", () => {
-  it("sorts newest first", () => {
-    const sorted = [entry("2026-01-01"), entry("2026-03-01"), entry("2026-02-01")].toSorted(
-      byPubDateDesc,
-    );
-    expect(sorted.map((post) => post.data.pubDate.toISOString().slice(0, 10))).toEqual([
-      "2026-03-01",
-      "2026-02-01",
-      "2026-01-01",
-    ]);
+  it("transforms complete hero metadata into a single image value", () => {
+    const post = postSchema.parse({
+      cover: "obsolete.jpg",
+      coverAlt: "A sunlit house",
+      heroImage: "loader legacy value",
+      heroImageHeight: 800,
+      heroImageUrl: "https://example.test/house.jpg",
+      heroImageWidth: 1200,
+      pubDate: "2026-01-01",
+      series: "obsolete",
+      title: "A house",
+    });
+    expect(post.heroImage).toEqual({
+      alt: "A sunlit house",
+      height: 800,
+      src: "https://example.test/house.jpg",
+      width: 1200,
+    });
+    for (const key of [
+      "cover",
+      "coverAlt",
+      "series",
+      "heroImageUrl",
+      "heroImageWidth",
+      "heroImageHeight",
+    ]) {
+      expect(post).not.toHaveProperty(key);
+    }
+    expectTypeOf<Post["heroImage"]>().toEqualTypeOf<
+      | {
+          alt: string;
+          height: number;
+          src: string;
+          width: number;
+        }
+      | undefined
+    >();
   });
 
-  it("returns 0 for equal dates so the sort stays stable", () => {
-    expect(byPubDateDesc(entry("2026-01-01"), entry("2026-01-01"))).toBe(0);
+  it.each([
+    {},
+    { heroImageUrl: "https://example.test/house.jpg" },
+    { heroImageWidth: 1200 },
+    { heroImageHeight: 800 },
+    { heroImageUrl: "https://example.test/house.jpg", heroImageWidth: 1200 },
+    { heroImageHeight: 800, heroImageUrl: "https://example.test/house.jpg" },
+    { heroImageHeight: 800, heroImageWidth: 1200 },
+  ])("omits heroImage for missing or partial metadata: %j", (metadata) => {
+    const post = postSchema.parse({ pubDate: "2026-01-01", title: "A house", ...metadata });
+    expect(post).not.toHaveProperty("heroImage");
+    expect(post).not.toHaveProperty("heroImageUrl");
+    expect(post).not.toHaveProperty("heroImageWidth");
+    expect(post).not.toHaveProperty("heroImageHeight");
   });
-});
 
-describe("tagSchema", () => {
-  it("accepts a minimal tag", () => {
-    expect(tagSchema.safeParse({ name: "javascript" }).success).toBe(true);
+  it.each([
+    [undefined, "A house"],
+    ["", ""],
+  ])("defaults missing alt text to title but preserves %s", (coverAlt, alt) => {
+    const post = postSchema.parse({
+      coverAlt,
+      heroImageHeight: 800,
+      heroImageUrl: "https://example.test/house.jpg",
+      heroImageWidth: 1200,
+      pubDate: "2026-01-01",
+      title: "A house",
+    });
+    expect(post.heroImage?.alt).toBe(alt);
   });
-  it("rejects missing name", () => {
-    expect(tagSchema.safeParse({}).success).toBe(false);
+
+  it("accepts the transformed schema directly in Astro defineCollection", () => {
+    const collection = defineCollection({
+      loader: () => [{ id: "fixture", pubDate: "2026-01-01", title: "A house" }],
+      schema: postSchema,
+    });
+    expect(collection.schema).toBe(postSchema);
   });
 });
 
