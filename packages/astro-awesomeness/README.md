@@ -306,7 +306,9 @@ const { category, page }: Props = Astro.props;
 ```
 
 Pagination uses `page.url.prev` and `page.url.next`, and renders nothing for a
-single page. Use a rest parameter (`[...page]`) to put the first page at the
+single page. Astro builds those URLs from `trailingSlash`, so keep it `"always"`:
+without it, pagination links drop the trailing slash that canonical and sitemap
+URLs carry. Use a rest parameter (`[...page]`) to put the first page at the
 category root.
 
 When migrating a consumer-owned `list-layout.astro` wrapper, accept the full
