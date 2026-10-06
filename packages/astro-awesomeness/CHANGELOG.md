@@ -1,5 +1,11 @@
 # astro-awesomeness
 
+## 3.0.1
+
+### Patch Changes
+
+- 6f027c8: Document that `Pagination` links follow Astro's `trailingSlash` setting, which must be `"always"` for prev/next hrefs to match canonical and sitemap URLs.
+
 ## 3.0.0
 
 ### Major Changes
