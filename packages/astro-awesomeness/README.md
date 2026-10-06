@@ -171,6 +171,25 @@ Both modes also accept `colorScheme` and `rssHref`. The `head`, `header`, defaul
 and `footer` slots let your site supply its own chrome. Put `id="main-content"` on
 your main element so the built-in skip link has a target.
 
+For homepages that previously passed a precomposed `Site · Tagline` title without
+`siteTitle`, split the site name from the page title:
+
+```astro
+---
+import BaseLayout from "astro-awesomeness/layouts/base-layout";
+
+const SITE = "Base Arquitetura";
+---
+
+<BaseLayout siteTitle={SITE} title="Arquitetura exuberante" description="Ideias para seus espaços.">
+  <main id="main-content"><h1>Arquitetura exuberante</h1></main>
+</BaseLayout>
+```
+
+This renders `<title>Arquitetura exuberante · Base Arquitetura</title>` and the
+bare `og:title` value `Arquitetura exuberante`. Passing `title={SITE}` instead
+makes `title === siteTitle`, so both render the bare site name `Base Arquitetura`.
+
 For example, `src/pages/posts/index.astro`:
 
 ```astro
@@ -290,9 +309,38 @@ Pagination uses `page.url.prev` and `page.url.next`, and renders nothing for a
 single page. Use a rest parameter (`[...page]`) to put the first page at the
 category root.
 
+When migrating a consumer-owned `list-layout.astro` wrapper, accept the full
+Astro `Page`, including `url`, and guard pagination with `page &&`:
+
+```astro
+---
+import type { Page } from "astro";
+import type { CollectionEntry } from "astro:content";
+import Pagination from "astro-awesomeness/astro/pagination";
+
+type Props = {
+  page?: Page<CollectionEntry<"posts">>;
+};
+
+const { page }: Props = Astro.props;
+---
+
+<slot />
+{page && <Pagination page={page} />}
+```
+
+Remove `urlForPage` from wrapper props, destructuring, render guards and route
+call sites throughout the call chain. Delete the obsolete `pageUrl` helper;
+keep `PAGE_SIZE` if it is still used by `paginate()`.
+
 Build `src/pages/tag/[tag].astro` static paths with
 `content.tags().map((tag) => ({ params: { tag: tag.slug }, props: { tag } }))`, then
 render `tag.posts` using `content.postUrl`. A separate tag collection is unnecessary.
+
+`content.tags()` emits one canonical normalized slug per tag. During migration,
+delete consumer alias routes, including WordPress-style `-2` slugs, their alias
+generators and redundant helper sorting. The index already supplies sorted posts
+for each canonical tag route.
 
 ## RSS
 
@@ -327,7 +375,11 @@ loaders.
 
 Set the site's language through Astro's `i18n` configuration. Static components
 read `Astro.currentLocale`, falling back to `en-US` when it is absent. Document
-language and dates use that locale; Open Graph replaces hyphens with underscores.
+language and Intl date formatting keep the original locale tag. Open Graph uses
+only the language and region from `new Intl.Locale(tag).maximize()` as
+`language_REGION`; likely subtags fill a missing region. For example, `pt` and
+`pt-Latn-BR` become `pt_BR`, `zh-Hant-TW` becomes `zh_TW`, and
+`en-US-u-ca-gregory` becomes `en_US`.
 Built-in skip-link, pagination and reading-time labels support Portuguese for
 `pt` locales and English otherwise. Consumers own page copy and route localization;
 content-index URLs do not add locale prefixes.

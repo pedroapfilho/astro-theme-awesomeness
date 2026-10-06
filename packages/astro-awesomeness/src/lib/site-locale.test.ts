@@ -19,26 +19,40 @@ describe("getSiteLocale", () => {
     });
   });
 
-  it.each(["pt", "pt-BR", "pt-PT", "pt-Latn-BR"])(
-    "derives Portuguese chrome from %s without replacing its locale",
-    (lang) => {
-      expect(getSiteLocale(lang)).toEqual({
-        lang,
-        ogLocale: lang.replaceAll("-", "_"),
-        strings: {
-          next: "Próxima →",
-          of: "de",
-          page: "Página",
-          pagination: "Paginação",
-          previous: "← Anterior",
-          readingTime: "min de leitura",
-          skipLink: "Pular para o conteúdo",
-        },
-      });
-    },
-  );
+  it.each([
+    ["pt", "pt_BR"],
+    ["pt-BR", "pt_BR"],
+    ["pt-PT", "pt_PT"],
+    ["pt-Latn-BR", "pt_BR"],
+  ])("derives Portuguese chrome from %s without replacing its locale", (lang, ogLocale) => {
+    expect(getSiteLocale(lang)).toEqual({
+      lang,
+      ogLocale,
+      strings: {
+        next: "Próxima →",
+        of: "de",
+        page: "Página",
+        pagination: "Paginação",
+        previous: "← Anterior",
+        readingTime: "min de leitura",
+        skipLink: "Pular para o conteúdo",
+      },
+    });
+  });
 
-  it("keeps unsupported language tags for document, Open Graph, and Intl formatting", () => {
+  it.each([
+    ["en", "en_US"],
+    ["zh-Hant-TW", "zh_TW"],
+    ["en-US-u-ca-gregory", "en_US"],
+  ])("derives an Open Graph language and region from %s", (lang, ogLocale) => {
+    expect(getSiteLocale(lang)).toEqual({
+      lang,
+      ogLocale,
+      strings: getSiteLocale().strings,
+    });
+  });
+
+  it("keeps unsupported language tags for document language and Intl formatting", () => {
     const locale = getSiteLocale("de-DE");
     expect(locale.lang).toBe("de-DE");
     expect(locale.ogLocale).toBe("de_DE");

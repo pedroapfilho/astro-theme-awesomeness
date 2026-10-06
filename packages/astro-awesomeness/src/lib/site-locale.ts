@@ -18,10 +18,14 @@ const portugueseStrings = {
   skipLink: "Pular para o conteúdo",
 };
 
-const getSiteLocale = (lang = "en-US") => ({
-  lang,
-  ogLocale: lang.replaceAll("-", "_"),
-  strings: lang.toLowerCase().startsWith("pt") ? portugueseStrings : englishStrings,
-});
+const getSiteLocale = (lang = "en-US") => {
+  const { language, region } = new Intl.Locale(lang).maximize();
+
+  return {
+    lang,
+    ogLocale: `${language}_${region}`,
+    strings: lang.toLowerCase().startsWith("pt") ? portugueseStrings : englishStrings,
+  };
+};
 
 export { getSiteLocale };
