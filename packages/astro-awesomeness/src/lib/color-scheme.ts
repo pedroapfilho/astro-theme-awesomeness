@@ -21,6 +21,7 @@ const getColorSchemeScript = () => `(() => {
 const themeColorScript = `(() => {
   const meta = document.querySelector('meta[name="theme-color"]');
   const sync = () => meta.setAttribute("content", getComputedStyle(document.body).backgroundColor);
+  addEventListener("DOMContentLoaded", sync);
   addEventListener("load", sync);
   new MutationObserver(sync).observe(document.documentElement, { attributeFilter: ["class"] });
 })();`;
