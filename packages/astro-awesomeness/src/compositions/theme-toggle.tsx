@@ -63,7 +63,7 @@ const subscribeHydration = () => () => {};
 const getHydratedSnapshot = () => true;
 const getServerHydratedSnapshot = () => false;
 
-const ThemeToggle = ({ ariaLabel = "Toggle theme" }: Props) => {
+const ThemeToggle = ({ ariaLabel = "Dark mode" }: Props) => {
   const isHydrated = useSyncExternalStore(
     subscribeHydration,
     getHydratedSnapshot,
@@ -87,6 +87,7 @@ const ThemeToggle = ({ ariaLabel = "Toggle theme" }: Props) => {
   return (
     <Button
       aria-label={ariaLabel}
+      aria-pressed={isHydrated ? theme === "dark" : undefined}
       disabled={!isHydrated}
       onClick={handleToggleTheme}
       size="icon"

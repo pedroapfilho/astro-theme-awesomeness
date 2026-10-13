@@ -104,6 +104,11 @@
     -webkit-text-size-adjust: 100%;
     scrollbar-gutter: stable;
   }
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
