@@ -405,12 +405,21 @@ your own header:
 import { ThemeToggle } from "astro-awesomeness/components";
 ---
 
-<ThemeToggle ariaLabel="Toggle theme" client:idle />
+<ThemeToggle ariaLabel="Dark mode" client:idle />
 ```
 
-Supply a translated `ariaLabel`, such as `"Alternar tema"`, on a Portuguese site.
-The React island does not read Astro's locale. The button stays disabled until
-hydration, then follows the system preference until the visitor chooses a scheme.
+The button is a toggle: `aria-pressed` reports whether dark mode is on, so its
+label names dark mode rather than an action. Supply a translated `ariaLabel`, such
+as `"Modo escuro"`, on a Portuguese site. The React island does not read Astro's
+locale. The button stays disabled until hydration, then follows the system
+preference until the visitor chooses a scheme.
+
+In automatic mode BaseLayout also keeps `<meta name="theme-color">` equal to the
+computed `body` background, including after the scheme changes, so browser chrome
+follows your `--color-background` token. That needs a solid background color, and
+under a Content Security Policy its inline script needs `'unsafe-inline'` or a
+hash. Fixed-scheme sites run no script; set a literal
+`<meta name="theme-color" content="…">` in the `head` slot if you want one.
 
 ## Remaining building blocks
 

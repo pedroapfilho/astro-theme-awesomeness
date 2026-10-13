@@ -7,6 +7,11 @@ const expectNoPageOverflow = async (page: Page) => {
   expect(overflow).toBeLessThanOrEqual(1);
 };
 
+const expectThemeColorMatchesBackground = async (page: Page) => {
+  const background = await page.evaluate(() => getComputedStyle(document.body).backgroundColor);
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute("content", background);
+};
+
 const expectDarkTheme = async (page: Page) => {
   const isDark = await page
     .locator("html")
@@ -22,9 +27,12 @@ test("preserves keyboard navigation and theme preference across pages", async ({
 
   await page.keyboard.press("Tab");
   await expect(page.getByRole("link", { name: "Skip to content" })).toBeFocused();
+  await page.keyboard.press("Enter");
+  expect(new URL(page.url()).hash).toBe("#main-content");
 
-  const themeToggle = page.getByRole("button", { name: "Toggle theme" });
-  await expect(themeToggle).toBeVisible();
+  const themeToggle = page.getByRole("button", { name: "Dark mode" });
+  await expect(themeToggle).toHaveAttribute("aria-pressed", "false");
+  await expectThemeColorMatchesBackground(page);
 
   if (testInfo.project.name === "mobile-chromium") {
     const target = await themeToggle.boundingBox();
@@ -32,8 +40,11 @@ test("preserves keyboard navigation and theme preference across pages", async ({
     expect(target?.width).toBeGreaterThanOrEqual(24);
   }
 
-  await themeToggle.click();
+  await themeToggle.focus();
+  await page.keyboard.press("Space");
   await expectDarkTheme(page);
+  await expect(themeToggle).toHaveAttribute("aria-pressed", "true");
+  await expectThemeColorMatchesBackground(page);
   expect(await page.evaluate(() => window.localStorage.getItem("theme"))).toBe("dark");
 
   await page.getByRole("link", { name: "Code, blockquotes, and prose" }).first().click();

@@ -2,7 +2,7 @@
 import Seo from "../astro/seo.astro";
 import type { MetadataProps } from "../lib/article-metadata";
 import { cn } from "../lib/cn";
-import { getColorSchemeScript, type ColorScheme } from "../lib/color-scheme";
+import { getColorSchemeScript, themeColorScript, type ColorScheme } from "../lib/color-scheme";
 import { getSiteLocale } from "../lib/site-locale";
 
 type Props = MetadataProps & {
@@ -19,12 +19,18 @@ const { lang, strings } = getSiteLocale(Astro.currentLocale);
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content={colorScheme === "auto" ? "light dark" : colorScheme} />
+    {colorScheme === "auto" && <meta name="theme-color" />}
     <meta name="generator" content={Astro.generator} />
     <Seo {...Astro.props} />
     {rssHref && (
       <link rel="alternate" type="application/rss+xml" title={siteTitle} href={rssHref} />
     )}
-    {colorScheme === "auto" && <script is:inline set:html={getColorSchemeScript()} />}
+    {colorScheme === "auto" && (
+      <>
+        <script is:inline set:html={getColorSchemeScript()} />
+        <script is:inline set:html={themeColorScript} />
+      </>
+    )}
     <script type="speculationrules" is:inline set:html={JSON.stringify({
       prefetch: [
         {

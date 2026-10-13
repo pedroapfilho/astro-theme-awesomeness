@@ -18,5 +18,19 @@ const getColorSchemeScript = () => `(() => {
   document.documentElement.classList.toggle("dark", resolve(stored, prefersDark) === "dark");
 })();`;
 
-export { colorSchemeMediaQuery, colorSchemeStorageKey, getColorSchemeScript, resolveColorScheme };
+const themeColorScript = `(() => {
+  const meta = document.querySelector('meta[name="theme-color"]');
+  const sync = () => meta.setAttribute("content", getComputedStyle(document.body).backgroundColor);
+  addEventListener("DOMContentLoaded", sync);
+  addEventListener("load", sync);
+  new MutationObserver(sync).observe(document.documentElement, { attributeFilter: ["class"] });
+})();`;
+
+export {
+  colorSchemeMediaQuery,
+  colorSchemeStorageKey,
+  getColorSchemeScript,
+  resolveColorScheme,
+  themeColorScript,
+};
 export type { ColorScheme, ResolvedColorScheme };
