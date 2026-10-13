@@ -25,11 +25,9 @@ jobs:
           permission-contents: write
           permission-pull-requests: write
 
-      # Persisted credentials are the point here: changesets pushes the
-      # version commit and tags through this token.
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          token: ${{ steps.app-token.outputs.token }}
+          persist-credentials: false
 
       - uses: pnpm/setup@fbda4c85fc2e1e08721cd8763afea8f48d60f024 # v3.0.0
         with:
@@ -42,8 +40,7 @@ jobs:
           publish-script: pnpm release
           commit-message: "chore: version packages"
           pr-title: "chore: version packages"
-        env:
-          GITHUB_TOKEN: ${{ steps.app-token.outputs.token }}
+          github-token: ${{ steps.app-token.outputs.token }}
 
       # changesets derives "published" from the publish command's exit code
       # and never asks the registry, so the tags and the GitHub release can
