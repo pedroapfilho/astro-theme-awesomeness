@@ -27,6 +27,8 @@ test("preserves keyboard navigation and theme preference across pages", async ({
 
   await page.keyboard.press("Tab");
   await expect(page.getByRole("link", { name: "Skip to content" })).toBeFocused();
+  await page.keyboard.press("Enter");
+  expect(new URL(page.url()).hash).toBe("#main-content");
 
   const themeToggle = page.getByRole("button", { name: "Dark mode" });
   await expect(themeToggle).toHaveAttribute("aria-pressed", "false");
@@ -38,7 +40,8 @@ test("preserves keyboard navigation and theme preference across pages", async ({
     expect(target?.width).toBeGreaterThanOrEqual(24);
   }
 
-  await themeToggle.click();
+  await themeToggle.focus();
+  await page.keyboard.press("Space");
   await expectDarkTheme(page);
   await expect(themeToggle).toHaveAttribute("aria-pressed", "true");
   await expectThemeColorMatchesBackground(page);

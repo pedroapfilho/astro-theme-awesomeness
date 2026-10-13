@@ -19,14 +19,18 @@ const { lang, strings } = getSiteLocale(Astro.currentLocale);
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content={colorScheme === "auto" ? "light dark" : colorScheme} />
-    <meta name="theme-color" />
+    {colorScheme === "auto" && <meta name="theme-color" />}
     <meta name="generator" content={Astro.generator} />
     <Seo {...Astro.props} />
     {rssHref && (
       <link rel="alternate" type="application/rss+xml" title={siteTitle} href={rssHref} />
     )}
-    {colorScheme === "auto" && <script is:inline set:html={getColorSchemeScript()} />}
-    <script is:inline set:html={themeColorScript} />
+    {colorScheme === "auto" && (
+      <>
+        <script is:inline set:html={getColorSchemeScript()} />
+        <script is:inline set:html={themeColorScript} />
+      </>
+    )}
     <script type="speculationrules" is:inline set:html={JSON.stringify({
       prefetch: [
         {
