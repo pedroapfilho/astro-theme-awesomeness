@@ -1,6 +1,6 @@
 {
   "$schema": "https://raw.githubusercontent.com/oxc-project/oxc/main/npm/oxfmt/configuration_schema.json",
-  "ignorePatterns": [".github/ci/*.mjs"],
+  "ignorePatterns": [".agents/friction-log/**", ".github/ci/*.mjs"],
   "experimental": {
     "sortImports": true,
     "sortTailwindcss": {
