@@ -2,7 +2,7 @@
 
 `astro-theme-awesomeness` is the Turborepo home of the published Astro 6/7
 blog theme `astro-awesomeness` and the demo blog that exercises it. Library
-profile in the orchestrator: no DB, no auth, no email infra.
+profile in keel: no DB, no auth, no email infra.
 
 ## Friction Log
 
@@ -114,9 +114,9 @@ component files at build time. Don't move them into the bundled output.
 - Vite is told to `optimizeDeps.exclude: ["astro-awesomeness"]` in the demo so
   the workspace package isn't pre-bundled; keep that in any new consumer config.
 
-## Library profile (orchestrator)
+## Library profile (keel)
 
-Validated by `orchestrator verify` against
+Validated by `keel verify` against
 its profile base, `acme-package`. Skipped checks: e2e (saas-only),
 auth-config, prisma-config, turbo-db-generate-ordering, i18n-\*, landing-urls,
 e2e-auth-emails. Seven workflows gate PRs: `lint` (formatting, dead code and
@@ -126,7 +126,7 @@ dispatch, never on pushes to main. `release.yml` is the eighth, on pushes to
 main only.
 
 The repo has a recorded divergence: `astro-theme-awesomeness.gitignore` (per-app
-gitignores allowed under the library profile). See `fleet.json` (`orchestrator divergences`).
+gitignores allowed under the library profile). See `fleet.json` (`keel divergences`).
 
 ## Notable decisions
 
@@ -166,8 +166,8 @@ gitignores allowed under the library profile). See `fleet.json` (`orchestrator d
 - Theme on npm: https://www.npmjs.com/package/astro-awesomeness
 - Astro docs: https://docs.astro.build
 - Tailwind v4: https://tailwindcss.com
-- Orchestrator (verification + standards): `~/dev/orchestrator`
-- Consumer blogs (12 repos, `blog` profile): see orchestrator's `CLAUDE.md` for the list
+- Keel (verification + standards): `~/dev/keel`
+- Consumer blogs (12 repos, `blog` profile): see keel's `CLAUDE.md` for the list
 
 ## Design-system linting
 
