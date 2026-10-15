@@ -2,7 +2,7 @@
 
 `astro-theme-awesomeness` is the Turborepo home of the published Astro 6/7
 blog theme `astro-awesomeness` and the demo blog that exercises it. Library
-profile in keel: no DB, no auth, no email infra.
+profile in standy: no DB, no auth, no email infra.
 
 ## Friction Log
 
@@ -14,11 +14,11 @@ Entries live in `.agents/friction-log/`, one directory each. A GitHub Action rep
 
 ## Standards
 
-This repo follows the fleet's shared standards, checked by `keel` (`~/dev/keel`).
+This repo follows the fleet's shared standards, checked by `standy` (`~/dev/standy`).
 
-- Before editing, run `keel standards --for <paths>` for the rules that apply to the files you will touch.
-- Before finishing, run `keel check --changed --fix-hints` and fix what fails. It only sees tracked files, so run `git add -N` on new files first.
-- When a failure is unclear, `keel explain <rule>` prints what the rule asserts, why, and how to fix it.
+- Before editing, run `standy standards --for <paths>` for the rules that apply to the files you will touch.
+- Before finishing, run `standy check --changed --fix-hints` and fix what fails. It only sees tracked files, so run `git add -N` on new files first.
+- When a failure is unclear, `standy explain <rule>` prints what the rule asserts, why, and how to fix it.
 
 ## Stack
 
@@ -122,9 +122,9 @@ component files at build time. Don't move them into the bundled output.
 - Vite is told to `optimizeDeps.exclude: ["astro-awesomeness"]` in the demo so
   the workspace package isn't pre-bundled; keep that in any new consumer config.
 
-## Library profile (keel)
+## Library profile (standy)
 
-Validated by `keel verify` against
+Validated by `standy verify` against
 its profile base, `acme-package`. Skipped checks: e2e (saas-only),
 auth-config, prisma-config, turbo-db-generate-ordering, i18n-\*, landing-urls,
 e2e-auth-emails. Seven workflows gate PRs: `lint` (formatting, dead code and
@@ -134,7 +134,7 @@ dispatch, never on pushes to main. `release.yml` is the eighth, on pushes to
 main only.
 
 The repo has a recorded divergence: `astro-theme-awesomeness.gitignore` (per-app
-gitignores allowed under the library profile). See `fleet.json` (`keel divergences`).
+gitignores allowed under the library profile). See `fleet.json` (`standy divergences`).
 
 ## Notable decisions
 
@@ -174,8 +174,8 @@ gitignores allowed under the library profile). See `fleet.json` (`keel divergenc
 - Theme on npm: https://www.npmjs.com/package/astro-awesomeness
 - Astro docs: https://docs.astro.build
 - Tailwind v4: https://tailwindcss.com
-- Keel (verification + standards): `~/dev/keel`
-- Consumer blogs (12 repos, `blog` profile): see keel's `CLAUDE.md` for the list
+- Keel (verification + standards): `~/dev/standy`
+- Consumer blogs (12 repos, `blog` profile): see standy's `CLAUDE.md` for the list
 
 ## Design-system linting
 
