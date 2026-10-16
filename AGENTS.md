@@ -174,7 +174,7 @@ gitignores allowed under the library profile). See `fleet.json` (`standy diverge
 - Theme on npm: https://www.npmjs.com/package/astro-awesomeness
 - Astro docs: https://docs.astro.build
 - Tailwind v4: https://tailwindcss.com
-- Keel (verification + standards): `~/dev/standy`
+- standy (verification + standards): `~/dev/standy`
 - Consumer blogs (12 repos, `blog` profile): see standy's `CLAUDE.md` for the list
 
 ## Design-system linting
