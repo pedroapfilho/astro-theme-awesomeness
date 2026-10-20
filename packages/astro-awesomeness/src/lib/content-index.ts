@@ -1,6 +1,6 @@
 import { categoryLabel } from "./category-label";
 import { slugify } from "./slugify";
-import { tagLabel, tagUrl, uniqueTags } from "./tag-url";
+import { tagLabel, tagSlug, tagUrl, uniqueTags } from "./tag-url";
 
 type ContentPost = {
   data: {
@@ -55,13 +55,28 @@ const humanize = (slug: string): string => {
   return words.charAt(0).toUpperCase() + words.slice(1);
 };
 
+const assertCategorySlug = (slug: string, option: string): void => {
+  if (slug === "" || slug === "." || slug === ".." || /[\/\\?#\s]/v.test(slug)) {
+    throw new Error(
+      `${option} must be a nonempty URL path segment; received ${JSON.stringify(slug)}`,
+    );
+  }
+};
+
 const createContentIndex = <P extends ContentPost>({
   categorySlugMap,
   defaultCategory,
   posts: collection,
 }: ContentIndexOptions<P>): ContentIndex<P> => {
+  assertCategorySlug(defaultCategory, "defaultCategory");
+  for (const [name, slug] of Object.entries(categorySlugMap)) {
+    assertCategorySlug(slug, `categorySlugMap[${JSON.stringify(name)}]`);
+  }
   const posts = collection.filter(notDraft).toSorted(byPubDateDesc);
-  const categorySlug = (name: string): string => categorySlugMap[name] ?? slugify(name);
+  const categorySlug = (name: string): string => {
+    const mapped = Object.hasOwn(categorySlugMap, name) ? categorySlugMap[name] : undefined;
+    return mapped ?? (slugify(name) || defaultCategory);
+  };
 
   const postParams = (post: P): PostParams => {
     const canonical = URL.parse(post.data.seo?.canonical_url ?? "");
@@ -71,9 +86,8 @@ const createContentIndex = <P extends ContentPost>({
     if (category !== undefined && slug !== undefined) {
       return { category, slug };
     }
-    const first = post.data.categories.at(0);
     return {
-      category: first !== undefined && first !== "" ? categorySlug(first) : defaultCategory,
+      category: categorySlug(post.data.categories.at(0) ?? ""),
       slug: post.id,
     };
   };
@@ -137,7 +151,7 @@ const createContentIndex = <P extends ContentPost>({
     const buckets = new Map<string, ContentBucket<P>>();
     for (const post of posts) {
       for (const tag of uniqueTags(post.data.tags)) {
-        const slug = slugify(tag);
+        const slug = tagSlug(tag);
         const bucket = buckets.get(slug) ?? {
           href: tagUrl(tag),
           name: tagLabel(tag),
@@ -152,11 +166,11 @@ const createContentIndex = <P extends ContentPost>({
   };
 
   const relatedPosts = (current: P, count: number): Array<P> => {
-    const currentTags = new Set(current.data.tags.map(slugify));
+    const currentTags = new Set(current.data.tags.map(tagSlug));
     const scored: Array<{ post: P; score: number }> = [];
     for (const post of posts) {
       if (post.id !== current.id) {
-        const score = [...new Set(post.data.tags.map(slugify))].filter((tag) =>
+        const score = [...new Set(post.data.tags.map(tagSlug))].filter((tag) =>
           currentTags.has(tag),
         ).length;
         scored.push({ post, score });

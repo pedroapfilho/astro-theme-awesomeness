@@ -149,13 +149,23 @@ their full inferred types throughout the index.
 
 A parseable absolute `seo.canonical_url` with at least two path segments supplies
 the final two segments as category and slug. Otherwise the first category uses
-`categorySlugMap` or a generated slug, an absent/empty first category uses
+an own entry in `categorySlugMap` or a generated slug. A missing first category or
+one whose generated slug is empty (such as whitespace or an emoji-only label) uses
 `defaultCategory`, and the post's collection `id` supplies the article slug. The
 `slug` data field is not a route override. Returned post URLs are always local
 `/category/slug/` paths, regardless of the CMS URL's host.
 
+`defaultCategory` and every `categorySlugMap` value must be nonempty URL path
+segments, without whitespace, `/`, `\`, `?`, `#`, or a `.`/`..` segment. Invalid
+configuration throws when the index is created. Map unsupported category labels
+to explicit slugs when they need their own archives.
+
 Tag URLs are `/tag/{slug}/`; use the bucket's `href` and `slug` for links and route
 params. Category and tag display names are already normalized by the index.
+Tags must normalize to a nonempty slug. Whitespace, punctuation-only, emoji-only,
+and unsupported non-Latin tags throw an error naming the tag when used by tag
+archives, related posts, or `TagList`; give these tags a label containing letters
+or digits supported by the slug normalizer.
 
 ## Compose pages and articles
 
