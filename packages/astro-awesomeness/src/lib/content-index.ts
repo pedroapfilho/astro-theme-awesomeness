@@ -61,7 +61,8 @@ const createContentIndex = <P extends ContentPost>({
   posts: collection,
 }: ContentIndexOptions<P>): ContentIndex<P> => {
   const posts = collection.filter(notDraft).toSorted(byPubDateDesc);
-  const categorySlug = (name: string): string => categorySlugMap[name] ?? slugify(name);
+  const categorySlug = (name: string): string =>
+    (Object.hasOwn(categorySlugMap, name) ? categorySlugMap[name] : undefined) ?? slugify(name);
 
   const postParams = (post: P): PostParams => {
     const canonical = URL.parse(post.data.seo?.canonical_url ?? "");

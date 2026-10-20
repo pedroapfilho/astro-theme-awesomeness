@@ -199,6 +199,34 @@ describe("createContentIndex", () => {
     expect(index.postUrl(empty)).toBe("/sem-categoria/empty/");
   });
 
+  it.each([
+    ["constructor", "constructor"],
+    ["toString", "tostring"],
+    ["__proto__", "proto"],
+  ])("ignores inherited category overrides for %s", (name, slug) => {
+    const post = cmsPost("article", { categories: [name], seo: undefined });
+    const index = createContentIndex({ categorySlugMap: {}, defaultCategory, posts: [post] });
+    expect(index.postParams(post)).toEqual({ category: slug, slug: "article" });
+    expect(typeof index.postParams(post).category).toBe("string");
+    expect(index.postUrl(post)).toBe(`/${slug}/article/`);
+    expect(index.postCategory(post)).toEqual({ href: `/${slug}/`, name, slug });
+    expect(index.categories()).toEqual([{ href: `/${slug}/`, name, posts: [post], slug }]);
+  });
+
+  it("honors an own constructor category override", () => {
+    const post = cmsPost("article", { categories: ["constructor"], seo: undefined });
+    const index = createContentIndex({
+      categorySlugMap: { constructor: "construction" },
+      defaultCategory,
+      posts: [post],
+    });
+    expect(index.postParams(post)).toEqual({ category: "construction", slug: "article" });
+    expect(index.postUrl(post)).toBe("/construction/article/");
+    const category = { href: "/construction/", name: "constructor", slug: "construction" };
+    expect(index.postCategory(post)).toEqual(category);
+    expect(index.categories()).toEqual([{ ...category, posts: [post] }]);
+  });
+
   it("uses decoded native names ahead of mapped names for both posts and categories", () => {
     const english = cmsPost("english", { categories: ["Art &amp; Design"], seo: undefined });
     const native = cmsPost("native", { categories: ["Arte &amp; Design"], seo: undefined });
