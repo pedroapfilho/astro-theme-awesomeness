@@ -227,6 +227,56 @@ describe("createContentIndex", () => {
     expect(index.categories()).toEqual([{ ...category, posts: [post] }]);
   });
 
+  it.each(["", " \t ", "!!!", "🎉", "日本語"])(
+    "uses the default category when %j normalizes to an empty slug",
+    (name) => {
+      const post = cmsPost("article", { categories: [name, "Secondary"], seo: undefined });
+      const index = indexFor([post]);
+      expect(index.postParams(post)).toEqual({ category: defaultCategory, slug: "article" });
+      expect(index.postUrl(post)).toBe("/sem-categoria/article/");
+      expect(index.postCategory(post)).toMatchObject({
+        href: "/sem-categoria/",
+        slug: defaultCategory,
+      });
+      expect(index.categories().map(({ slug }) => slug)).toEqual([defaultCategory]);
+      const categories = index.categories({ includeSecondaryCategories: true });
+      expect(categories.map(({ slug }) => slug)).toEqual([defaultCategory, "secondary"]);
+      for (const link of [
+        index.postUrl(post),
+        ...categories.map(({ href }) => href),
+        ...index.feedItems().map((item) => item.link),
+      ]) {
+        expect(new URL(link, "https://example.test").origin).toBe("https://example.test");
+      }
+    },
+  );
+
+  it("uses explicit overrides for labels that cannot generate a slug", () => {
+    const post = cmsPost("article", { categories: ["日本語", "🎉"], seo: undefined });
+    const index = createContentIndex({
+      categorySlugMap: { "🎉": "celebration", 日本語: "japanese" },
+      defaultCategory,
+      posts: [post],
+    });
+    expect(index.postUrl(post)).toBe("/japanese/article/");
+    expect(index.categories({ includeSecondaryCategories: true }).map(({ slug }) => slug)).toEqual([
+      "japanese",
+      "celebration",
+    ]);
+  });
+
+  it.each(["", " \t ", "/", "//outside.test", "a/b", String.raw`a\b`, "a?b", "a#b", ".", ".."])(
+    "rejects malformed configured category slug %j even for an empty collection",
+    (slug) => {
+      expect(() =>
+        createContentIndex({ categorySlugMap: {}, defaultCategory: slug, posts: [] }),
+      ).toThrow("defaultCategory must be a nonempty URL path segment");
+      expect(() =>
+        createContentIndex({ categorySlugMap: { Notes: slug }, defaultCategory, posts: [] }),
+      ).toThrow('categorySlugMap["Notes"] must be a nonempty URL path segment');
+    },
+  );
+
   it("uses decoded native names ahead of mapped names for both posts and categories", () => {
     const english = cmsPost("english", { categories: ["Art &amp; Design"], seo: undefined });
     const native = cmsPost("native", { categories: ["Arte &amp; Design"], seo: undefined });
@@ -354,6 +404,22 @@ describe("createContentIndex", () => {
       "/tag/arquitetura-de-luxo/",
     ]);
   });
+
+  it.each(["", " \t ", "!!!", "🎉", "日本語"])(
+    "rejects unsupported tag %j consistently across index and tag-list helpers",
+    (tag) => {
+      const invalid = cmsPost("invalid", { tags: ["Astro", tag] });
+      const valid = cmsPost("valid", { tags: ["Astro"] });
+      const index = indexFor([invalid, valid]);
+      const message = `Tag ${JSON.stringify(tag)} must normalize to a nonempty slug`;
+      expect(() => tagUrl(tag)).toThrow(message);
+      expect(() => uniqueTags(invalid.data.tags)).toThrow(message);
+      expect(() => index.tags()).toThrow(message);
+      expect(() => index.relatedPosts(invalid, 2)).toThrow(message);
+      expect(() => index.relatedPosts(valid, 2)).toThrow(message);
+      expect(() => indexFor([valid]).relatedPosts(invalid, 2)).toThrow(message);
+    },
+  );
 
   it("ranks related posts by unique shared slugs, breaks ties newest first, and pads with newest", () => {
     const { current, newest, old, posts, scheduled, tie, unrelated } = fixture();
