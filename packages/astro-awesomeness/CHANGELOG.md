@@ -1,5 +1,11 @@
 # astro-awesomeness
 
+## 3.1.2
+
+### Patch Changes
+
+- 2fb83a6: Ignore inherited properties in category overrides, and apply the default category when a label normalizes to an empty slug. Reject malformed category configuration and empty normalized tag identities with explicit errors shared by tag archives, related posts, and TagList.
+
 ## 3.1.1
 
 ### Patch Changes
