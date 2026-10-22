@@ -4,6 +4,7 @@ const expectNoPageOverflow = async (page: Page) => {
   const overflow = await page.evaluate(
     () => document.documentElement.scrollWidth - document.documentElement.clientWidth,
   );
+
   expect(overflow).toBeLessThanOrEqual(1);
 };
 
@@ -16,6 +17,7 @@ const expectDarkTheme = async (page: Page) => {
   const isDark = await page
     .locator("html")
     .evaluate((element) => element.classList.contains("dark"));
+
   expect(isDark).toBe(true);
 };
 

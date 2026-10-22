@@ -9,6 +9,7 @@ const post: ArticlePost = {
     title: "Article title",
   },
 };
+
 const url = new URL("https://preview.example/architecture/article/?source=feed#heading");
 const site = new URL("https://example.com/");
 const image = "https://example.com/og-image.jpg";
@@ -97,6 +98,7 @@ describe("buildMetadata", () => {
       { post: { data: { ...post.data, author: { name: "Ana" } } }, siteTitle },
       url,
     );
+
     expect(metadata.jsonLd?.author).toEqual({ "@type": "Person", name: "Ana" });
     expect(metadata.image).toBeUndefined();
     expect(metadata.jsonLd?.publisher).toEqual({ "@type": "Organization", name: siteTitle });
@@ -114,6 +116,7 @@ describe("buildMetadata", () => {
       url,
       site,
     );
+
     expect(metadata).toEqual({
       authorName: undefined,
       canonical: "https://example.com/architecture/article/",
@@ -136,6 +139,7 @@ describe("buildMetadata", () => {
       new URL("https://example.com/404"),
       site,
     );
+
     expect(metadata.noindex).toBe(true);
     expect(metadata.type).toBe("website");
   });

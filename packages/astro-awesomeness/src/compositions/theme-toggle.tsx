@@ -13,6 +13,7 @@ const getStoredTheme = (): string | null => {
   if (typeof window === "undefined") {
     return null;
   }
+
   return window.localStorage.getItem(colorSchemeStorageKey);
 };
 
@@ -22,8 +23,10 @@ const subscribeStoredTheme = (callback: () => void) => {
   if (typeof window === "undefined") {
     return () => {};
   }
+
   storedThemeListeners.add(callback);
   window.addEventListener("storage", callback);
+
   return () => {
     storedThemeListeners.delete(callback);
     window.removeEventListener("storage", callback);
@@ -32,6 +35,7 @@ const subscribeStoredTheme = (callback: () => void) => {
 
 const setStoredTheme = (next: ResolvedColorScheme) => {
   window.localStorage.setItem(colorSchemeStorageKey, next);
+
   for (const listener of storedThemeListeners) {
     listener();
   }
@@ -41,6 +45,7 @@ const getPrefersDark = (): boolean => {
   if (typeof window === "undefined") {
     return false;
   }
+
   return window.matchMedia(colorSchemeMediaQuery).matches;
 };
 
@@ -48,8 +53,10 @@ const subscribePrefersDark = (callback: () => void) => {
   if (typeof window === "undefined") {
     return () => {};
   }
+
   const media = window.matchMedia(colorSchemeMediaQuery);
   media.addEventListener("change", callback);
+
   return () => {
     media.removeEventListener("change", callback);
   };
@@ -69,6 +76,7 @@ const ThemeToggle = ({ ariaLabel = "Dark mode" }: Props) => {
     getHydratedSnapshot,
     getServerHydratedSnapshot,
   );
+
   const prefersDark = useSyncExternalStore(subscribePrefersDark, getPrefersDark, () => false);
   const override = useSyncExternalStore(subscribeStoredTheme, getStoredTheme, () => null);
   const theme = resolveColorScheme(override, prefersDark);

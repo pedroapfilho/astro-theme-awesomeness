@@ -18,6 +18,7 @@ export default [
                 if (node.name.name === "style" && node.value?.type === "Literal") {
                   context.report({ messageId: "style", node });
                 }
+
                 if (
                   node.name.type === "JSXNamespacedName" &&
                   node.name.namespace.name === "class" &&

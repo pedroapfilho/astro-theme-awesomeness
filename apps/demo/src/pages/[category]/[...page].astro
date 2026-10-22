@@ -12,6 +12,7 @@ export const getStaticPaths = (({ paginate }) => index.categories().flatMap((cat
 )) satisfies GetStaticPaths;
 
 type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
 const { categoryName, page }: Props = Astro.props;
 ---
 <ListLayout title={categoryName} description={`Stories in ${categoryName}.`} posts={page.data} page={page} />

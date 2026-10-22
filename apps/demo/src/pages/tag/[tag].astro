@@ -9,6 +9,7 @@ export const getStaticPaths = () => index.tags().map((tag) => ({
 }));
 
 type Props = InferGetStaticPropsType<typeof getStaticPaths>;
+
 const { tag }: Props = Astro.props;
 ---
 <ListLayout title={`Tagged “${tag.name}”`} description={`Stories about ${tag.name}.`} posts={tag.posts} />

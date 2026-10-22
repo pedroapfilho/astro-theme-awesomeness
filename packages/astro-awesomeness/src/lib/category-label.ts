@@ -30,16 +30,21 @@ const decodeEntity = (entity: string, decimal?: string, hex?: string, named?: st
   if (decimal !== undefined) {
     return fromCodePoint(Number(decimal), entity);
   }
+
   if (hex !== undefined) {
     return fromCodePoint(Number.parseInt(hex, HEX_RADIX), entity);
   }
+
   if (named === undefined) {
     return entity;
   }
+
   const key = named.toLowerCase();
+
   if (!isNamedEntity(key)) {
     return entity;
   }
+
   return NAMED_ENTITIES[key];
 };
 

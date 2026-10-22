@@ -33,6 +33,7 @@ const postSchema = z
     const result: typeof post & {
       heroImage?: { alt: string; height: number; src: string; width: number };
     } = post;
+
     if (
       heroImageUrl !== undefined &&
       heroImageWidth !== undefined &&
@@ -45,11 +46,14 @@ const postSchema = z
         width: heroImageWidth,
       };
     }
+
     return result;
   });
 
 type Post = z.infer<typeof postSchema>;
+
 type Author = z.infer<typeof authorSchema>;
 
 export { authorSchema, postSchema };
+
 export type { Author, Post };

@@ -33,18 +33,23 @@ const buildMetadata = (props: MetadataProps, url: URL, site?: URL) => {
   const author = post?.data.author;
   const publishedTime = post?.data.pubDate.toISOString();
   const modifiedTime = post?.data.updatedDate?.toISOString();
+
   const authorJsonLd: AuthorJsonLd = author
     ? { "@type": "Person", name: author.name }
     : { "@type": "Organization", name: siteTitle };
+
   if (author?.url !== undefined && author.url !== "") {
     authorJsonLd.url = author.url;
   }
+
   if (author?.photoUrl !== undefined && author.photoUrl !== "") {
     authorJsonLd.image = author.photoUrl;
   }
+
   if (author?.bio !== undefined && author.bio !== "") {
     authorJsonLd.description = author.bio;
   }
+
   const jsonLd = post
     ? {
         "@context": "https://schema.org",
@@ -81,4 +86,5 @@ const buildMetadata = (props: MetadataProps, url: URL, site?: URL) => {
 };
 
 export { buildMetadata };
+
 export type { ArticlePost, MetadataProps };

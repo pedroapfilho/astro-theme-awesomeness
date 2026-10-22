@@ -11,9 +11,11 @@ test("groups normalized tags without duplicating posts", async ({ page }) => {
   const posts = page.getByRole("region", { exact: true, name: "Posts" });
   await expect(posts.locator("article")).toHaveCount(titles.length);
   await expect(posts.getByRole("heading", { level: 2 })).toHaveText(titles);
+
   for (const title of titles) {
     await expect(posts.getByRole("link", { exact: true, name: title })).toHaveCount(1);
   }
+
   await expect(page.getByRole("navigation", { name: "Pagination" })).toHaveCount(0);
 });
 
@@ -38,9 +40,11 @@ test("derives article metadata from the route and Astro locale", async ({ page }
     "content",
     "2026-05-23T00:00:00.000Z",
   );
+
   const jsonLd = JSON.parse(
     (await page.locator('script[type="application/ld+json"]').textContent()) ?? "{}",
   );
+
   expect(jsonLd).toMatchObject({
     "@type": "BlogPosting",
     author: { "@type": "Person", name: "Demo editor", url: "https://example.com/editor" },
@@ -75,6 +79,7 @@ for (const archive of ["/posts/", "/notes-field/"]) {
     expect(previousResponse.status()).toBe(200);
     await previous.click();
     await expect(page.getByRole("link", { name: "← Previous" })).toHaveCount(0);
+
     if (archive === "/notes-field/") {
       await expect(page.getByRole("heading", { level: 1 })).toHaveText("Notes – Field");
     }
@@ -87,17 +92,21 @@ test("publishes matching RSS and sitemap links without the draft", async ({ page
   const feed = await response.text();
   expect(feed).not.toContain(draftTitle);
   await page.goto("/");
+
   const items = await page.evaluate((xml) => {
     const document = new DOMParser().parseFromString(xml, "application/xml");
+
     return [...document.querySelectorAll("item")].map((item) => ({
       link: item.querySelector("link")?.textContent,
       title: item.querySelector("title")?.textContent,
     }));
   }, feed);
+
   expect(items.map((item) => item.title)).toEqual(titles);
   const sitemapResponse = await request.get("/sitemap-0.xml");
   expect(sitemapResponse.status()).toBe(200);
   const sitemap = await sitemapResponse.text();
+
   for (const item of items) {
     const url = new URL(item.link!);
     expect(url.origin).toBe(site);
@@ -106,6 +115,7 @@ test("publishes matching RSS and sitemap links without the draft", async ({ page
     expect(articleResponse.status()).toBe(200);
     expect(sitemap).toContain(`<loc>${item.link}</loc>`);
   }
+
   for (const path of [
     "/",
     "/posts/",
@@ -118,6 +128,7 @@ test("publishes matching RSS and sitemap links without the draft", async ({ page
     expect(publicResponse.status()).toBe(200);
     expect(await publicResponse.text()).not.toContain(draftTitle);
   }
+
   expect(sitemap).not.toContain("unpublished-note");
   expect(sitemap).not.toContain("draft-only");
   const draftResponse = await request.get("/notes-field/unpublished-note/");
