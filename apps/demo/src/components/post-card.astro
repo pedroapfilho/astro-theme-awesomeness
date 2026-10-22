@@ -4,6 +4,7 @@ import FormattedDate from "astro-awesomeness/astro/formatted-date";
 import { index } from "../lib/content";
 
 type Props = { post: CollectionEntry<"posts"> };
+
 const { post } = Astro.props;
 const category = index.postCategory(post);
 ---

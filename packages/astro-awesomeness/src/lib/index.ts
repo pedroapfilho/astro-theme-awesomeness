@@ -1,5 +1,7 @@
 export { cn } from "./cn";
+
 export { createContentIndex } from "./content-index";
+
 export type {
   CategoryOptions,
   ContentBucket,

@@ -10,6 +10,7 @@ const categorySlugMap = {
   "Arte &amp; Design": "arte-design",
   "Construção &#8211; Obras": "construcao-obras",
 };
+
 const defaultCategory = "sem-categoria";
 
 const cmsPost = (id: string, frontmatter: Record<string, unknown> = {}) => ({
@@ -37,34 +38,40 @@ const indexFor = (posts: Array<FixturePost>) =>
 
 const fixture = () => {
   const old = cmsPost("old", { tags: ["Astro", "#construção"] });
+
   const current = cmsPost("current", {
     categories: ["Construção &#8211; Obras", "Interiores"],
     pubDate: "2026-01-03T12:00:00.000Z",
     seo: { canonical_url: "https://example.test/archive/construcao-obras/casa/?ref=cms" },
     tags: ["#construção", "construção", "Astro", "astro"],
   });
+
   const newest = cmsPost("newest", {
     categories: ["Arquitetura", "Interiores"],
     pubDate: "2026-01-06T12:00:00.000Z",
     tags: ["astro", "#construção", "construção"],
   });
+
   const scheduled = cmsPost("scheduled", {
     pubDate: "2026-01-07T12:00:00.000Z",
     status: "SCHEDULED",
     tags: ["astro"],
   });
+
   const tie = cmsPost("tie", {
     categories: ["Área Externa"],
     pubDate: "2026-01-06T12:00:00.000Z",
     seo: undefined,
     tags: ["construção"],
   });
+
   const unrelated = cmsPost("unrelated", {
     categories: [],
     pubDate: "2026-01-08T12:00:00.000Z",
     seo: undefined,
     tags: ["c#"],
   });
+
   const statusDraft = cmsPost("status-draft", {
     categories: ["Draft category"],
     pubDate: "2026-02-01T12:00:00.000Z",
@@ -72,12 +79,15 @@ const fixture = () => {
     status: "DRAFT",
     tags: ["draft-only"],
   });
+
   const booleanDraft = cmsPost("boolean-draft", {
     draft: true,
     pubDate: "2026-02-02T12:00:00.000Z",
     tags: ["draft-only"],
   });
+
   const posts = [old, current, newest, statusDraft, scheduled, tie, unrelated, booleanDraft];
+
   return { current, newest, old, posts, scheduled, tie, unrelated };
 };
 
@@ -107,22 +117,27 @@ describe("createContentIndex", () => {
       cmsPost("absent", { status: undefined }),
       cmsPost("unknown", { status: "OTHER" }),
     ];
+
     expect(indexFor(posts).posts).toEqual(posts);
   });
 
   it("returns identical outputs across loader permutations with publication date ties", () => {
     const { current, newest, old, posts, scheduled, tie, unrelated } = fixture();
+
     const matchingTie = cmsPost("a-match", {
       pubDate: "2026-01-06T12:00:00.000Z",
       tags: ["ASTRO", "#Construção"],
     });
+
     const paddingTie = cmsPost("a-padding", {
       pubDate: "2026-01-08T12:00:00.000Z",
       tags: ["C#"],
     });
+
     const collection = [...posts, matchingTie, paddingTie];
     const ordered = [paddingTie, unrelated, scheduled, matchingTie, newest, tie, current, old];
     const index = indexFor(ordered);
+
     const expected = {
       categories: index.categories(),
       feedItems: index.feedItems(),
@@ -131,6 +146,7 @@ describe("createContentIndex", () => {
       secondaryCategories: index.categories({ includeSecondaryCategories: true }),
       tags: index.tags(),
     };
+
     expect(expected.tags.find(({ slug }) => slug === "construcao")?.name).toBe("Construção");
     expect(expected.tags.find(({ slug }) => slug === "c")?.name).toBe("C#");
 
@@ -182,6 +198,7 @@ describe("createContentIndex", () => {
         seo: { canonical_url: canonical },
         slug: "ignored-data-slug",
       });
+
       expect(indexFor([post]).postParams(post)).toEqual({
         category: "arquitetura",
         slug: "entry-id",
@@ -215,11 +232,13 @@ describe("createContentIndex", () => {
 
   it("honors an own constructor category override", () => {
     const post = cmsPost("article", { categories: ["constructor"], seo: undefined });
+
     const index = createContentIndex({
       categorySlugMap: { constructor: "construction" },
       defaultCategory,
       posts: [post],
     });
+
     expect(index.postParams(post)).toEqual({ category: "construction", slug: "article" });
     expect(index.postUrl(post)).toBe("/construction/article/");
     const category = { href: "/construction/", name: "constructor", slug: "construction" };
@@ -241,6 +260,7 @@ describe("createContentIndex", () => {
       expect(index.categories().map(({ slug }) => slug)).toEqual([defaultCategory]);
       const categories = index.categories({ includeSecondaryCategories: true });
       expect(categories.map(({ slug }) => slug)).toEqual([defaultCategory, "secondary"]);
+
       for (const link of [
         index.postUrl(post),
         ...categories.map(({ href }) => href),
@@ -253,11 +273,13 @@ describe("createContentIndex", () => {
 
   it("uses explicit overrides for labels that cannot generate a slug", () => {
     const post = cmsPost("article", { categories: ["日本語", "🎉"], seo: undefined });
+
     const index = createContentIndex({
       categorySlugMap: { "🎉": "celebration", 日本語: "japanese" },
       defaultCategory,
       posts: [post],
     });
+
     expect(index.postUrl(post)).toBe("/japanese/article/");
     expect(index.categories({ includeSecondaryCategories: true }).map(({ slug }) => slug)).toEqual([
       "japanese",
@@ -308,6 +330,7 @@ describe("createContentIndex", () => {
       categories: ["Locação de Espaços"],
       seo: { canonical_url: "https://example.test/aluguel-de-espacos/first/" },
     });
+
     const unnamed = cmsPost("unnamed", { categories: [], seo: undefined });
     const index = indexFor([first, unnamed]);
     expect(index.postCategory(first).name).toBe("Locação de Espaços");
@@ -328,22 +351,26 @@ describe("createContentIndex", () => {
     });
     expect(Object.hasOwn(categorySlugMap, "Construção – Obras")).toBe(false);
     const encoded = cmsPost("encoded", { categories: ["Arte &amp; Design"], seo: undefined });
+
     const encodedIndex = createContentIndex({
       categorySlugMap: { "Arte &amp; Design": "arte-e-design" },
       defaultCategory,
       posts: [encoded],
     });
+
     expect(encodedIndex.postUrl(encoded)).toBe("/arte-e-design/encoded/");
     expect(encodedIndex.postCategory(encoded).name).toBe("Arte & Design");
   });
 
   it("groups canonical categories by default and includes every named category when requested", () => {
     const older = cmsPost("older", { categories: ["Architecture", "Interiores"] });
+
     const newer = cmsPost("newer", {
       categories: ["Architecture", "Interiores"],
       pubDate: "2026-01-09T12:00:00.000Z",
       seo: { canonical_url: "https://example.test/featured/newer/" },
     });
+
     const index = indexFor([older, newer]);
     expect(index.categories().map(({ posts, slug }) => [slug, posts.map(({ id }) => id)])).toEqual([
       ["featured", ["newer"]],
@@ -392,6 +419,7 @@ describe("createContentIndex", () => {
         "arquitetura de luxo",
       ],
     });
+
     const tags = indexFor([post]).tags();
     expect(tags.map(({ href }) => href)).toEqual(uniqueTags(post.data.tags).map(tagUrl));
     expect(tags.map(({ name }) => name)).toEqual(uniqueTags(post.data.tags).map(tagLabel));

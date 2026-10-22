@@ -1,4 +1,5 @@
 type ResolvedColorScheme = "light" | "dark";
+
 type ColorScheme = "auto" | ResolvedColorScheme;
 
 const colorSchemeStorageKey = "theme";
@@ -8,6 +9,7 @@ const resolveColorScheme = (stored: string | null, prefersDark: boolean): Resolv
   if (stored === "light" || stored === "dark") {
     return stored;
   }
+
   return prefersDark ? "dark" : "light";
 };
 
@@ -33,4 +35,5 @@ export {
   resolveColorScheme,
   themeColorScript,
 };
+
 export type { ColorScheme, ResolvedColorScheme };

@@ -11,6 +11,7 @@ describe("postSchema", () => {
       pubDate: new Date("2026-01-01"),
       title: "Hello",
     });
+
     expect(result.success).toBe(true);
   });
 
@@ -19,6 +20,7 @@ describe("postSchema", () => {
       description: "World",
       pubDate: new Date(),
     });
+
     expect(result.success).toBe(false);
   });
 
@@ -28,7 +30,9 @@ describe("postSchema", () => {
       pubDate: "2026-01-01",
       title: "Hello",
     });
+
     expect(result.success).toBe(true);
+
     if (result.success) {
       expect(result.data.pubDate).toBeInstanceOf(Date);
     }
@@ -40,6 +44,7 @@ describe("postSchema", () => {
       pubDate: new Date(),
       title: "Hello",
     });
+
     if (result.success) {
       expect(result.data.draft).toBe(false);
     }
@@ -52,12 +57,14 @@ describe("postSchema", () => {
       tags: ["foo", "bar"],
       title: "Hello",
     });
+
     expect(result.success).toBe(true);
   });
 
   it("defaults a missing description to an empty string", () => {
     const result = postSchema.safeParse({ pubDate: new Date(), title: "Hello" });
     expect(result.success).toBe(true);
+
     if (result.success) {
       expect(result.data.description).toBe("");
     }
@@ -69,7 +76,9 @@ describe("postSchema", () => {
       pubDate: new Date(),
       title: "Hello",
     });
+
     expect(result.success).toBe(true);
+
     if (result.success) {
       expect(result.data.author?.name).toBe("Pedro");
     }
@@ -87,12 +96,14 @@ describe("postSchema", () => {
       series: "obsolete",
       title: "A house",
     });
+
     expect(post.heroImage).toEqual({
       alt: "A sunlit house",
       height: 800,
       src: "https://example.test/house.jpg",
       width: 1200,
     });
+
     for (const key of [
       "cover",
       "coverAlt",
@@ -103,6 +114,7 @@ describe("postSchema", () => {
     ]) {
       expect(post).not.toHaveProperty(key);
     }
+
     expectTypeOf<Post["heroImage"]>().toEqualTypeOf<
       | {
           alt: string;
@@ -142,6 +154,7 @@ describe("postSchema", () => {
       pubDate: "2026-01-01",
       title: "A house",
     });
+
     expect(post.heroImage?.alt).toBe(alt);
   });
 
@@ -150,6 +163,7 @@ describe("postSchema", () => {
       loader: () => [{ id: "fixture", pubDate: "2026-01-01", title: "A house" }],
       schema: postSchema,
     });
+
     expect(collection.schema).toBe(postSchema);
   });
 });

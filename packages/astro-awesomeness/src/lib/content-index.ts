@@ -23,9 +23,13 @@ type ContentIndexOptions<P extends ContentPost> = {
 };
 
 type PostParams = { category: string; slug: string };
+
 type PostCategory = { href: string; name: string; slug: string };
+
 type ContentBucket<P> = PostCategory & { posts: Array<P> };
+
 type CategoryOptions = { includeSecondaryCategories?: boolean };
+
 type FeedItem = { description: string; link: string; pubDate: Date; title: string };
 
 type ContentIndex<P extends ContentPost> = {
@@ -44,14 +48,17 @@ const notDraft = (post: ContentPost): boolean =>
 
 const byPubDateDesc = (a: ContentPost, b: ContentPost): number => {
   const dateOrder = b.data.pubDate.valueOf() - a.data.pubDate.valueOf();
+
   if (dateOrder !== 0 || a.id === b.id) {
     return dateOrder;
   }
+
   return a.id < b.id ? -1 : 1;
 };
 
 const humanize = (slug: string): string => {
   const words = slug.replaceAll("-", " ");
+
   return words.charAt(0).toUpperCase() + words.slice(1);
 };
 
@@ -69,12 +76,16 @@ const createContentIndex = <P extends ContentPost>({
   posts: collection,
 }: ContentIndexOptions<P>): ContentIndex<P> => {
   assertCategorySlug(defaultCategory, "defaultCategory");
+
   for (const [name, slug] of Object.entries(categorySlugMap)) {
     assertCategorySlug(slug, `categorySlugMap[${JSON.stringify(name)}]`);
   }
+
   const posts = collection.filter(notDraft).toSorted(byPubDateDesc);
+
   const categorySlug = (name: string): string => {
     const mapped = Object.hasOwn(categorySlugMap, name) ? categorySlugMap[name] : undefined;
+
     return mapped ?? (slugify(name) || defaultCategory);
   };
 
@@ -83,9 +94,11 @@ const createContentIndex = <P extends ContentPost>({
     const segments = canonical?.pathname.split("/").filter(Boolean) ?? [];
     const category = segments.at(-2);
     const slug = segments.at(-1);
+
     if (category !== undefined && slug !== undefined) {
       return { category, slug };
     }
+
     return {
       category: categorySlug(post.data.categories.at(0) ?? ""),
       slug: post.id,
@@ -94,20 +107,26 @@ const createContentIndex = <P extends ContentPost>({
 
   const postUrl = (post: P): string => {
     const { category, slug } = postParams(post);
+
     return `/${category}/${slug}/`;
   };
 
   const namesBySlug = new Map<string, Set<string>>();
+
   const register = (slug: string, name: string) => {
     namesBySlug.set(slug, (namesBySlug.get(slug) ?? new Set()).add(name));
   };
+
   for (const post of posts) {
     const { category } = postParams(post);
     const names = post.data.categories;
+
     for (const name of names) {
       register(categorySlug(name), name);
     }
+
     const first = names.at(0);
+
     if (first !== undefined && !names.some((name) => categorySlug(name) === category)) {
       register(category, first);
     }
@@ -118,6 +137,7 @@ const createContentIndex = <P extends ContentPost>({
     const native = names.find((name) => slugify(categoryLabel(name)) === slug);
     const mapped = names.find((name) => categorySlug(name) === slug);
     const name = native ?? mapped ?? names.at(0);
+
     return {
       href: `/${slug}/`,
       name: name === undefined ? humanize(slug) : categoryLabel(name),
@@ -131,51 +151,62 @@ const createContentIndex = <P extends ContentPost>({
     ContentBucket<P>
   > => {
     const buckets = new Map<string, ContentBucket<P>>();
+
     for (const post of posts) {
       const slugs = new Set([postParams(post).category]);
+
       if (includeSecondaryCategories) {
         for (const name of post.data.categories) {
           slugs.add(categorySlug(name));
         }
       }
+
       for (const slug of slugs) {
         const bucket = buckets.get(slug) ?? { ...categoryInfo(slug), posts: [] };
         bucket.posts.push(post);
         buckets.set(slug, bucket);
       }
     }
+
     return [...buckets.values()];
   };
 
   const tags = (): Array<ContentBucket<P>> => {
     const buckets = new Map<string, ContentBucket<P>>();
+
     for (const post of posts) {
       for (const tag of uniqueTags(post.data.tags)) {
         const slug = tagSlug(tag);
+
         const bucket = buckets.get(slug) ?? {
           href: tagUrl(tag),
           name: tagLabel(tag),
           posts: [],
           slug,
         };
+
         bucket.posts.push(post);
         buckets.set(slug, bucket);
       }
     }
+
     return [...buckets.values()];
   };
 
   const relatedPosts = (current: P, count: number): Array<P> => {
     const currentTags = new Set(current.data.tags.map(tagSlug));
     const scored: Array<{ post: P; score: number }> = [];
+
     for (const post of posts) {
       if (post.id !== current.id) {
         const score = [...new Set(post.data.tags.map(tagSlug))].filter((tag) =>
           currentTags.has(tag),
         ).length;
+
         scored.push({ post, score });
       }
     }
+
     return scored
       .toSorted((a, b) => b.score - a.score)
       .slice(0, Math.max(0, count))
@@ -194,6 +225,7 @@ const createContentIndex = <P extends ContentPost>({
 };
 
 export { createContentIndex };
+
 export type {
   CategoryOptions,
   ContentBucket,

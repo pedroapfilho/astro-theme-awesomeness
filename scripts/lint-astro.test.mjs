@@ -7,6 +7,7 @@ import config from "../eslint.astro.config.mjs";
 
 await test("enforces all six design-system rules inside Astro templates", async () => {
   const eslint = new ESLint({ overrideConfig: config, overrideConfigFile: true });
+
   const [result] = await eslint.lintText(
     `---
 import { Button } from "astro-awesomeness/components";
@@ -17,7 +18,9 @@ const color = Astro.props.color;
 `,
     { filePath: "apps/demo/src/lint-probe.astro" },
   );
+
   const found = new Set(result.messages.map(({ ruleId }) => ruleId));
+
   for (const name of Object.keys(config[0].rules).filter((ruleName) =>
     ruleName.startsWith("shadcn/"),
   )) {
@@ -27,6 +30,7 @@ const color = Astro.props.color;
 
 await test("rejects Astro string styles, style blocks, and unchecked class lists", async () => {
   const eslint = new ESLint({ overrideConfig: config, overrideConfigFile: true });
+
   for (const source of [
     '<div style="color: red" />',
     "<style>div { color: red; }</style>",
