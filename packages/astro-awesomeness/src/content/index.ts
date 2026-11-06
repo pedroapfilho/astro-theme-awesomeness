@@ -23,7 +23,6 @@ const postSchema = z
         canonical_url: z.string().optional(),
       })
       .optional(),
-    slug: z.string().optional(),
     status: z.string().optional(),
     tags: z.array(z.string()).default([]),
     title: z.string().min(1),

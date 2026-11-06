@@ -4,21 +4,14 @@
   "private": true,
   "type": "module",
   "exports": {
-    "./react": "./react.ts",
-    "./node": "./node.ts",
-    "./setup-react": "./setup-react.ts"
+    "./node": "./node.ts"
   },
   "scripts": {
     "lint": "oxlint",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "@testing-library/dom": "^10.4.2",
-    "@testing-library/jest-dom": "^7.0.1",
-    "@testing-library/react": "^16.3.3",
-    "@vitejs/plugin-react": "^6.1.1",
     "@vitest/coverage-v8": "^5.0.1",
-    "jsdom": "^30.1.1",
     "vitest": "^5.0.1"
   },
   "devDependencies": {

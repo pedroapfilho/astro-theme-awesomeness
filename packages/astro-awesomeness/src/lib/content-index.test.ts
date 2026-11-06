@@ -2,7 +2,7 @@ import { describe, expect, expectTypeOf, it } from "vitest";
 
 import { postSchema } from "../content/index";
 import { createContentIndex } from "./content-index";
-import { tagLabel, tagUrl, uniqueTags } from "./tag-url";
+import { tagLinks } from "./tag-links";
 
 const categorySlugMap = {
   Architecture: "arquitetura",
@@ -208,10 +208,13 @@ describe("createContentIndex", () => {
 
   it("slugifies unmapped categories and uses the default for missing or empty categories", () => {
     const unmapped = cmsPost("unmapped", { categories: ["Área Externa"], seo: undefined });
+    const encoded = cmsPost("encoded", { categories: ["Luz &amp; Sombra"], seo: undefined });
     const absent = cmsPost("absent", { categories: undefined, seo: undefined });
     const empty = cmsPost("empty", { categories: [""], seo: undefined });
-    const index = indexFor([unmapped, absent, empty]);
+    const index = indexFor([unmapped, encoded, absent, empty]);
     expect(index.postUrl(unmapped)).toBe("/area-externa/unmapped/");
+    expect(index.postUrl(encoded)).toBe("/luz-sombra/encoded/");
+    expect(index.postCategory(encoded).name).toBe("Luz & Sombra");
     expect(index.postUrl(absent)).toBe("/sem-categoria/absent/");
     expect(index.postUrl(empty)).toBe("/sem-categoria/empty/");
   });
@@ -421,8 +424,9 @@ describe("createContentIndex", () => {
     });
 
     const tags = indexFor([post]).tags();
-    expect(tags.map(({ href }) => href)).toEqual(uniqueTags(post.data.tags).map(tagUrl));
-    expect(tags.map(({ name }) => name)).toEqual(uniqueTags(post.data.tags).map(tagLabel));
+    expect(tags.map(({ href, name, slug }) => ({ href, name, slug }))).toEqual(
+      tagLinks(post.data.tags),
+    );
     expect(tags.map(({ href }) => href)).toEqual([
       "/tag/construcao/",
       "/tag/locacoesdeespacos/",
@@ -440,8 +444,7 @@ describe("createContentIndex", () => {
       const valid = cmsPost("valid", { tags: ["Astro"] });
       const index = indexFor([invalid, valid]);
       const message = `Tag ${JSON.stringify(tag)} must normalize to a nonempty slug`;
-      expect(() => tagUrl(tag)).toThrow(message);
-      expect(() => uniqueTags(invalid.data.tags)).toThrow(message);
+      expect(() => tagLinks(invalid.data.tags)).toThrow(message);
       expect(() => index.tags()).toThrow(message);
       expect(() => index.relatedPosts(invalid, 2)).toThrow(message);
       expect(() => index.relatedPosts(valid, 2)).toThrow(message);

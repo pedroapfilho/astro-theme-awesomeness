@@ -5,12 +5,11 @@
 @import "shadcn/tailwind.css";
 
 /* Scan our own .astro/.tsx files so consumer Tailwind generates utilities
-   used by the theme. Paths resolve from dist/styles/globals.css after build:
-   `../../src` → <package-root>/src in both workspace and node_modules. */
-@source "../../src/astro/**/*.astro";
-@source "../../src/layouts/**/*.astro";
-@source "../../src/components/**/*.{ts,tsx}";
-@source "../../src/compositions/**/*.{ts,tsx}";
+   used by the theme. */
+@source "../astro/**/*.astro";
+@source "../layouts/**/*.astro";
+@source "../components/**/*.{ts,tsx}";
+@source "../compositions/**/*.{ts,tsx}";
 
 @custom-variant dark (&:is(.dark *));
 
@@ -48,10 +47,11 @@
 }
 
 .dark {
-  /* `:root` opts into `light dark`, which follows the OS preference. When the
-     toggle forces dark on a light-OS visitor, native UI (scrollbars, form
-     controls) would stay light without this override. The `:root:not(.dark)`
-     mirror below covers the opposite direction: light forced on a dark OS. */
+  /* The color-scheme meta opts into `light dark`, which follows the OS
+     preference. When the toggle forces dark on a light-OS visitor, native UI
+     (scrollbars, form controls) would stay light without this override. The
+     `:root:not(.dark)` mirror below covers the opposite direction: light
+     forced on a dark OS. */
   color-scheme: dark;
 
   --color-background: oklch(0.145 0 0);
@@ -88,20 +88,7 @@
 }
 
 @layer base {
-  *,
-  *::before,
-  *::after {
-    box-sizing: border-box;
-  }
-  :root {
-    /* Inform the browser which schemes the page supports so native UI
-       (scrollbars, form controls, canvas) themes itself before paint and
-       avoids a flash of unstyled chrome. The `.dark` class still drives
-       our token overrides; this just covers native surfaces. */
-    color-scheme: light dark;
-  }
   html {
-    -webkit-text-size-adjust: 100%;
     scrollbar-gutter: stable;
   }
   @media (prefers-reduced-motion: no-preference) {
@@ -112,10 +99,6 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
-    font-family: var(--font-sans);
-    font-feature-settings:
-      "rlig" 1,
-      "calt" 1;
     line-height: 1.6;
   }
 

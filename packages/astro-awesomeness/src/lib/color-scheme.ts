@@ -13,11 +13,16 @@ const resolveColorScheme = (stored: string | null, prefersDark: boolean): Resolv
   return prefersDark ? "dark" : "light";
 };
 
+const applyColorScheme = (scheme: ResolvedColorScheme): void => {
+  document.documentElement.classList.toggle("dark", scheme === "dark");
+};
+
 const getColorSchemeScript = () => `(() => {
   const resolve = ${resolveColorScheme.toString()};
+  const apply = ${applyColorScheme.toString()};
   const stored = localStorage.getItem(${JSON.stringify(colorSchemeStorageKey)});
   const prefersDark = window.matchMedia(${JSON.stringify(colorSchemeMediaQuery)}).matches;
-  document.documentElement.classList.toggle("dark", resolve(stored, prefersDark) === "dark");
+  apply(resolve(stored, prefersDark));
 })();`;
 
 const themeColorScript = `(() => {
@@ -29,6 +34,7 @@ const themeColorScript = `(() => {
 })();`;
 
 export {
+  applyColorScheme,
   colorSchemeMediaQuery,
   colorSchemeStorageKey,
   getColorSchemeScript,

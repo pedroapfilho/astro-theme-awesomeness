@@ -4,13 +4,13 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["dist/**", ".astro/**", "dist-types/**"]
+      "outputs": ["dist/**", ".astro/**"]
     },
     "dev": { "cache": false, "persistent": true },
     "start": { "cache": false, "persistent": true },
     "lint": { "dependsOn": ["^build"] },
     "typecheck": { "dependsOn": ["^build"] },
-    "test": { "dependsOn": ["^build"], "outputs": ["coverage/**"] },
+    "test": { "dependsOn": ["^build"], "cache": false },
     "test:coverage": { "dependsOn": ["^build"], "outputs": ["coverage/**"] },
     "clean": { "cache": false }
   }
