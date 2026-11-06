@@ -1,6 +1,7 @@
 ---
 title: 'Fallow audit cannot resolve workspace TypeScript presets in baseline analysis'
 severity: 'minor'
+issue: 'pedroapfilho/astro-theme-awesomeness#147'
 ---
 
 ### Expected Behavior
