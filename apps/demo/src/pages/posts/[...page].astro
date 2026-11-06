@@ -1,13 +1,14 @@
 ---
 import type { GetStaticPaths, InferGetStaticPropsType } from "astro";
 import ListLayout from "../../components/list-layout.astro";
-import { index } from "../../lib/content";
+import { content } from "../../lib/content";
+import { PAGE_SIZE } from "../../lib/site";
 
 export const getStaticPaths = (({ paginate }) =>
-  paginate(index.posts, { pageSize: 2 })) satisfies GetStaticPaths;
+  paginate(content.posts, { pageSize: PAGE_SIZE })) satisfies GetStaticPaths;
 
 type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 
 const { page }: Props = Astro.props;
 ---
-<ListLayout title="All posts" description="Every story, starting with the latest." posts={page.data} page={page} />
+<ListLayout title="All posts" description="Every story, starting with the latest." page={page} />

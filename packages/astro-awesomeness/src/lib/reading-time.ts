@@ -1,6 +1,6 @@
 const WORDS_PER_MINUTE = 200;
 
-const readingTime = (input: string) => {
+const readingMinutes = (input: string): number => {
   const stripped = input
     .replaceAll(/<[^>]*>/gv, "")
     .replaceAll(/[#*_`>\-]/gv, " ")
@@ -8,9 +8,8 @@ const readingTime = (input: string) => {
     .trim();
 
   const words = stripped.length === 0 ? 0 : stripped.split(" ").length;
-  const minutes = Math.max(1, Math.ceil(words / WORDS_PER_MINUTE));
 
-  return { minutes, words };
+  return Math.max(1, Math.ceil(words / WORDS_PER_MINUTE));
 };
 
-export { readingTime };
+export { readingMinutes };

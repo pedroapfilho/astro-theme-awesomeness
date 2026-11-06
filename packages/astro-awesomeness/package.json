@@ -39,7 +39,7 @@
       "types": "./dist/lib/index.d.ts",
       "import": "./dist/lib/index.js"
     },
-    "./styles.css": "./dist/styles/globals.css"
+    "./styles.css": "./src/styles/globals.css"
   },
   "publishConfig": {
     "access": "public"
@@ -66,10 +66,8 @@
   "devDependencies": {
     "@repo/config-vitest": "workspace:*",
     "@repo/typescript-config": "workspace:*",
-    "@tailwindcss/postcss": "^4.3.3",
     "@types/node": "^26.6.2",
     "@types/react": "^19.3.0",
-    "@types/react-dom": "^19.3.0",
     "@vitest/coverage-v8": "^5.0.1",
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.2",

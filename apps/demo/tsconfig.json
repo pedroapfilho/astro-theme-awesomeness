@@ -1,5 +1,5 @@
 {
   "extends": "@repo/typescript-config/astro.json",
-  "include": [".astro/types.d.ts", "src", "astro.config.ts"],
+  "include": [".astro/types.d.ts", "src", "e2e", "astro.config.ts", "playwright.config.ts"],
   "exclude": ["dist", "node_modules"]
 }

@@ -4,8 +4,8 @@ import { describe, expect, it, vi } from "vitest";
 
 import {
   colorSchemeMediaQuery,
-  getColorSchemeScript,
   colorSchemeStorageKey,
+  getColorSchemeScript,
   resolveColorScheme,
 } from "./color-scheme";
 

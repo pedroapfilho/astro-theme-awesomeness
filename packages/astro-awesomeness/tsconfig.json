@@ -1,7 +1,6 @@
 {
   "extends": "@repo/typescript-config/vite.json",
   "compilerOptions": {
-    "ignoreDeprecations": "6.0",
     "paths": { "~/*": ["./src/*"] },
     "types": ["node"]
   },

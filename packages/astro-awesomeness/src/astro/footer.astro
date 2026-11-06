@@ -9,8 +9,8 @@ type Props = {
 const { class: className = "", siteTitle } = Astro.props;
 const year = new Date().getFullYear();
 ---
-<footer class={cn("border-border text-muted-foreground mt-16 border-t py-6 text-sm", className)}>
-  <div class="mx-auto flex max-w-5xl flex-col items-center justify-between gap-2 px-5 sm:flex-row sm:px-8">
+<footer class="border-border text-muted-foreground mt-16 border-t py-6 text-sm">
+  <div class={cn("mx-auto flex max-w-5xl flex-col items-center justify-between gap-2 px-5 sm:flex-row sm:px-8", className)}>
     <p>© {year} {siteTitle}</p>
     <slot name="links" />
   </div>

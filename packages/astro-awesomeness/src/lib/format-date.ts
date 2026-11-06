@@ -1,31 +1,19 @@
-const defaultOptions: Intl.DateTimeFormatOptions = {
-  day: "numeric",
-  month: "long",
-  timeZone: "UTC",
-  year: "numeric",
-};
+const formatters = new Map<string, Intl.DateTimeFormat>();
 
-const formatterCache = new Map<string, Intl.DateTimeFormat>();
-
-const getFormatter = (key: string, locale: string, options: Intl.DateTimeFormatOptions) => {
-  let formatter = formatterCache.get(key);
+const formatDate = (date: Date, locale: string): string => {
+  let formatter = formatters.get(locale);
 
   if (!formatter) {
-    formatter = new Intl.DateTimeFormat(locale, options);
-    formatterCache.set(key, formatter);
+    formatter = new Intl.DateTimeFormat(locale, {
+      day: "numeric",
+      month: "long",
+      timeZone: "UTC",
+      year: "numeric",
+    });
+    formatters.set(locale, formatter);
   }
 
-  return formatter;
-};
-
-const formatDate = (date: Date, locale: string = "en-US", options?: Intl.DateTimeFormatOptions) => {
-  if (!options) {
-    return getFormatter(locale, locale, defaultOptions).format(date);
-  }
-
-  const merged = { ...defaultOptions, ...options };
-
-  return getFormatter(`${locale}:${JSON.stringify(merged)}`, locale, merged).format(date);
+  return formatter.format(date);
 };
 
 export { formatDate };

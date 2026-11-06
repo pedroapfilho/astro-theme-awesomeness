@@ -1,17 +1,19 @@
 import rss from "@astrojs/rss";
+import type { APIRoute } from "astro";
 
-import { index } from "../lib/content";
+import { content } from "../lib/content";
+import { SITE_TITLE } from "../lib/site";
 
-const GET = (context: { site?: URL }) => {
+const GET: APIRoute = (context) => {
   if (!context.site) {
     throw new Error("astro.config.ts must define `site` for RSS.");
   }
 
   return rss({
     description: "The reference blog for astro-awesomeness.",
-    items: index.feedItems(),
+    items: content.feedItems(),
     site: context.site,
-    title: "Awesomeness",
+    title: SITE_TITLE,
   });
 };
 

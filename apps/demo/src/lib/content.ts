@@ -3,10 +3,10 @@ import { createContentIndex } from "astro-awesomeness/lib";
 
 import categorySlugMap from "../data/category-slugs.json";
 
-const index = createContentIndex({
+const content = createContentIndex({
   categorySlugMap,
   defaultCategory: "notes-field",
   posts: await getCollection("posts"),
 });
 
-export { index };
+export { content };

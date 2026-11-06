@@ -158,6 +158,12 @@ describe("postSchema", () => {
     expect(post.heroImage?.alt).toBe(alt);
   });
 
+  it("drops the unused slug field", () => {
+    expect(
+      postSchema.parse({ pubDate: "2026-01-01", slug: "x", title: "A house" }),
+    ).not.toHaveProperty("slug");
+  });
+
   it("accepts the transformed schema directly in Astro defineCollection", () => {
     const collection = defineCollection({
       loader: () => [{ id: "fixture", pubDate: "2026-01-01", title: "A house" }],
