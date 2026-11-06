@@ -1,12 +1,12 @@
 ---
-import type { InferGetStaticPropsType } from "astro";
+import type { GetStaticPaths, InferGetStaticPropsType } from "astro";
 import ListLayout from "../../components/list-layout.astro";
-import { index } from "../../lib/content";
+import { content } from "../../lib/content";
 
-export const getStaticPaths = () => index.tags().map((tag) => ({
+export const getStaticPaths = (() => content.tags().map((tag) => ({
   params: { tag: tag.slug },
   props: { tag },
-}));
+}))) satisfies GetStaticPaths;
 
 type Props = InferGetStaticPropsType<typeof getStaticPaths>;
 

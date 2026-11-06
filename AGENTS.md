@@ -22,13 +22,13 @@ This repo follows the fleet's shared standards, checked by `standy` (`~/dev/stan
 
 ## Stack
 
-- **Astro 6/7** (peer dep `^6.0.0 || ^7.0.0`) for the demo app and consumer blogs
+- **Astro 6/7** (peer dep `^6.0.0 || ^7.0.0`) for consumer blogs; the demo runs Astro 7
 - **React 19** for the optional theme-toggle island and Button
 - **Tailwind CSS v4** with a shared stylesheet; per-blog font/accent overrides via `@theme`
 - **shadcn-style wrappers over @base-ui/react** + **lucide-react**
 - **zod 4** for content collection schemas (`postSchema`, `authorSchema`)
 - **tsdown** for the package build; `.astro` files ship as source via `./astro/*` and `./layouts/*` exports
-- **Vitest 5** for package unit tests in Node; the shared React preset uses jsdom
+- **Vitest 5** for package unit tests in Node
 - **changesets** for versioned releases (demo app is ignored)
 - **oxlint + oxfmt** via `oxlint-config-awesomeness`
 - **fallow** for dead-code / dupes / health audits
@@ -40,7 +40,8 @@ This repo follows the fleet's shared standards, checked by `standy` (`~/dev/stan
 apps/
   demo/                       # Astro reference blog: dev loop + showcase
     src/lib/content.ts        # one createContentIndex binding for all routes and layouts
-    src/components/           # demo-owned header, cards and list/post layouts
+    src/lib/site.ts           # site title and archive page size
+    src/components/           # demo-owned site layout (header, footer), cards and list/post layouts
     src/content/posts/        # local posts with CMS-shaped frontmatter
     src/pages/                # posts, category, article, tag, RSS and 404 routes
 packages/
@@ -52,8 +53,8 @@ packages/
     src/content/              # post/author schemas and normalized heroImage
     src/lib/                  # content index, cn and internal component helpers
     src/styles/               # globals.css (shipped as `astro-awesomeness/styles.css`)
-  config-typescript/          # @repo/typescript-config (base, library, vite, astro)
-  config-vitest/              # @repo/config-vitest (react, node, setup-react)
+  config-typescript/          # @repo/typescript-config (base, vite, astro)
+  config-vitest/              # @repo/config-vitest (node)
 .changeset/                   # changeset config (ignores `demo`)
 oxlint.config.ts              # extends oxlint-config-awesomeness
 ```
@@ -66,7 +67,7 @@ From the repo root (all turbo-fanned):
 pnpm install
 pnpm dev                      # demo app + package watch
 pnpm build                    # tsdown package + astro build demo
-pnpm lint                     # oxlint across workspaces
+pnpm lint                     # oxlint across workspaces + design-system rules on .astro
 pnpm format                   # oxfmt write; `pnpm format:check` for CI
 pnpm typecheck                # tsc / astro check
 pnpm test                     # vitest run
@@ -80,7 +81,7 @@ Fallow:
 pnpm fallow                   # interactive
 pnpm fallow:dead              # dead-code scan
 pnpm fallow:dupes             # duplicate detection
-pnpm fallow:health --score    # quick health score
+pnpm fallow:health            # quick health score
 pnpm fallow:audit             # diff vs main
 ```
 
@@ -96,16 +97,16 @@ pnpm release                  # turbo build + changeset publish
 
 `astro-awesomeness` exposes these subpath entries (see `packages/astro-awesomeness/package.json`):
 
-- `astro-awesomeness/components`: React islands (`ThemeToggle`, `Button`, `buttonVariants`)
-- `astro-awesomeness/astro/*`: raw `.astro` components: `author-byline`, `author-card`,
-  `footer`, `formatted-date`, `pagination`, `prose`, `reading-time`, `seo`, `tag-list`
+- `astro-awesomeness/components`: React islands (`src/components/index.ts`)
+- `astro-awesomeness/astro/*`: raw `.astro` components in `src/astro/`
 - `astro-awesomeness/layouts/base-layout`: page/article document layout with `head`,
   `header`, default and `footer` slots; no React imports
-- `astro-awesomeness/content`: `postSchema`, `authorSchema`, and `Post`/`Author` types
-- `astro-awesomeness/lib`: `cn`, `createContentIndex`, and its types (`CategoryOptions`,
-  `ContentBucket`, `ContentIndex`, `ContentIndexOptions`, `ContentPost`, `FeedItem`,
-  `PostCategory`, `PostParams`)
-- `astro-awesomeness/styles.css`: tokens, base styles, prose and the dark variant
+- `astro-awesomeness/content`: post/author schemas and types (`src/content/index.ts`)
+- `astro-awesomeness/lib`: `cn`, `createContentIndex` and its types (`src/lib/index.ts`)
+- `astro-awesomeness/styles.css`: `src/styles/globals.css`, with tokens, base styles,
+  prose and the dark variant
+
+The package README documents every component and member.
 
 There is no root entry or Tailwind preset export. Import each public subpath explicitly.
 
@@ -129,12 +130,10 @@ its profile base, `acme-package`. Skipped checks: e2e (saas-only),
 auth-config, prisma-config, turbo-db-generate-ordering, i18n-\*, landing-urls,
 e2e-auth-emails. Seven workflows gate PRs: `lint` (formatting, dead code and
 oxlint as steps of one job), `test`, `typecheck`, `build`, `e2e` (the demo's
-Playwright suite), `publish-checks` and a `react-doctor` scan. They run on pull requests, a weekly schedule and manual
-dispatch, never on pushes to main. `release.yml` is the eighth, on pushes to
-main only.
-
-The repo has a recorded divergence: `astro-theme-awesomeness.gitignore` (per-app
-gitignores allowed under the library profile). See `fleet.json` (`standy divergences`).
+Playwright suite), `publish-checks` and a `react-doctor` scan. The first six also
+run on a weekly schedule and manual dispatch; `react-doctor` runs on pull requests
+only. None run on pushes to main. `release.yml` runs on pushes to main, and
+`friction-log.yml` reports the Frog friction log.
 
 ## Notable decisions
 
@@ -162,10 +161,11 @@ gitignores allowed under the library profile). See `fleet.json` (`standy diverge
   and `description` for a page, or `siteTitle` and `post` for an article. Canonical,
   `og:url` and JSON-LD `mainEntityOfPage.@id` derive from the route pathname on
   `Astro.site`. `seo.canonical_url` influences content route selection only.
-- **Consumers own presentation.** The demo provides its own list/post layouts and
-  header around BaseLayout. Shared components do not prescribe a blog shell.
-  `colorScheme="light"` or `"dark"` fixes the scheme without a theme initialization
-  script; `"auto"` follows a stored preference or the system preference.
+- **Consumers own presentation.** The demo wraps BaseLayout in its own site layout
+  (header, footer, stylesheet) and list/post layouts. Shared components do not
+  prescribe a blog shell. `colorScheme="light"` or `"dark"` fixes the scheme
+  without a theme initialization script; `"auto"` follows a stored preference or
+  the system preference.
 - **Changesets ignores `demo`.** Only `astro-awesomeness` is published; demo
   is a dev playground.
 
@@ -179,8 +179,8 @@ gitignores allowed under the library profile). See `fleet.json` (`standy diverge
 
 ## Design-system linting
 
-Run `pnpm lint` after changes and fix every error. `oxlint.config.ts` registers `@shadcn/lint` and enforces all six rules as errors: component contracts, known Tailwind classes, static component class names, semantic colors, theme or scale values, and class-based styling. Use CSS custom properties for runtime geometry and named theme tokens for custom values. Use component variants for appearance and layout classes at call sites. All six rules also apply inside primitive directories. Shared styles belong to component variants or the owning stylesheet. Keep theme discovery local to each app. Exact class-merging fixture allowances apply only to the named test files.
+Run `pnpm lint` after changes and fix every error. `oxlint.config.ts` registers `@shadcn/lint` and enforces all six rules as errors: component contracts, known Tailwind classes, static component class names, semantic colors, theme or scale values, and class-based styling. Use CSS custom properties for runtime geometry and named theme tokens for custom values. Use component variants for appearance and layout classes at call sites. All six rules also apply inside primitive directories. Shared styles belong to component variants or the owning stylesheet. Keep theme discovery local to each app.
 
-The shared package's `components.json` points to the demo's complete Tailwind entry, because the distributed stylesheet is a theme fragment that consumers load after Tailwind. Build the theme package before linting. The `a` and `b` allowances are limited to `cn.test.ts`, which tests opaque class merging. The root lint command also runs all six rules on tracked Astro templates through `astro-eslint-parser`, sharing `oxlint.config.ts`. Run `pnpm test:lint` to verify template coverage and keep `astro check` for template typing.
+The shared package's `components.json` points to the demo's complete Tailwind entry, because the distributed stylesheet is a theme fragment that consumers load after Tailwind. Build the theme package before linting. The root lint command also runs all six rules on tracked Astro templates through `astro-eslint-parser`, sharing `oxlint.config.ts`. Run `pnpm test:lint` to verify template coverage and keep `astro check` for template typing.
 
 Keep the Base Nova Button and its colocated variant factory aligned with upstream. See `packages/astro-awesomeness/SHADCN.md` and run `pnpm check:shadcn` before committing. Preserve consumer brands and the static Astro/optional React boundary.
