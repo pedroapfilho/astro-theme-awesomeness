@@ -8,14 +8,18 @@ overrides:
   http-cache-semantics: "^4.2.1"
   ip-address: "^10.7.1"
   js-yaml: "^4.3.2"
-  "@modelcontextprotocol/sdk": "^1.31.0"
+  launch-editor: "^2.14.2"
   nanoid: "^3.3.18"
-  proxy-addr: "^2.0.8"
   sharp: "^0.35.5"
   shell-quote: "^1.11.0"
   smol-toml: "^1.8.1"
   source-map-js: "^1.2.2"
   svgo: "^4.1.0"
+  systeminformation: "^5.33.16"
+  undici@7: "^7.30.1"
+  undici@8: "^8.12.2"
+  vite: "^8.3.3"
+  zod: "^4.6.6"
 
 packages:
   - "apps/*"
@@ -46,7 +50,6 @@ minimumReleaseAgeExclude:
   - "@typescript/typescript6@6.0.2"
   - "@napi-rs/wasm-runtime@1.2.4"
   - magic-string@1.3.1
-  - vite@8.3.0
 
 trustPolicy: no-downgrade
 trustPolicyExclude:
