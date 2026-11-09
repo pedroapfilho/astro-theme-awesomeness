@@ -93,6 +93,18 @@ describe("buildMetadata", () => {
     });
   });
 
+  it("omits empty CMS author fields from the Person", () => {
+    const metadata = buildMetadata(
+      {
+        post: { data: { ...post.data, author: { bio: "", name: "Ana", photoUrl: "", url: "" } } },
+        siteTitle,
+      },
+      url,
+    );
+
+    expect(metadata.jsonLd?.author).toEqual({ "@type": "Person", name: "Ana" });
+  });
+
   it("omits unavailable Person fields and images", () => {
     const metadata = buildMetadata(
       { post: { data: { ...post.data, author: { name: "Ana" } } }, siteTitle },
@@ -131,6 +143,16 @@ describe("buildMetadata", () => {
       title: siteTitle,
       type: "website",
     });
+  });
+
+  it("resolves a root-relative image against the site for og:image and the publisher logo", () => {
+    const metadata = buildMetadata({ image: "/og-image.jpg", post, siteTitle }, url, site);
+    expect(metadata.image).toBe("https://example.com/og-image.jpg");
+    expect(metadata.jsonLd?.publisher.logo).toEqual({
+      "@type": "ImageObject",
+      url: "https://example.com/og-image.jpg",
+    });
+    expect(buildMetadata({ image: "", post, siteTitle }, url, site).image).toBeUndefined();
   });
 
   it("preserves noindex for a 404 page", () => {

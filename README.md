@@ -20,7 +20,7 @@ pnpm dev
 ```
 
 The demo binds `createContentIndex` once in `apps/demo/src/lib/content.ts`.
-Its local header and list/post layouts compose the package's static building
+Its site layout and list/post layouts compose the package's static building
 blocks. Routes include `/posts/`, `/[category]/[slug]/`, `/[category]/[...page]`,
 `/tag/[tag]/`, `/rss.xml` and a 404 page.
 
@@ -34,9 +34,8 @@ pnpm test:lint
 pnpm check:shadcn
 ```
 
-Build the package before linting so Tailwind theme discovery has its generated
-stylesheet. Package unit tests use Vitest 5 in Node; the shared React test preset
-uses jsdom.
+Build the package before linting: type-aware oxlint reads its generated
+declarations. Package unit tests use Vitest 5 in Node.
 
 Only `packages/astro-awesomeness` is published. Use `pnpm changeset` for release
 notes; the demo is excluded from versioning.

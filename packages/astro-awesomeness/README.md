@@ -21,6 +21,7 @@ import { defineConfig } from "astro/config";
 
 const config = defineConfig({
   i18n: { defaultLocale: "en-US", locales: ["en-US"] },
+  prerenderConflictBehavior: "error",
   site: "https://example.com",
   trailingSlash: "always",
   vite: {
@@ -31,6 +32,10 @@ const config = defineConfig({
 
 export default config;
 ```
+
+`prerenderConflictBehavior: "error"` fails the build when two routes produce the
+same URL, such as a category that slugs to `posts` next to a `posts/[...page]`
+archive; Astro's default keeps one page and only warns.
 
 Create `src/styles/global.css` and import it from your pages or a local layout:
 
@@ -103,15 +108,15 @@ The post body goes here.
 
 `title` and `pubDate` are required. Description, categories, tags and draft default
 to `""`, `[]`, `[]` and `false`. Optional fields include `author`, `updatedDate`,
-`status`, `slug` and `seo.canonical_url`. The `authorSchema` and the inferred `Post`
-and `Author` types are also exported from `astro-awesomeness/content`.
+`status` and `seo.canonical_url`. The `authorSchema` and the inferred `Post` and
+`Author` types are also exported from `astro-awesomeness/content`.
 
 The schema transforms `heroImageUrl`, `heroImageWidth`, `heroImageHeight` and
 `coverAlt` into `post.data.heroImage`, with `{ src, width, height, alt }`. It emits
 an image only when all three URL/dimension fields are supplied; alt text defaults
-to the post title. The loader fields disappear from the parsed result. `cover`
-and `series` are no longer schema fields. Render the normalized image in your
-local article layout; BaseLayout uses it for metadata but does not render it.
+to the post title. The loader fields disappear from the parsed result. Render the
+normalized image in your local article layout; BaseLayout uses it for metadata but
+does not render it.
 
 ## Bind one content index
 
@@ -151,9 +156,9 @@ A parseable absolute `seo.canonical_url` with at least two path segments supplie
 the final two segments as category and slug. Otherwise the first category uses
 an own entry in `categorySlugMap` or a generated slug. A missing first category or
 one whose generated slug is empty (such as whitespace or an emoji-only label) uses
-`defaultCategory`, and the post's collection `id` supplies the article slug. The
-`slug` data field is not a route override. Returned post URLs are always local
-`/category/slug/` paths, regardless of the CMS URL's host.
+`defaultCategory`, and the post's collection `id` supplies the article slug.
+Returned post URLs are always local `/category/slug/` paths, regardless of the CMS
+URL's host.
 
 `defaultCategory` and every `categorySlugMap` value must be nonempty URL path
 segments, without whitespace, `/`, `\`, `?`, `#`, or a `.`/`..` segment. Invalid
@@ -181,24 +186,9 @@ Both modes also accept `colorScheme` and `rssHref`. The `head`, `header`, defaul
 and `footer` slots let your site supply its own chrome. Put `id="main-content"` on
 your main element so the built-in skip link has a target.
 
-For homepages that previously passed a precomposed `Site · Tagline` title without
-`siteTitle`, split the site name from the page title:
-
-```astro
----
-import BaseLayout from "astro-awesomeness/layouts/base-layout";
-
-const SITE = "Base Arquitetura";
----
-
-<BaseLayout siteTitle={SITE} title="Arquitetura exuberante" description="Ideias para seus espaços.">
-  <main id="main-content"><h1>Arquitetura exuberante</h1></main>
-</BaseLayout>
-```
-
-This renders `<title>Arquitetura exuberante · Base Arquitetura</title>` and the
-bare `og:title` value `Arquitetura exuberante`. Passing `title={SITE}` instead
-makes `title === siteTitle`, so both render the bare site name `Base Arquitetura`.
+The document title joins `title` and `siteTitle` with a middle dot, as in
+`<title>Posts · Example</title>`, while `og:title` stays the bare `title`. Pass
+`title={siteTitle}` on a homepage to render the bare site name in both.
 
 For example, `src/pages/posts/index.astro`:
 
@@ -266,9 +256,9 @@ const category = content.postCategory(post);
 Article metadata comes from `post.data`: title, description, author, publication
 and update dates, and hero image. It includes `BlogPosting` JSON-LD. Missing
 authors fall back to the site organization in JSON-LD. The shared `image` prop is
-also the publisher logo there, so supply an absolute URL appropriate for your
-site. Pages emit website metadata; `noindex` emits `noindex,follow` and suppresses
-the canonical link.
+also the publisher logo there; a root-relative path such as `/og-image.jpg`
+resolves against `Astro.site`. Pages emit website metadata; `noindex` emits
+`noindex,follow` and suppresses the canonical link.
 
 Canonical links, `og:url` and JSON-LD `mainEntityOfPage.@id` use the current route
 pathname on `Astro.site`, excluding query strings and fragments. Configure `site`
@@ -321,38 +311,12 @@ without it, pagination links drop the trailing slash that canonical and sitemap
 URLs carry. Use a rest parameter (`[...page]`) to put the first page at the
 category root.
 
-When migrating a consumer-owned `list-layout.astro` wrapper, accept the full
-Astro `Page`, including `url`, and guard pagination with `page &&`:
-
-```astro
----
-import type { Page } from "astro";
-import type { CollectionEntry } from "astro:content";
-import Pagination from "astro-awesomeness/astro/pagination";
-
-type Props = {
-  page?: Page<CollectionEntry<"posts">>;
-};
-
-const { page }: Props = Astro.props;
----
-
-<slot />
-{page && <Pagination page={page} />}
-```
-
-Remove `urlForPage` from wrapper props, destructuring, render guards and route
-call sites throughout the call chain. Delete the obsolete `pageUrl` helper;
-keep `PAGE_SIZE` if it is still used by `paginate()`.
-
 Build `src/pages/tag/[tag].astro` static paths with
 `content.tags().map((tag) => ({ params: { tag: tag.slug }, props: { tag } }))`, then
 render `tag.posts` using `content.postUrl`. A separate tag collection is unnecessary.
 
-`content.tags()` emits one canonical normalized slug per tag. During migration,
-delete consumer alias routes, including WordPress-style `-2` slugs, their alias
-generators and redundant helper sorting. The index already supplies sorted posts
-for each canonical tag route.
+`content.tags()` emits one canonical normalized slug per tag, with its posts
+already sorted.
 
 ## RSS
 
@@ -378,10 +342,8 @@ const GET: APIRoute = (context) => {
 export { GET };
 ```
 
-CMS consumers using `@easeia/astro-content` can remove their duplicate `xml.ts`
-invalid-character stripping: the loader already strips invalid XML characters.
-`feedItems()` projects the indexed fields; it is not an XML sanitizer for other
-loaders.
+`feedItems()` projects the indexed fields; it does not strip invalid XML
+characters.
 
 ## Locale and color scheme
 
@@ -395,9 +357,6 @@ only the language and region from `new Intl.Locale(tag).maximize()` as
 Built-in skip-link, pagination and reading-time labels support Portuguese for
 `pt` locales and English otherwise. Consumers own page copy and route localization;
 content-index URLs do not add locale prefixes.
-
-`FormattedDate` has no `locale` prop, and `ReadingTime` has no `label` prop.
-BaseLayout and Seo have no `lang` or `locale` props.
 
 | `colorScheme`      | Behavior                                                                                                         |
 | ------------------ | ---------------------------------------------------------------------------------------------------------------- |
@@ -433,20 +392,20 @@ hash. Fixed-scheme sites run no script; set a literal
 
 ## Remaining building blocks
 
-| Import                                   | Props and purpose                                                     |
-| ---------------------------------------- | --------------------------------------------------------------------- |
-| `astro-awesomeness/astro/author-byline`  | `author`, optional `class`; compact author name, photo and link.      |
-| `astro-awesomeness/astro/author-card`    | `author`, optional `class`; author profile with optional biography.   |
-| `astro-awesomeness/astro/footer`         | `siteTitle`, optional `class`; copyright and a `links` slot.          |
-| `astro-awesomeness/astro/formatted-date` | `date: Date`, optional `class`; localized `<time>`.                   |
-| `astro-awesomeness/astro/pagination`     | `page`, optional `class`; Astro pagination links.                     |
-| `astro-awesomeness/astro/prose`          | Optional `class` and a default slot; styled article content.          |
-| `astro-awesomeness/astro/reading-time`   | `text`, optional `class`; reading minutes with a localized label.     |
-| `astro-awesomeness/astro/seo`            | The page/article metadata props described above.                      |
-| `astro-awesomeness/astro/tag-list`       | `tags: string[]`, optional `class`; deduplicated links under `/tag/`. |
-| `astro-awesomeness/components`           | `ThemeToggle`, `Button` and `buttonVariants`; requires React.         |
-| `astro-awesomeness/lib`                  | `cn`, `createContentIndex` and its types.                             |
-| `astro-awesomeness/content`              | `postSchema`, `authorSchema`, `Post` and `Author`.                    |
+| Import                                   | Props and purpose                                                              |
+| ---------------------------------------- | ------------------------------------------------------------------------------ |
+| `astro-awesomeness/astro/author-byline`  | `author`, optional `class`; compact author name, photo and link.               |
+| `astro-awesomeness/astro/author-card`    | `author`, optional `class`; author profile with optional biography.            |
+| `astro-awesomeness/astro/footer`         | `siteTitle`, optional `class` for the inner row; copyright and a `links` slot. |
+| `astro-awesomeness/astro/formatted-date` | `date: Date`, optional `class`; localized `<time>`.                            |
+| `astro-awesomeness/astro/pagination`     | `page`, optional `class`; Astro pagination links.                              |
+| `astro-awesomeness/astro/prose`          | Optional `class` and a default slot; styled article content.                   |
+| `astro-awesomeness/astro/reading-time`   | `text`, optional `class`; reading minutes with a localized label.              |
+| `astro-awesomeness/astro/seo`            | The page/article metadata props described above.                               |
+| `astro-awesomeness/astro/tag-list`       | `tags: string[]`, optional `class`; deduplicated links under `/tag/`.          |
+| `astro-awesomeness/components`           | `ThemeToggle`, `Button` and `buttonVariants`; requires React.                  |
+| `astro-awesomeness/lib`                  | `cn`, `createContentIndex` and its types.                                      |
+| `astro-awesomeness/content`              | `postSchema`, `authorSchema`, `Post` and `Author`.                             |
 
 The lib types are `CategoryOptions`, `ContentBucket`, `ContentIndex`,
 `ContentIndexOptions`, `ContentPost`, `FeedItem`, `PostCategory` and `PostParams`.

@@ -1,25 +1,17 @@
 import { describe, expect, it } from "vitest";
 
-import { readingTime } from "./reading-time";
+import { readingMinutes } from "./reading-time";
 
-describe("readingTime", () => {
+describe("readingMinutes", () => {
   it("returns 1 minute for short text", () => {
-    expect(readingTime("Hello world.")).toEqual({ minutes: 1, words: 2 });
+    expect(readingMinutes("Hello world.")).toBe(1);
   });
   it("scales by words at 200 wpm", () => {
-    const text = "word ".repeat(400).trim();
-    expect(readingTime(text)).toEqual({ minutes: 2, words: 400 });
+    expect(readingMinutes("word ".repeat(400).trim())).toBe(2);
+    expect(readingMinutes("word ".repeat(401).trim())).toBe(3);
   });
-  it("strips HTML tags before counting", () => {
-    expect(readingTime("<p>Hello <strong>world</strong>.</p>")).toEqual({
-      minutes: 1,
-      words: 2,
-    });
-  });
-  it("counts markdown text", () => {
-    expect(readingTime("# Title\n\nSome body **text** here.")).toEqual({
-      minutes: 1,
-      words: 5,
-    });
+  it("ignores HTML tags and markdown markers", () => {
+    expect(readingMinutes(`<p>${"word ".repeat(200)}</p>`)).toBe(1);
+    expect(readingMinutes(`# ${"**word** ".repeat(200)}`)).toBe(1);
   });
 });

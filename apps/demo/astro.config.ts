@@ -8,6 +8,7 @@ import zodCompiler from "zod-compiler/vite";
 const config = defineConfig({
   i18n: { defaultLocale: "en-US", locales: ["en-US"] },
   integrations: [react(), mdx(), sitemap()],
+  prerenderConflictBehavior: "error",
   site: "https://demo.astro-awesomeness.dev",
   trailingSlash: "always",
   vite: {

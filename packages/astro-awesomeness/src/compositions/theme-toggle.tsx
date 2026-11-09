@@ -3,27 +3,18 @@ import { useEffect, useSyncExternalStore } from "react";
 
 import { Button } from "../components/button";
 import {
+  applyColorScheme,
   colorSchemeMediaQuery,
   colorSchemeStorageKey,
   resolveColorScheme,
   type ResolvedColorScheme,
 } from "../lib/color-scheme";
 
-const getStoredTheme = (): string | null => {
-  if (typeof window === "undefined") {
-    return null;
-  }
-
-  return window.localStorage.getItem(colorSchemeStorageKey);
-};
+const getStoredTheme = (): string | null => window.localStorage.getItem(colorSchemeStorageKey);
 
 const storedThemeListeners = new Set<() => void>();
 
 const subscribeStoredTheme = (callback: () => void) => {
-  if (typeof window === "undefined") {
-    return () => {};
-  }
-
   storedThemeListeners.add(callback);
   window.addEventListener("storage", callback);
 
@@ -41,19 +32,9 @@ const setStoredTheme = (next: ResolvedColorScheme) => {
   }
 };
 
-const getPrefersDark = (): boolean => {
-  if (typeof window === "undefined") {
-    return false;
-  }
-
-  return window.matchMedia(colorSchemeMediaQuery).matches;
-};
+const getPrefersDark = (): boolean => window.matchMedia(colorSchemeMediaQuery).matches;
 
 const subscribePrefersDark = (callback: () => void) => {
-  if (typeof window === "undefined") {
-    return () => {};
-  }
-
   const media = window.matchMedia(colorSchemeMediaQuery);
   media.addEventListener("change", callback);
 
@@ -83,7 +64,7 @@ const ThemeToggle = ({ ariaLabel = "Dark mode" }: Props) => {
 
   useEffect(() => {
     if (isHydrated) {
-      document.documentElement.classList.toggle("dark", theme === "dark");
+      applyColorScheme(theme);
     }
   }, [isHydrated, theme]);
 

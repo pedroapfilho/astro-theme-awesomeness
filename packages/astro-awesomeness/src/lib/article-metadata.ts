@@ -1,12 +1,7 @@
+import type { Post } from "../content";
+
 type ArticlePost = {
-  data: {
-    author?: { bio?: string; name: string; photoUrl?: string; url?: string };
-    description: string;
-    heroImage?: { alt: string; height: number; src: string; width: number };
-    pubDate: Date;
-    title: string;
-    updatedDate?: Date;
-  };
+  data: Pick<Post, "author" | "description" | "heroImage" | "pubDate" | "title" | "updatedDate">;
 };
 
 type MetadataProps = {
@@ -17,38 +12,29 @@ type MetadataProps = {
   | { description?: never; noindex?: never; post: ArticlePost; title?: never }
 );
 
-type AuthorJsonLd = {
-  "@type": "Person" | "Organization";
-  description?: string;
-  image?: string;
-  name: string;
-  url?: string;
-};
+const present = (value?: string): string | undefined => (value === "" ? undefined : value);
 
 const buildMetadata = (props: MetadataProps, url: URL, site?: URL) => {
-  const { image, post, siteTitle } = props;
+  const { post, siteTitle } = props;
   const { description, title } = post ? post.data : props;
-  const canonical = new URL(url.pathname, site ?? url.origin).toString();
+  const origin = site ?? url.origin;
+  const canonical = new URL(url.pathname, origin).toString();
+  const imagePath = present(props.image);
+  const image = imagePath === undefined ? undefined : new URL(imagePath, origin).toString();
   const ogImage = post?.data.heroImage?.src ?? image;
   const author = post?.data.author;
   const publishedTime = post?.data.pubDate.toISOString();
   const modifiedTime = post?.data.updatedDate?.toISOString();
 
-  const authorJsonLd: AuthorJsonLd = author
-    ? { "@type": "Person", name: author.name }
+  const authorJsonLd = author
+    ? {
+        "@type": "Person",
+        description: present(author.bio),
+        image: present(author.photoUrl),
+        name: author.name,
+        url: present(author.url),
+      }
     : { "@type": "Organization", name: siteTitle };
-
-  if (author?.url !== undefined && author.url !== "") {
-    authorJsonLd.url = author.url;
-  }
-
-  if (author?.photoUrl !== undefined && author.photoUrl !== "") {
-    authorJsonLd.image = author.photoUrl;
-  }
-
-  if (author?.bio !== undefined && author.bio !== "") {
-    authorJsonLd.description = author.bio;
-  }
 
   const jsonLd = post
     ? {

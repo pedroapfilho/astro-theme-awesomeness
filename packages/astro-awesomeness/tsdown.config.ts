@@ -2,8 +2,6 @@ import { defineConfig } from "tsdown";
 
 const config = defineConfig({
   clean: true,
-  copy: [{ from: "src/styles/globals.css", to: "dist/styles/" }],
-  deps: { neverBundle: ["astro", "react", "react-dom", "tailwindcss"] },
   dts: true,
   entry: ["src/components/index.ts", "src/content/index.ts", "src/lib/index.ts"],
   format: "esm",
