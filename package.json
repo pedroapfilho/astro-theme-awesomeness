@@ -42,7 +42,7 @@
     "oxlint-config-awesomeness": "^4.9.0",
     "oxlint-plugin-react-doctor": "^0.9.14",
     "oxlint-tsgolint": "^7.0.2003",
-    "tsdown": "^0.23.0",
+    "tsdown": "^0.23.7",
     "turbo": "^2.11.3"
   },
   "lint-staged": {
