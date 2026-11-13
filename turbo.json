@@ -4,6 +4,7 @@
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", "$TURBO_ROOT$/tsdown.config.ts"],
       "outputs": ["dist/**", ".astro/**"]
     },
     "dev": { "cache": false, "persistent": true },
