@@ -45,8 +45,8 @@
     "access": "public"
   },
   "scripts": {
-    "dev": "tsdown --watch",
-    "build": "tsdown",
+    "dev": "tsdown src/components/index.ts src/content/index.ts src/lib/index.ts --clean --watch",
+    "build": "tsdown src/components/index.ts src/content/index.ts src/lib/index.ts --clean",
     "prepack": "pnpm run build",
     "typecheck": "tsc --noEmit",
     "lint": "oxlint src",
