@@ -2,7 +2,7 @@ declare module "virtual:astro-awesomeness/components/ArchiveLayout" {
   import type { CollectionEntry } from "astro:content";
   import type { ListLayoutProps } from "astro-awesomeness";
 
-  const ArchiveLayout: (props: ListLayoutProps<CollectionEntry<"posts">>) => unknown;
+  const ArchiveLayout: (props: ListLayoutProps<CollectionEntry<"posts">>) => astroHTML.JSX.Element;
 
   export default ArchiveLayout;
 }
@@ -11,7 +11,7 @@ declare module "virtual:astro-awesomeness/components/ListLayout" {
   import type { CollectionEntry } from "astro:content";
   import type { ListLayoutProps } from "astro-awesomeness";
 
-  const ListLayout: (props: ListLayoutProps<CollectionEntry<"posts">>) => unknown;
+  const ListLayout: (props: ListLayoutProps<CollectionEntry<"posts">>) => astroHTML.JSX.Element;
 
   export default ListLayout;
 }
@@ -20,7 +20,7 @@ declare module "virtual:astro-awesomeness/components/PostLayout" {
   import type { CollectionEntry } from "astro:content";
   import type { PostLayoutProps } from "astro-awesomeness";
 
-  const PostLayout: (props: PostLayoutProps<CollectionEntry<"posts">>) => unknown;
+  const PostLayout: (props: PostLayoutProps<CollectionEntry<"posts">>) => astroHTML.JSX.Element;
 
   export default PostLayout;
 }
