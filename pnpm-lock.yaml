@@ -64,7 +64,7 @@ importers:
         version: 1.85.0(oxlint-tsgolint@7.0.2003)
       oxlint-config-awesomeness:
         specifier: ^4.9.0
-        version: 4.9.0(@nkzw/eslint-plugin@2.0.0(eslint@10.11.0(jiti@2.7.0)))(@shadcn/lint@0.2.0(@typescript-eslint/parser@8.70.1(eslint@10.11.0(jiti@2.7.0))(typescript@6.0.3))(eslint@10.11.0(jiti@2.7.0)))(eslint-plugin-no-only-tests@3.4.0)(eslint-plugin-perfectionist@5.10.1(eslint@10.11.0(jiti@2.7.0))(typescript@6.0.3))(eslint@10.11.0(jiti@2.7.0))(oxlint-plugin-react-doctor@0.9.14)(oxlint-tsgolint@7.0.2003)(oxlint@1.85.0(oxlint-tsgolint@7.0.2003))(typescript@6.0.3)
+        version: 4.10.0(@nkzw/eslint-plugin@2.0.0(eslint@10.11.0(jiti@2.7.0)))(@shadcn/lint@0.2.0(@typescript-eslint/parser@8.70.1(eslint@10.11.0(jiti@2.7.0))(typescript@6.0.3))(eslint@10.11.0(jiti@2.7.0)))(@typescript-eslint/parser@8.70.1(eslint@10.11.0(jiti@2.7.0))(typescript@6.0.3))(@typescript/typescript6@6.0.2)(astro-eslint-parser@3.2.0(@emnapi/core@2.0.0-beta.2)(@emnapi/runtime@2.0.0-beta.2))(eslint-plugin-no-only-tests@3.4.0)(eslint-plugin-perfectionist@5.10.1(eslint@10.11.0(jiti@2.7.0))(typescript@6.0.3))(eslint@10.11.0(jiti@2.7.0))(oxlint-plugin-react-doctor@0.9.14)(oxlint-tsgolint@7.0.2003)(oxlint@1.85.0(oxlint-tsgolint@7.0.2003))(typescript@6.0.3)
       oxlint-plugin-react-doctor:
         specifier: ^0.9.14
         version: 0.9.14
@@ -3628,13 +3628,16 @@ packages:
       vite-plus:
         optional: true
 
-  oxlint-config-awesomeness@4.9.0:
-    resolution: {integrity: sha512-NIrLIuDrOvcsGSv6tGtlr6tHI1lXqRj8lEDJEokhguwy6v2dhSvuOHuXNZtLV9ZH7e+QQiMvJpRMpwfTkZK28w==}
+  oxlint-config-awesomeness@4.10.0:
+    resolution: {integrity: sha512-wUA31CdEO7FwK5YluEoG97abRX7e6WYA0l67nkcH11atBrenBvuvDe4FPH1DBtsiNGHJ+Hj20Q04EJW8GFnGhA==}
     engines: {node: '>=24'}
     hasBin: true
     peerDependencies:
       '@nkzw/eslint-plugin': ^2.0.0
       '@shadcn/lint': '>=0.1.0 <0.3.0'
+      '@typescript-eslint/parser': ^8.70.1
+      '@typescript/typescript6': ^6.0.2
+      astro-eslint-parser: ^3.2.0
       eslint: ^10.0.0
       eslint-plugin-no-only-tests: ^3.4.0
       eslint-plugin-perfectionist: ^5.10.1
@@ -3644,6 +3647,12 @@ packages:
       typescript: '>=7.0.0 <8.0.0'
     peerDependenciesMeta:
       '@shadcn/lint':
+        optional: true
+      '@typescript-eslint/parser':
+        optional: true
+      '@typescript/typescript6':
+        optional: true
+      astro-eslint-parser:
         optional: true
 
   oxlint-plugin-react-doctor@0.9.14:
@@ -7887,7 +7896,7 @@ snapshots:
       '@oxfmt/binding-win32-ia32-msvc': 0.70.0
       '@oxfmt/binding-win32-x64-msvc': 0.70.0
 
-  oxlint-config-awesomeness@4.9.0(@nkzw/eslint-plugin@2.0.0(eslint@10.11.0(jiti@2.7.0)))(@shadcn/lint@0.2.0(@typescript-eslint/parser@8.70.1(eslint@10.11.0(jiti@2.7.0))(typescript@6.0.3))(eslint@10.11.0(jiti@2.7.0)))(eslint-plugin-no-only-tests@3.4.0)(eslint-plugin-perfectionist@5.10.1(eslint@10.11.0(jiti@2.7.0))(typescript@6.0.3))(eslint@10.11.0(jiti@2.7.0))(oxlint-plugin-react-doctor@0.9.14)(oxlint-tsgolint@7.0.2003)(oxlint@1.85.0(oxlint-tsgolint@7.0.2003))(typescript@6.0.3):
+  oxlint-config-awesomeness@4.10.0(@nkzw/eslint-plugin@2.0.0(eslint@10.11.0(jiti@2.7.0)))(@shadcn/lint@0.2.0(@typescript-eslint/parser@8.70.1(eslint@10.11.0(jiti@2.7.0))(typescript@6.0.3))(eslint@10.11.0(jiti@2.7.0)))(@typescript-eslint/parser@8.70.1(eslint@10.11.0(jiti@2.7.0))(typescript@6.0.3))(@typescript/typescript6@6.0.2)(astro-eslint-parser@3.2.0(@emnapi/core@2.0.0-beta.2)(@emnapi/runtime@2.0.0-beta.2))(eslint-plugin-no-only-tests@3.4.0)(eslint-plugin-perfectionist@5.10.1(eslint@10.11.0(jiti@2.7.0))(typescript@6.0.3))(eslint@10.11.0(jiti@2.7.0))(oxlint-plugin-react-doctor@0.9.14)(oxlint-tsgolint@7.0.2003)(oxlint@1.85.0(oxlint-tsgolint@7.0.2003))(typescript@6.0.3):
     dependencies:
       '@nkzw/eslint-plugin': 2.0.0(eslint@10.11.0(jiti@2.7.0))
       '@oxlint/plugins': 1.85.0
@@ -7900,6 +7909,9 @@ snapshots:
       typescript: 6.0.3
     optionalDependencies:
       '@shadcn/lint': 0.2.0(@typescript-eslint/parser@8.70.1(eslint@10.11.0(jiti@2.7.0))(typescript@6.0.3))(eslint@10.11.0(jiti@2.7.0))
+      '@typescript-eslint/parser': 8.70.1(eslint@10.11.0(jiti@2.7.0))(typescript@6.0.3)
+      '@typescript/typescript6': 6.0.2
+      astro-eslint-parser: 3.2.0(@emnapi/core@2.0.0-beta.2)(@emnapi/runtime@2.0.0-beta.2)
 
   oxlint-plugin-react-doctor@0.9.14:
     dependencies:

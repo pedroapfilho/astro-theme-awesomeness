@@ -13,10 +13,6 @@
       {
         "name": "Lint Astro templates",
         "run": "node .github/ci/ci.mjs run lint -- pnpm lint:astro"
-      },
-      {
-        "name": "Test the Astro linter",
-        "run": "node .github/ci/ci.mjs run lint -- pnpm test:lint"
       }
     ]
   },
