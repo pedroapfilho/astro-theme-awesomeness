@@ -17,7 +17,7 @@ None.
 ## Preserve
 
 - BaseLayout's skip link and consumer-provided `<main id="main-content">` target.
-- RSS autodiscovery when BaseLayout receives `rssHref`.
+- RSS autodiscovery on every page BaseLayout renders.
 - Scheme-specific native controls and the `.dark` token overrides.
 - Reduced-motion guards for cross-document view transitions and smooth anchor scrolling.
 - `<meta name="theme-color">` following the computed page background in automatic mode only;

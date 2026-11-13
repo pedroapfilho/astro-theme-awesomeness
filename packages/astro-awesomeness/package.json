@@ -1,7 +1,7 @@
 {
   "name": "astro-awesomeness",
   "version": "3.1.3",
-  "description": "Astro 6/7 blog building blocks, a content index, and Tailwind v4 styles.",
+  "description": "Astro 6/7 blog integration: injected content routes, a content index, building blocks, and Tailwind v4 styles.",
   "keywords": [
     "astro",
     "astro-theme",
@@ -15,9 +15,13 @@
     "url": "git+https://github.com/pedroapfilho/astro-theme-awesomeness.git",
     "directory": "packages/astro-awesomeness"
   },
+  "bin": {
+    "astro-awesomeness": "./dist/vercel/cli.js"
+  },
   "files": [
     "dist",
     "src",
+    "virtual.d.ts",
     "!src/**/*.test.ts"
   ],
   "type": "module",
@@ -25,12 +29,17 @@
     "*.css"
   ],
   "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
     "./components": {
       "types": "./dist/components/index.d.ts",
       "import": "./dist/components/index.js"
     },
     "./astro/*": "./src/astro/*.astro",
     "./layouts/*": "./src/layouts/*.astro",
+    "./routes/*": "./src/routes/*",
     "./content": {
       "types": "./dist/content/index.d.ts",
       "import": "./dist/content/index.js"
@@ -55,6 +64,8 @@
     "clean": "rm -rf .turbo dist node_modules"
   },
   "dependencies": {
+    "@astrojs/rss": "^4.0.19",
+    "@astrojs/sitemap": "^3.7.4",
     "@base-ui/react": "^1.8.0",
     "class-variance-authority": "^0.7.1",
     "cn": "^0.4.0",
@@ -69,6 +80,7 @@
     "@types/node": "^26.6.2",
     "@types/react": "^19.3.0",
     "@vitest/coverage-v8": "^5.0.1",
+    "astro": "^7.2.10",
     "tailwindcss": "^4.3.3",
     "typescript": "^7.0.2",
     "vitest": "^5.0.1"

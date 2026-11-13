@@ -4,6 +4,6 @@
     "paths": { "~/*": ["./src/*"] },
     "types": ["node"]
   },
-  "include": ["src"],
+  "include": ["src", "virtual.d.ts"],
   "exclude": ["node_modules", "dist"]
 }

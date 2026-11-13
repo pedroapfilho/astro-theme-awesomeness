@@ -33,8 +33,8 @@ const cmsPost = (id: string, frontmatter: Record<string, unknown> = {}) => ({
 
 type FixturePost = ReturnType<typeof cmsPost>;
 
-const indexFor = (posts: Array<FixturePost>) =>
-  createContentIndex({ categorySlugMap, defaultCategory, posts });
+const indexFor = (posts: Array<FixturePost>, includeSecondaryCategories = false) =>
+  createContentIndex({ categorySlugMap, defaultCategory, includeSecondaryCategories, posts });
 
 const fixture = () => {
   const old = cmsPost("old", { tags: ["Astro", "#construção"] });
@@ -143,7 +143,7 @@ describe("createContentIndex", () => {
       feedItems: index.feedItems(),
       posts: ordered,
       relatedPosts: [matchingTie, newest, old, scheduled, tie, paddingTie, unrelated],
-      secondaryCategories: index.categories({ includeSecondaryCategories: true }),
+      secondaryCategories: indexFor(ordered, true).categories(),
       tags: index.tags(),
     };
 
@@ -165,7 +165,7 @@ describe("createContentIndex", () => {
         feedItems: shuffled.feedItems(),
         posts: shuffled.posts,
         relatedPosts: shuffled.relatedPosts(current, 9),
-        secondaryCategories: shuffled.categories({ includeSecondaryCategories: true }),
+        secondaryCategories: indexFor(permutation, true).categories(),
         tags: shuffled.tags(),
       }).toEqual(expected);
     }
@@ -213,7 +213,7 @@ describe("createContentIndex", () => {
     const empty = cmsPost("empty", { categories: [""], seo: undefined });
     const index = indexFor([unmapped, encoded, absent, empty]);
     expect(index.postUrl(unmapped)).toBe("/area-externa/unmapped/");
-    expect(index.postUrl(encoded)).toBe("/luz-sombra/encoded/");
+    expect(index.postUrl(encoded)).toBe("/luz-amp-sombra/encoded/");
     expect(index.postCategory(encoded).name).toBe("Luz & Sombra");
     expect(index.postUrl(absent)).toBe("/sem-categoria/absent/");
     expect(index.postUrl(empty)).toBe("/sem-categoria/empty/");
@@ -261,7 +261,7 @@ describe("createContentIndex", () => {
         slug: defaultCategory,
       });
       expect(index.categories().map(({ slug }) => slug)).toEqual([defaultCategory]);
-      const categories = index.categories({ includeSecondaryCategories: true });
+      const categories = indexFor([post], true).categories();
       expect(categories.map(({ slug }) => slug)).toEqual([defaultCategory, "secondary"]);
 
       for (const link of [
@@ -280,14 +280,12 @@ describe("createContentIndex", () => {
     const index = createContentIndex({
       categorySlugMap: { "🎉": "celebration", 日本語: "japanese" },
       defaultCategory,
+      includeSecondaryCategories: true,
       posts: [post],
     });
 
     expect(index.postUrl(post)).toBe("/japanese/article/");
-    expect(index.categories({ includeSecondaryCategories: true }).map(({ slug }) => slug)).toEqual([
-      "japanese",
-      "celebration",
-    ]);
+    expect(index.categories().map(({ slug }) => slug)).toEqual(["japanese", "celebration"]);
   });
 
   it.each(["", " \t ", "/", "//outside.test", "a/b", String.raw`a\b`, "a?b", "a#b", ".", ".."])(
@@ -380,8 +378,8 @@ describe("createContentIndex", () => {
       ["arquitetura", ["older"]],
     ]);
     expect(
-      index
-        .categories({ includeSecondaryCategories: true })
+      indexFor([older, newer], true)
+        .categories()
         .map(({ posts, slug }) => [slug, posts.map(({ id }) => id)]),
     ).toEqual([
       ["featured", ["newer"]],
@@ -395,12 +393,14 @@ describe("createContentIndex", () => {
     const tags = indexFor(posts).tags();
     expect(tags.find(({ slug }) => slug === "astro")).toEqual({
       href: "/tag/astro/",
+      labels: ["astro", "Astro"],
       name: "astro",
       posts: [scheduled, newest, current, old],
       slug: "astro",
     });
     expect(tags.find(({ slug }) => slug === "construcao")).toEqual({
       href: "/tag/construcao/",
+      labels: ["#construção", "construção"],
       name: "construção",
       posts: [newest, tie, current, old],
       slug: "construcao",

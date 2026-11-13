@@ -1,17 +1,17 @@
 ---
+import config from "virtual:astro-awesomeness/config";
 import { cn } from "../lib/cn";
 
 type Props = {
   class?: string;
-  siteTitle: string;
 };
 
-const { class: className = "", siteTitle } = Astro.props;
+const { class: className = "" } = Astro.props;
 const year = new Date().getFullYear();
 ---
 <footer class="border-border text-muted-foreground mt-16 border-t py-6 text-sm">
   <div class={cn("mx-auto flex max-w-5xl flex-col items-center justify-between gap-2 px-5 sm:flex-row sm:px-8", className)}>
-    <p>© {year} {siteTitle}</p>
+    <p>© {year} {config.title}</p>
     <slot name="links" />
   </div>
 </footer>

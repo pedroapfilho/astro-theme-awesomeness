@@ -1,7 +1,5 @@
 type ResolvedColorScheme = "light" | "dark";
 
-type ColorScheme = "auto" | ResolvedColorScheme;
-
 const colorSchemeStorageKey = "theme";
 const colorSchemeMediaQuery = "(prefers-color-scheme: dark)";
 
@@ -42,4 +40,4 @@ export {
   themeColorScript,
 };
 
-export type { ColorScheme, ResolvedColorScheme };
+export type { ResolvedColorScheme };
