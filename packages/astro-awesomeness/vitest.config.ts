@@ -1,9 +1,9 @@
 import { defineConfig, mergeConfig } from "vitest/config";
 
-import nodeConfig from "@repo/config-vitest/node";
+import libraryConfig from "@repo/config-vitest/library";
 
 export default mergeConfig(
-  nodeConfig,
+  libraryConfig,
   defineConfig({
     test: {
       coverage: {
