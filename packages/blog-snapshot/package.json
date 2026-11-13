@@ -14,7 +14,7 @@
     "fast-xml-parser": "^5.10.1",
     "parse5": "^8.0.1",
     "path-to-regexp": "^6.3.0",
-    "zod": "^4.6.6"
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@repo/config-vitest": "workspace:*",
