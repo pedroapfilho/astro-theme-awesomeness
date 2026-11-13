@@ -1,5 +1,23 @@
 {
   "version": 1,
   "profile": "library",
-  "mode": "affected"
+  "mode": "affected",
+  "lint": {
+    "setup": [
+      {
+        "name": "Build the demo for the Astro-generated types",
+        "run": "pnpm build"
+      }
+    ],
+    "steps": [
+      {
+        "name": "Lint Astro templates",
+        "run": "node .github/ci/ci.mjs run lint -- pnpm lint:astro"
+      },
+      {
+        "name": "Test the Astro linter",
+        "run": "node .github/ci/ci.mjs run lint -- pnpm test:lint"
+      }
+    ]
+  }
 }

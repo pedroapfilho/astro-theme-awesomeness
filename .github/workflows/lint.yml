@@ -1,9 +1,10 @@
+# Written by `standy sync` from the library template and `.github/ci/policy.json`. Change those, never this file.
 name: Lint
 on:
   pull_request:
   workflow_dispatch:
   schedule:
-    - cron: 48 4 * * 1
+    - cron: 49 4 * * 1
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
@@ -33,9 +34,12 @@ jobs:
           restore-keys: |
             turbo-${{ runner.os }}-${{ runner.arch }}-node24-lint-${{ github.event.pull_request.number || github.ref_name }}-
             turbo-${{ runner.os }}-${{ runner.arch }}-node24-lint-main-
-      # Type-aware linting reads types off disk, and both the workspace .d.ts
-      # files and the astro-generated types only exist after a build.
-      - run: pnpm build
+      # Type-aware linting resolves built workspace .d.ts files. Only the
+      # publishable packages are lint dependencies; the apps are lint targets.
+      - run: pnpm build:packages
+      - name: Build the demo for the Astro-generated types
+        if: ${{ !cancelled() }}
+        run: pnpm build
       - name: Check formatting
         run: node .github/ci/ci.mjs run lint -- pnpm format:check
       - name: Check dead code
@@ -47,7 +51,13 @@ jobs:
       - if: ${{ !cancelled() }}
         run: node .github/ci/ci.mjs run lint -- pnpm check:shadcn
       - if: ${{ !cancelled() }}
-        run: node .github/ci/ci.mjs run lint -- pnpm oxlint --format=github . && pnpm lint:astro && pnpm test:lint
+        run: node .github/ci/ci.mjs run lint -- pnpm oxlint --format=github .
+      - name: Lint Astro templates
+        if: ${{ !cancelled() }}
+        run: node .github/ci/ci.mjs run lint -- pnpm lint:astro
+      - name: Test the Astro linter
+        if: ${{ !cancelled() }}
+        run: node .github/ci/ci.mjs run lint -- pnpm test:lint
       - name: Install gitleaks
         if: ${{ !cancelled() }}
         env:
