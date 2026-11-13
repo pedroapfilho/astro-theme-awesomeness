@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "exports": {
+    "./library": "./library.ts",
     "./node": "./node.ts"
   },
   "scripts": {
