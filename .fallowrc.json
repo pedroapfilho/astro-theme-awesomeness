@@ -1,6 +1,11 @@
 {
   "$schema": "https://raw.githubusercontent.com/fallow-rs/fallow/main/schema.json",
-  "entry": ["oxlint.config.ts", "**/tsdown.config.ts"],
+  "entry": [
+    "oxlint.config.ts",
+    "**/tsdown.config.ts",
+    "apps/demo/src/components/{list,post}-layout.astro",
+    "packages/blog-snapshot/src/cli.ts"
+  ],
   "ignorePatterns": [".github/ci/*.mjs"],
   "ignoreDependencies": [
     "@shadcn/lint",

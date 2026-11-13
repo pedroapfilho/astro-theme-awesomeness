@@ -1,5 +1,6 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, expectTypeOf, it } from "vitest";
 
+import type { Post } from "../content";
 import { buildMetadata, type ArticlePost } from "./article-metadata";
 
 const post: ArticlePost = {
@@ -16,6 +17,10 @@ const image = "https://example.com/og-image.jpg";
 const siteTitle = "Example Blog";
 
 describe("buildMetadata", () => {
+  it("accepts a parsed post without importing the schema, which consumers cannot always resolve", () => {
+    expectTypeOf<Post>().toExtend<ArticlePost["data"]>();
+  });
+
   it("builds the reference BlogPosting shape with a Person and the site publisher logo", () => {
     const metadata = buildMetadata(
       {

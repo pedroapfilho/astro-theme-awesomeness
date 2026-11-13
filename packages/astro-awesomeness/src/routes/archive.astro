@@ -1,0 +1,17 @@
+---
+import type { GetStaticPaths } from "astro";
+import ArchiveLayout from "virtual:astro-awesomeness/components/ArchiveLayout";
+import config from "virtual:astro-awesomeness/config";
+import { content } from "virtual:astro-awesomeness/content";
+import { listingCopy } from "../lib/listing-copy";
+
+export const getStaticPaths = (({ paginate }) =>
+  paginate(content.posts, { pageSize: config.pageSize })) satisfies GetStaticPaths;
+
+const { page } = Astro.props;
+---
+<ArchiveLayout
+  {...listingCopy(config.strings.archive, { total: page.total })}
+  page={page}
+  posts={page.data}
+/>

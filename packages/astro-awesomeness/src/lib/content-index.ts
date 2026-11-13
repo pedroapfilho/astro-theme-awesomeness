@@ -14,6 +14,7 @@ type ContentPost = {
 type ContentIndexOptions<P extends ContentPost> = {
   categorySlugMap: Record<string, string>;
   defaultCategory: string;
+  includeSecondaryCategories?: boolean;
   posts: Array<P>;
 };
 
@@ -23,19 +24,19 @@ type PostCategory = ArchiveLink;
 
 type ContentBucket<P> = PostCategory & { posts: Array<P> };
 
-type CategoryOptions = { includeSecondaryCategories?: boolean };
+type TagBucket<P> = ContentBucket<P> & { labels: Array<string> };
 
 type FeedItem = { description: string; link: string; pubDate: Date; title: string };
 
 type ContentIndex<P extends ContentPost> = {
-  categories: (options?: CategoryOptions) => Array<ContentBucket<P>>;
+  categories: () => Array<ContentBucket<P>>;
   feedItems: () => Array<FeedItem>;
   postCategory: (post: P) => PostCategory;
   postParams: (post: P) => PostParams;
   posts: Array<P>;
   postUrl: (post: P) => string;
   relatedPosts: (post: P, count: number) => Array<P>;
-  tags: () => Array<ContentBucket<P>>;
+  tags: () => Array<TagBucket<P>>;
 };
 
 const notDraft = (post: ContentPost): boolean => post.data.status !== "DRAFT" && !post.data.draft;
@@ -49,8 +50,6 @@ const byPubDateDesc = (a: ContentPost, b: ContentPost): number => {
 
   return a.id < b.id ? -1 : 1;
 };
-
-const naturalSlug = (name: string): string => slugify(categoryLabel(name));
 
 const humanize = (slug: string): string => {
   const words = slug.replaceAll("-", " ");
@@ -69,6 +68,7 @@ const assertCategorySlug = (slug: string, option: string): void => {
 const createContentIndex = <P extends ContentPost>({
   categorySlugMap,
   defaultCategory,
+  includeSecondaryCategories = false,
   posts: collection,
 }: ContentIndexOptions<P>): ContentIndex<P> => {
   assertCategorySlug(defaultCategory, "defaultCategory");
@@ -82,7 +82,7 @@ const createContentIndex = <P extends ContentPost>({
   const categorySlug = (name: string): string => {
     const mapped = Object.hasOwn(categorySlugMap, name) ? categorySlugMap[name] : undefined;
 
-    return mapped ?? (naturalSlug(name) || defaultCategory);
+    return mapped ?? (slugify(name) || defaultCategory);
   };
 
   const postParams = (post: P): PostParams => {
@@ -130,7 +130,7 @@ const createContentIndex = <P extends ContentPost>({
 
   const categoryInfo = (slug: string): PostCategory => {
     const names = [...(namesBySlug.get(slug) ?? [])];
-    const native = names.find((name) => naturalSlug(name) === slug);
+    const native = names.find((name) => slugify(categoryLabel(name)) === slug);
     const mapped = names.find((name) => categorySlug(name) === slug);
     const name = native ?? mapped ?? names.at(0);
 
@@ -157,7 +157,7 @@ const createContentIndex = <P extends ContentPost>({
     return [...buckets.values()];
   };
 
-  const categories = ({ includeSecondaryCategories = false }: CategoryOptions = {}) =>
+  const categories = () =>
     group((post) => {
       const slugs = new Set([postParams(post).category]);
 
@@ -170,7 +170,20 @@ const createContentIndex = <P extends ContentPost>({
       return [...slugs].map(categoryInfo);
     });
 
-  const tags = () => group((post) => tagLinks(post.data.tags));
+  const labelsOf = (tagged: Array<P>, slug: string): Array<string> => {
+    const labels = tagged.flatMap((post) => post.data.tags.filter((tag) => slugify(tag) === slug));
+
+    return [...new Set(labels)];
+  };
+
+  const tags = (): Array<TagBucket<P>> =>
+    group((post) => tagLinks(post.data.tags)).map(({ href, name, posts: tagged, slug }) => ({
+      href,
+      labels: labelsOf(tagged, slug),
+      name,
+      posts: tagged,
+      slug,
+    }));
 
   const tagSlugs = (post: P): Array<string> => tagLinks(post.data.tags).map(({ slug }) => slug);
 
@@ -205,7 +218,6 @@ const createContentIndex = <P extends ContentPost>({
 export { createContentIndex };
 
 export type {
-  CategoryOptions,
   ContentBucket,
   ContentIndex,
   ContentIndexOptions,
@@ -213,4 +225,5 @@ export type {
   FeedItem,
   PostCategory,
   PostParams,
+  TagBucket,
 };

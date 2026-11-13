@@ -3,26 +3,22 @@ import type { ComponentProps } from "astro/types";
 import Footer from "astro-awesomeness/astro/footer";
 import { ThemeToggle } from "astro-awesomeness/components";
 import BaseLayout from "astro-awesomeness/layouts/base-layout";
-import { SITE_TITLE } from "../lib/site";
+import config from "virtual:astro-awesomeness/config";
 import "../styles/global.css";
 
-type WithoutSiteProps<P> = P extends unknown ? Omit<P, "rssHref" | "siteTitle"> : never;
-
-type Props = WithoutSiteProps<ComponentProps<typeof BaseLayout>>;
-
-const rssHref = "/rss.xml";
+type Props = ComponentProps<typeof BaseLayout>;
 ---
-<BaseLayout {...Astro.props} siteTitle={SITE_TITLE} rssHref={rssHref}>
+<BaseLayout {...Astro.props}>
   <header slot="header" class="border-border bg-background sticky top-0 z-40 border-b">
     <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-4 px-5 py-4 sm:px-8">
-      <a href="/" class="font-serif text-2xl font-semibold tracking-tight">{SITE_TITLE}</a>
+      <a href="/" class="font-serif text-2xl font-semibold tracking-tight">{config.title}</a>
       <nav aria-label="Main navigation" class="flex items-center gap-5 text-sm">
         <a href="/posts/" class="text-muted-foreground hover:text-foreground transition-colors">All posts</a>
-        <a href={rssHref} class="text-muted-foreground hover:text-foreground transition-colors">RSS</a>
+        <a href="/rss.xml" class="text-muted-foreground hover:text-foreground transition-colors">RSS</a>
         <ThemeToggle client:idle />
       </nav>
     </div>
   </header>
   <slot />
-  <Footer slot="footer" siteTitle={SITE_TITLE} />
+  <Footer slot="footer" />
 </BaseLayout>

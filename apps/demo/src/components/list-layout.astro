@@ -1,23 +1,13 @@
 ---
-import type { Page } from "astro";
 import type { CollectionEntry } from "astro:content";
+import type { ListLayoutProps } from "astro-awesomeness";
 import Pagination from "astro-awesomeness/astro/pagination";
 import PostCard from "./post-card.astro";
 import SiteLayout from "./site-layout.astro";
 
-type Post = CollectionEntry<"posts">;
+type Props = ListLayoutProps<CollectionEntry<"posts">>;
 
-type Props = { description: string; title: string } & (
-  | { page: Page<Post> }
-  | { posts: Array<Post> }
-);
-
-const { description, title } = Astro.props;
-
-const { page, posts } =
-  "page" in Astro.props
-    ? { page: Astro.props.page, posts: Astro.props.page.data }
-    : { page: undefined, posts: Astro.props.posts };
+const { description, page, posts, title } = Astro.props;
 ---
 <SiteLayout title={title} description={description}>
   <main id="main-content" class="mx-auto max-w-5xl px-5 py-12 sm:px-8 sm:py-16">

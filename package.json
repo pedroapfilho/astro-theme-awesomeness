@@ -24,7 +24,8 @@
     "fallow:audit": "fallow audit",
     "prepare": "husky",
     "lint:astro": "lint-astro",
-    "check:shadcn": "node .github/ci/check-shadcn.mjs"
+    "check:shadcn": "node .github/ci/check-shadcn.mjs",
+    "snapshot": "tsx packages/blog-snapshot/src/cli.ts"
   },
   "devDependencies": {
     "@changesets/cli": "^3.0.3",
@@ -42,6 +43,7 @@
     "oxlint-plugin-react-doctor": "^0.9.14",
     "oxlint-tsgolint": "^7.0.2003",
     "tsdown": "^0.23.7",
+    "tsx": "^4.23.15",
     "turbo": "^2.11.3"
   },
   "lint-staged": {

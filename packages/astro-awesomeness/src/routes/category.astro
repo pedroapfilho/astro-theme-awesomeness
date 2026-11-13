@@ -1,0 +1,22 @@
+---
+import type { GetStaticPaths } from "astro";
+import ListLayout from "virtual:astro-awesomeness/components/ListLayout";
+import config from "virtual:astro-awesomeness/config";
+import { content } from "virtual:astro-awesomeness/content";
+import { listingCopy } from "../lib/listing-copy";
+
+export const getStaticPaths = (({ paginate }) => content.categories().flatMap((category) =>
+  paginate(category.posts, {
+    pageSize: config.pageSize,
+    params: { category: category.slug },
+    props: { name: category.name },
+  }),
+)) satisfies GetStaticPaths;
+
+const { name, page } = Astro.props;
+---
+<ListLayout
+  {...listingCopy(config.strings.category, { name, total: page.total })}
+  page={page}
+  posts={page.data}
+/>
