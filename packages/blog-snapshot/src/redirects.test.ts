@@ -1,9 +1,26 @@
 import { describe, expect, it } from "vitest";
 
-import { redirectSchema, resolveRedirects } from "./redirects";
+import { redirectRules, redirectSchema, resolveRedirects } from "./redirects";
 
 const table = (rows: Array<object>) =>
   resolveRedirects(rows.map((row) => redirectSchema.parse(row)));
+
+describe("redirectRules", () => {
+  it("lists every definition once, sorted, with its status and query conditions", () => {
+    const rules = [
+      { destination: "/novo/:path*", permanent: true, source: "/old/:path*" },
+      { destination: "/rss.xml", has: [{ key: "feed", type: "query" }], source: "/" },
+      { destination: "/novo/:path*", permanent: true, source: "/old/:path*" },
+      { destination: "/b/", permanent: true, source: "/a/" },
+    ];
+
+    expect(redirectRules(rules.map((rule) => redirectSchema.parse(rule)))).toEqual([
+      "307 /?feed -> /rss.xml",
+      "308 /a/ -> /b/",
+      "308 /old/:path* -> /novo/:path*",
+    ]);
+  });
+});
 
 describe("resolveRedirects", () => {
   it("resolves one probe per rule against the whole ordered list, as Vercel's first match does", () => {

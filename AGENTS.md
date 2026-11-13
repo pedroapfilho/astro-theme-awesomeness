@@ -141,9 +141,12 @@ pnpm snapshot diff snapshots/blog/baseline.json after.json
 `capture` crawls the production sitemap and writes `content.json`, a copy of the
 posts in the Easeia build API shape with everything routing reads (slugs, dates,
 categories, tags, authors) and no bodies or images, and `production.json`.
-`record` serves that copy to the blog's own `pnpm build` and snapshots `dist`:
-every page's title, description, canonical, post links and tag links, the feed,
-and `vercel.json` resolved one probe per redirect. Build the theme first.
+`record` serves that copy to the blog's own `pnpm build` and snapshots `dist`.
+Per page: the document title, description, canonical, robots, colour scheme, feed
+link, social images, article times, JSON-LD author and publisher logo, every
+same-origin link, the `h1`, a fingerprint of the visible text and the number of
+stylesheets. Then the feed, and `vercel.json` as its sorted rules plus one probe
+per redirect. Build the theme first.
 
 ## Conventions
 

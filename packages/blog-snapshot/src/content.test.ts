@@ -5,7 +5,11 @@ import type { PageFacts } from "./read-page";
 
 const page = (facts: Partial<PageFacts>): PageFacts => ({
   description: "",
+  documentTitle: "",
+  h1: "",
   links: [],
+  stylesheets: 0,
+  text: "",
   title: "",
   type: "website",
   ...facts,

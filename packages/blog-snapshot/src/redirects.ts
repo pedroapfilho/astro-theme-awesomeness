@@ -34,6 +34,16 @@ const follow = (redirects: Array<Redirect>, { path, query }: Probe): string => {
   return "no redirect";
 };
 
+const redirectRules = (redirects: Array<Redirect>): Array<string> => {
+  const rules = redirects.map(({ destination, has, permanent, source }) => {
+    const query = has.map(({ key }) => `?${key}`).join("");
+
+    return `${permanent ? PERMANENT : TEMPORARY} ${source}${query} -> ${destination}`;
+  });
+
+  return [...new Set(rules)].toSorted();
+};
+
 const resolveRedirects = (redirects: Array<Redirect>): Record<string, string> =>
   Object.fromEntries(
     redirects.map((redirect) => {
@@ -44,4 +54,4 @@ const resolveRedirects = (redirects: Array<Redirect>): Record<string, string> =>
     }),
   );
 
-export { redirectSchema, resolveRedirects };
+export { redirectRules, redirectSchema, resolveRedirects };

@@ -29,6 +29,22 @@ const response = await fetch(EASEIA_API_URL + "/sites/" + EASEIA_SITE_ID + "/pos
 writeFileSync("served.json", JSON.stringify({ key: EASEIA_API_KEY, posts: await response.json() }));
 `;
 
+const rendered = (path: string, type: string, links: Array<string>) => ({
+  canonical: `https://www.example.com${path}`,
+  colorScheme: "light",
+  description: `About ${path}`,
+  documentTitle: `Page ${path} · Blog`,
+  feed: "/rss.xml",
+  h1: `Page ${path}`,
+  image: "https://www.example.com/og.jpg",
+  links,
+  stylesheets: 1,
+  text: expect.stringMatching(/^\d+ characters, sha256 [\da-f]{16}$/v),
+  title: `Page ${path}`,
+  twitterImage: "https://www.example.com/og.jpg",
+  type,
+});
+
 describe("snapshotFromDist", () => {
   it("snapshots the built pages, the feed and the resolved redirects, without assets", async () => {
     const headers = [{ headers: [{ key: "X-Frame-Options", value: "DENY" }], source: "/(.*)" }];
@@ -64,27 +80,15 @@ describe("snapshotFromDist", () => {
       },
       files: ["/rss.xml", "/sitemap-index.xml"],
       pages: {
-        "/": {
-          canonical: "https://www.example.com/",
-          description: "About /",
-          posts: ["/notes/hello/"],
-          title: "Page /",
-        },
-        "/404.html": {
-          canonical: "https://www.example.com/404.html",
-          description: "About /404.html",
-          posts: [],
-          title: "Page /404.html",
-        },
-        "/notes/hello/": {
-          canonical: "https://www.example.com/notes/hello/",
-          description: "About /notes/hello/",
-          posts: [],
-          tags: ["/tag/astro/"],
-          title: "Page /notes/hello/",
-        },
+        "/": rendered("/", "website", ["/notes/hello/", "/tag/astro/"]),
+        "/404.html": rendered("/404.html", "website", []),
+        "/notes/hello/": rendered("/notes/hello/", "article", ["/", "/tag/astro/"]),
       },
-      vercel: { headers, redirects: { "/feed": "308 /rss.xml" } },
+      vercel: {
+        headers,
+        redirects: { "/feed": "308 /rss.xml" },
+        rules: ["308 /feed -> /rss.xml"],
+      },
     });
   });
 });
