@@ -1,16 +1,14 @@
 ---
+import config from "virtual:astro-awesomeness/config";
 import Seo from "../astro/seo.astro";
-import type { MetadataProps } from "../lib/article-metadata";
+import type { PageProps } from "../lib/article-metadata";
 import { cn } from "../lib/cn";
-import { getColorSchemeScript, themeColorScript, type ColorScheme } from "../lib/color-scheme";
+import { getColorSchemeScript, themeColorScript } from "../lib/color-scheme";
 import { getSiteLocale } from "../lib/site-locale";
 
-type Props = MetadataProps & {
-  colorScheme?: ColorScheme;
-  rssHref?: string;
-};
+type Props = PageProps;
 
-const { colorScheme = "auto", rssHref, siteTitle } = Astro.props;
+const { colorScheme } = config;
 const { lang, strings } = getSiteLocale(Astro.currentLocale);
 ---
 <!doctype html>
@@ -21,9 +19,7 @@ const { lang, strings } = getSiteLocale(Astro.currentLocale);
     <meta name="color-scheme" content={colorScheme === "auto" ? "light dark" : colorScheme} />
     <meta name="generator" content={Astro.generator} />
     <Seo {...Astro.props} />
-    {rssHref && (
-      <link rel="alternate" type="application/rss+xml" title={siteTitle} href={rssHref} />
-    )}
+    <link rel="alternate" type="application/rss+xml" title={config.title} href="/rss.xml" />
     {colorScheme === "auto" && (
       <>
         <meta name="theme-color" />

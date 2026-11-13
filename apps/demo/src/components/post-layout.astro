@@ -1,18 +1,17 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import type { PostLayoutProps } from "astro-awesomeness";
 import AuthorByline from "astro-awesomeness/astro/author-byline";
 import AuthorCard from "astro-awesomeness/astro/author-card";
 import FormattedDate from "astro-awesomeness/astro/formatted-date";
 import Prose from "astro-awesomeness/astro/prose";
 import ReadingTime from "astro-awesomeness/astro/reading-time";
 import TagList from "astro-awesomeness/astro/tag-list";
-import { content } from "../lib/content";
+import { content } from "virtual:astro-awesomeness/content";
 import PostCard from "./post-card.astro";
 import SiteLayout from "./site-layout.astro";
 
-type Post = CollectionEntry<"posts">;
-
-type Props = { post: Post };
+type Props = PostLayoutProps<CollectionEntry<"posts">>;
 
 const { post } = Astro.props;
 const relatedPosts = content.relatedPosts(post, 2);

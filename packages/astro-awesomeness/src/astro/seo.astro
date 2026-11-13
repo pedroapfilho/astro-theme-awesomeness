@@ -1,10 +1,16 @@
 ---
-import { buildMetadata, type MetadataProps } from "../lib/article-metadata";
+import config from "virtual:astro-awesomeness/config";
+import { buildMetadata, type PageProps } from "../lib/article-metadata";
 import { getSiteLocale } from "../lib/site-locale";
 
-type Props = MetadataProps;
+type Props = PageProps;
 
-const metadata = buildMetadata(Astro.props, Astro.url, Astro.site);
+const metadata = buildMetadata(
+  { ...Astro.props, image: config.ogImage, logo: config.logo, siteTitle: config.title },
+  Astro.url,
+  Astro.site,
+);
+
 const { ogLocale } = getSiteLocale(Astro.currentLocale);
 ---
 <title>{metadata.documentTitle}</title>

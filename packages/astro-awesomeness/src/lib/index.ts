@@ -3,7 +3,6 @@ export { cn } from "./cn";
 export { createContentIndex } from "./content-index";
 
 export type {
-  CategoryOptions,
   ContentBucket,
   ContentIndex,
   ContentIndexOptions,
@@ -11,4 +10,5 @@ export type {
   FeedItem,
   PostCategory,
   PostParams,
+  TagBucket,
 } from "./content-index";
