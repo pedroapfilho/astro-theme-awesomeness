@@ -12,7 +12,7 @@
     "lint": { "dependsOn": ["^build"] },
     "typecheck": { "dependsOn": ["^build"] },
     "test": { "dependsOn": ["^build"], "cache": false },
-    "test:coverage": { "dependsOn": ["^build"], "outputs": ["coverage/**"] },
+    "test:coverage": { "dependsOn": ["^build"], "outputs": ["coverage/**"], "cache": false },
     "clean": { "cache": false }
   }
 }
