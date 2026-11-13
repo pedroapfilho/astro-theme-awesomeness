@@ -19,5 +19,8 @@
         "run": "node .github/ci/ci.mjs run lint -- pnpm test:lint"
       }
     ]
+  },
+  "test": {
+    "coverage": true
   }
 }
