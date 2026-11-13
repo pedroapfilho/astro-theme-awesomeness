@@ -1,9 +1,10 @@
 # astro-awesomeness
 
-Astro 6/7 blog building blocks: a static document layout, content schemas, a site
-content index, and Tailwind v4 styles. Add the optional React theme toggle when
-your site supports switching schemes. The [demo](https://github.com/pedroapfilho/astro-theme-awesomeness/tree/main/apps/demo) shows a complete
-blog with its own header, cards and list/post layouts.
+An Astro 6/7 blog theme shipped as an integration. It injects the article,
+category, tag, archive and RSS routes, binds one content index for the site, and
+supplies a static document layout, content schemas and Tailwind v4 styles. Your
+site keeps its own layouts, tokens and pages. The [demo](https://github.com/pedroapfilho/astro-theme-awesomeness/tree/main/apps/demo) is a complete
+blog.
 
 ## Install and configure
 
@@ -13,29 +14,56 @@ In an Astro project using Node 24 or newer:
 pnpm add astro-awesomeness tailwindcss @tailwindcss/vite
 ```
 
-Set your production URL, locale and trailing-slash policy in `astro.config.ts`:
+Register the integration in `astro.config.ts`:
 
 ```ts
 import tailwindcss from "@tailwindcss/vite";
+import awesomeness from "astro-awesomeness";
 import { defineConfig } from "astro/config";
 
 const config = defineConfig({
   i18n: { defaultLocale: "en-US", locales: ["en-US"] },
-  prerenderConflictBehavior: "error",
+  integrations: [
+    awesomeness({
+      components: {
+        ListLayout: "./src/components/list-layout.astro",
+        PostLayout: "./src/components/post-layout.astro",
+      },
+      defaultCategory: "notes",
+      description: "All posts from Example.",
+      strings: {
+        archive: { description: "Every post, newest first.", title: "All posts" },
+        category: { description: "Posts in {name}." },
+        tag: { description: 'Posts tagged "{name}".' },
+      },
+      title: "Example",
+    }),
+  ],
   site: "https://example.com",
-  trailingSlash: "always",
-  vite: {
-    optimizeDeps: { exclude: ["astro-awesomeness"] },
-    plugins: [tailwindcss()],
-  },
+  vite: { plugins: [tailwindcss()] },
 });
 
 export default config;
 ```
 
-`prerenderConflictBehavior: "error"` fails the build when two routes produce the
-same URL, such as a category that slugs to `posts` next to a `posts/[...page]`
-archive; Astro's default keeps one page and only warns.
+| Option                       | Default                          | Purpose                                                                                              |
+| ---------------------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `title`, `description`       | required                         | Site identity for the document title, Open Graph, the footer and the feed.                           |
+| `ogImage`, `logo`            | none                             | Default social image and JSON-LD publisher logo. `logo` falls back to `ogImage`.                     |
+| `colorScheme`                | `"auto"`                         | `"auto"`, `"light"` or `"dark"`. See [Locale and color scheme](#locale-and-color-scheme).            |
+| `components`                 | required                         | Paths to your `PostLayout` and `ListLayout`, and optionally an `ArchiveLayout` for the post archive. |
+| `defaultCategory`            | required                         | Category slug for a post with no usable category.                                                    |
+| `categorySlugs`              | `./src/data/category-slugs.json` | A JSON object mapping category names to slugs. The file must exist; `{}` is valid.                   |
+| `includeSecondaryCategories` | `false`                          | List a post under each of its categories instead of only its route category.                         |
+| `archivePath`                | `"posts"`                        | Path segment of the paginated post archive.                                                          |
+| `pageSize`                   | `24`                             | Posts per archive and category page.                                                                 |
+| `strings`                    | required                         | Title, description and optional eyebrow for the archive, category and tag listings.                  |
+| `tagAliases`                 | none                             | Path to a module that adds alias routes to tag archives.                                             |
+
+The integration sets `trailingSlash: "always"` and
+`prerenderConflictBehavior: "error"`, and adds `@astrojs/sitemap` unless you
+already registered it. A build fails when two routes produce the same URL, such
+as a category that slugs to your archive path.
 
 Create `src/styles/global.css` and import it from your pages or a local layout:
 
@@ -118,52 +146,54 @@ to the post title. The loader fields disappear from the parsed result. Render th
 normalized image in your local article layout; BaseLayout uses it for metadata but
 does not render it.
 
-## Bind one content index
+## Routes and the content index
 
-Create `src/lib/content.ts`:
+| Route                                     | Renders                                                             |
+| ----------------------------------------- | ------------------------------------------------------------------- |
+| `/[category]/[slug]/`                     | `PostLayout` with `post` and the rendered body in the default slot. |
+| `/[category]/` and `/[category]/2/`       | `ListLayout` for one category, `pageSize` posts per page.           |
+| `/tag/[tag]/`                             | `ListLayout` with every post of one tag.                            |
+| `/{archivePath}/` and `/{archivePath}/2/` | `ArchiveLayout`, or `ListLayout` when you set none.                 |
+| `/rss.xml`                                | The feed, from `title`, `description` and `content.feedItems()`.    |
+
+Do not add pages at these paths. Your layouts and pages read the same index the
+routes use:
 
 ```ts
-import { getCollection } from "astro:content";
-import { createContentIndex } from "astro-awesomeness/lib";
-
-const content = createContentIndex({
-  categorySlugMap: { Notes: "notes" },
-  defaultCategory: "notes",
-  posts: await getCollection("posts"),
-});
-
-export { content };
+import { content } from "virtual:astro-awesomeness/content";
+import config from "virtual:astro-awesomeness/config";
 ```
 
-Import this binding from all routes and local layouts. It excludes `draft: true`
-and `status: "DRAFT"`, then orders posts newest first with entry ID as the tie
-breaker. Future publication dates are not filtered. Your collection entries keep
-their full inferred types throughout the index.
+`config` is the resolved integration config. `content` is bound to the `posts`
+collection. It excludes `draft: true` and `status: "DRAFT"`, then orders posts
+newest first with entry ID as the tie breaker. Future publication dates are not
+filtered. Your collection entries keep their full inferred types throughout the
+index.
 
-| Member                                                     | Use                                                                                                                               |
-| ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
-| `content.posts`                                            | Published, sorted collection entries for lists and static paths.                                                                  |
-| `content.postParams(post)`                                 | `{ category, slug }` for `/[category]/[slug]/`.                                                                                   |
-| `content.postUrl(post)`                                    | Trailing-slash URL for every article link.                                                                                        |
-| `content.postCategory(post)`                               | `{ name, slug, href }` for an article's category link.                                                                            |
-| `content.categories()`                                     | Category buckets with `{ name, slug, href, posts }`, grouped by each post's route category.                                       |
-| `content.categories({ includeSecondaryCategories: true })` | Also include posts in each of their named categories.                                                                             |
-| `content.tags()`                                           | Tag buckets with `{ name, slug, href, posts }`; tags sharing a normalized slug are merged, and each post appears once per bucket. |
-| `content.relatedPosts(post, 3)`                            | Up to three other published posts ranked by shared normalized tags, then published order.                                         |
-| `content.feedItems()`                                      | RSS items with `{ title, description, pubDate, link }`, using the same post URLs and order.                                       |
+| Member                          | Use                                                                                                                                  |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `content.posts`                 | Published, sorted collection entries for lists and static paths.                                                                     |
+| `content.postParams(post)`      | `{ category, slug }` for `/[category]/[slug]/`.                                                                                      |
+| `content.postUrl(post)`         | Trailing-slash URL for every article link.                                                                                           |
+| `content.postCategory(post)`    | `{ name, slug, href }` for an article's category link.                                                                               |
+| `content.categories()`          | Category buckets with `{ name, slug, href, posts }`, following `includeSecondaryCategories`.                                         |
+| `content.tags()`                | Tag buckets with `{ name, slug, href, posts, labels }`; tags sharing a normalized slug are merged, and `labels` holds each spelling. |
+| `content.relatedPosts(post, 3)` | Up to three other published posts ranked by shared normalized tags, then published order.                                            |
+| `content.feedItems()`           | RSS items with `{ title, description, pubDate, link }`, using the same post URLs and order.                                          |
 
 A parseable absolute `seo.canonical_url` with at least two path segments supplies
 the final two segments as category and slug. Otherwise the first category uses
-an own entry in `categorySlugMap` or a generated slug. A missing first category or
+its own entry in the category slug map or the slug of its name as the CMS sent
+it, so `Luz &amp; Sombra` routes to `/luz-amp-sombra/`. A missing first category or
 one whose generated slug is empty (such as whitespace or an emoji-only label) uses
 `defaultCategory`, and the post's collection `id` supplies the article slug.
 Returned post URLs are always local `/category/slug/` paths, regardless of the CMS
 URL's host.
 
-`defaultCategory` and every `categorySlugMap` value must be nonempty URL path
-segments, without whitespace, `/`, `\`, `?`, `#`, or a `.`/`..` segment. Invalid
-configuration throws when the index is created. Map unsupported category labels
-to explicit slugs when they need their own archives.
+`defaultCategory`, `archivePath` and every category slug map value must be nonempty
+URL path segments, without whitespace, `/`, `\`, `?`, `#`, or a `.`/`..` segment.
+Invalid configuration fails the build. Map unsupported category labels to explicit
+slugs when they need their own archives.
 
 Tag URLs are `/tag/{slug}/`; use the bucket's `href` and `slug` for links and route
 params. Category and tag display names are already normalized by the index.
@@ -172,93 +202,69 @@ and unsupported non-Latin tags throw an error naming the tag when used by tag
 archives, related posts, or `TagList`; give these tags a label containing letters
 or digits supported by the slug normalizer.
 
-## Compose pages and articles
+## Layouts
 
-Import Astro components without the `.astro` suffix. BaseLayout has two mutually
-exclusive metadata modes:
-
-| Mode    | Props                                                                                     |
-| ------- | ----------------------------------------------------------------------------------------- |
-| Page    | Required `siteTitle`, `title`, `description`; optional `image` and `noindex`.             |
-| Article | Required `siteTitle` and `post`; optional `image` as a fallback for a missing hero image. |
-
-Both modes also accept `colorScheme` and `rssHref`. The `head`, `header`, default
-and `footer` slots let your site supply its own chrome. Put `id="main-content"` on
-your main element so the built-in skip link has a target.
-
-The document title joins `title` and `siteTitle` with a middle dot, as in
-`<title>Posts · Example</title>`, while `og:title` stays the bare `title`. Pass
-`title={siteTitle}` on a homepage to render the bare site name in both.
-
-For example, `src/pages/posts/index.astro`:
+`PostLayout` and `ListLayout` are your components. Type their props with the
+contracts the routes fulfil:
 
 ```astro
 ---
+import type { CollectionEntry } from "astro:content";
+import type { ListLayoutProps } from "astro-awesomeness";
 import BaseLayout from "astro-awesomeness/layouts/base-layout";
-import { content } from "../../lib/content";
-import "../../styles/global.css";
+import Pagination from "astro-awesomeness/astro/pagination";
+import { content } from "virtual:astro-awesomeness/content";
+import "../styles/global.css";
+
+type Props = ListLayoutProps<CollectionEntry<"posts">>;
+
+const { description, page, posts, title } = Astro.props;
 ---
 
-<BaseLayout siteTitle="Example" title="Posts" description="All posts." rssHref="/rss.xml">
-  <header slot="header"><a href="/">Example</a></header>
+<BaseLayout title={title} description={description}>
   <main id="main-content">
-    <h1>Posts</h1>
+    <h1>{title}</h1>
     <ul>
-      {content.posts.map((post) => (
+      {posts.map((post) => (
         <li><a href={content.postUrl(post)}>{post.data.title}</a></li>
       ))}
     </ul>
+    {page && <Pagination page={page} />}
   </main>
 </BaseLayout>
 ```
 
-An article route at `src/pages/[category]/[slug].astro`:
+| Contract             | Props                                                                                          |
+| -------------------- | ---------------------------------------------------------------------------------------------- |
+| `ListLayoutProps<P>` | `title`, `description`, optional `eyebrow`, `posts`, and Astro's `page` on paginated listings. |
+| `PostLayoutProps<P>` | `post`. The rendered article body arrives in the default slot.                                 |
 
-```astro
----
-import type { GetStaticPaths, InferGetStaticPropsType } from "astro";
-import { render } from "astro:content";
-import BaseLayout from "astro-awesomeness/layouts/base-layout";
-import Prose from "astro-awesomeness/astro/prose";
-import TagList from "astro-awesomeness/astro/tag-list";
-import { content } from "../../lib/content";
-import "../../styles/global.css";
+`strings` fills `title`, `description` and `eyebrow`. Category and tag strings
+may use `{name}`, and every string may use `{total}` for the number of posts in
+the listing. Category and tag titles default to `{name}`.
 
-export const getStaticPaths = (() =>
-  content.posts.map((post) => ({
-    params: content.postParams(post),
-    props: { post },
-  }))) satisfies GetStaticPaths;
+BaseLayout has two mutually exclusive metadata modes:
 
-type Props = InferGetStaticPropsType<typeof getStaticPaths>;
-const { post }: Props = Astro.props;
-const { Content } = await render(post);
-const category = content.postCategory(post);
----
+| Mode    | Props                                                   |
+| ------- | ------------------------------------------------------- |
+| Page    | Required `title` and `description`; optional `noindex`. |
+| Article | Required `post`.                                        |
 
-<BaseLayout siteTitle="Example" post={post} rssHref="/rss.xml">
-  <main id="main-content">
-    <article>
-      <a href={category.href}>{category.name}</a>
-      <h1>{post.data.title}</h1>
-      <Prose><Content /></Prose>
-      <TagList tags={post.data.tags} />
-    </article>
-    <ul>
-      {content.relatedPosts(post, 3).map((related) => (
-        <li><a href={content.postUrl(related)}>{related.data.title}</a></li>
-      ))}
-    </ul>
-  </main>
-</BaseLayout>
-```
+Site title, images, color scheme and the feed link come from the integration
+config. The `head`, `header`, default and `footer` slots let your site supply its
+own chrome. Put `id="main-content"` on your main element so the built-in skip link
+has a target.
+
+The document title joins `title` and the site title with a middle dot, as in
+`<title>Posts · Example</title>`, while `og:title` stays the bare `title`. Pass
+the site title as `title` on a homepage to render the bare site name in both.
 
 Article metadata comes from `post.data`: title, description, author, publication
 and update dates, and hero image. It includes `BlogPosting` JSON-LD. Missing
-authors fall back to the site organization in JSON-LD. The shared `image` prop is
-also the publisher logo there; a root-relative path such as `/og-image.jpg`
-resolves against `Astro.site`. Pages emit website metadata; `noindex` emits
-`noindex,follow` and suppresses the canonical link.
+authors fall back to the site organization in JSON-LD. `ogImage` is the fallback
+social image and `logo` the publisher logo; a root-relative path such as
+`/og-image.jpg` resolves against `Astro.site`. Pages emit website metadata;
+`noindex` emits `noindex,follow` and suppresses the canonical link.
 
 Canonical links, `og:url` and JSON-LD `mainEntityOfPage.@id` use the current route
 pathname on `Astro.site`, excluding query strings and fragments. Configure `site`
@@ -266,84 +272,59 @@ for your production origin. `seo.canonical_url` selects content route segments;
 do not pass it as a `canonical` prop to BaseLayout or Seo. Seo accepts the same
 page/article metadata modes when you own the entire document shell.
 
-## Archives and pagination
-
-For `src/pages/[category]/[...page].astro`, pass Astro's `Page` object directly to
-Pagination:
-
-```astro
----
-import type { GetStaticPaths, InferGetStaticPropsType } from "astro";
-import BaseLayout from "astro-awesomeness/layouts/base-layout";
-import Pagination from "astro-awesomeness/astro/pagination";
-import { content } from "../../lib/content";
-import "../../styles/global.css";
-
-export const getStaticPaths = (({ paginate }) =>
-  content.categories().flatMap((category) =>
-    paginate(category.posts, {
-      pageSize: 10,
-      params: { category: category.slug },
-      props: { category },
-    }),
-  )) satisfies GetStaticPaths;
-
-type Props = InferGetStaticPropsType<typeof getStaticPaths>;
-const { category, page }: Props = Astro.props;
----
-
-<BaseLayout siteTitle="Example" title={category.name} description={`Posts in ${category.name}.`}>
-  <main id="main-content">
-    <h1>{category.name}</h1>
-    <ul>
-      {page.data.map((post) => (
-        <li><a href={content.postUrl(post)}>{post.data.title}</a></li>
-      ))}
-    </ul>
-    <Pagination page={page} />
-  </main>
-</BaseLayout>
-```
-
 Pagination uses `page.url.prev` and `page.url.next`, and renders nothing for a
-single page. Astro builds those URLs from `trailingSlash`, so keep it `"always"`:
-without it, pagination links drop the trailing slash that canonical and sitemap
-URLs carry. Use a rest parameter (`[...page]`) to put the first page at the
-category root.
+single page.
 
-Build `src/pages/tag/[tag].astro` static paths with
-`content.tags().map((tag) => ({ params: { tag: tag.slug }, props: { tag } }))`, then
-render `tag.posts` using `content.postUrl`. A separate tag collection is unnecessary.
+## Tag aliases
 
-`content.tags()` emits one canonical normalized slug per tag, with its posts
-already sorted.
-
-## RSS
-
-Install `@astrojs/rss` and create `src/pages/rss.xml.ts`:
+A site that must keep older tag URLs points `tagAliases` at a module whose default
+export returns extra route slugs for a tag bucket:
 
 ```ts
-import rss from "@astrojs/rss";
-import type { APIRoute } from "astro";
-import { content } from "../lib/content";
+import type { CollectionEntry } from "astro:content";
+import type { TagAliases } from "astro-awesomeness";
 
-const GET: APIRoute = (context) => {
-  if (!context.site) {
-    throw new Error("Configure site in astro.config.ts before generating RSS.");
-  }
-  return rss({
-    description: "All posts from Example.",
-    items: content.feedItems(),
-    site: context.site,
-    title: "Example",
-  });
-};
+const tagAliases: TagAliases<CollectionEntry<"posts">> = ({ labels, slug }) =>
+  labels.length > 1 ? [`${slug}-2`] : [];
 
-export { GET };
+export default tagAliases;
 ```
 
-`feedItems()` projects the indexed fields; it does not strip invalid XML
-characters.
+Each alias renders the same listing as the tag. A tag's own slug always wins over
+another tag's alias, and the first tag to claim an alias keeps it. Links from
+`TagList` and `content.tags()` keep pointing at the tag's own slug.
+
+The feed projects the indexed fields; it does not strip invalid XML characters.
+
+## vercel.json
+
+`astro-awesomeness vercel-json` writes `vercel.json` for a blog migrated from
+WordPress. Commit the file: Vercel reads it before the build. `--check` exits
+non-zero when the committed file is stale.
+
+The file holds, in order:
+
+1. 28 redirects for WordPress sitemap, feed and admin URLs.
+2. Four redirects per renamed category, from `src/data/category-slugs.json`: an
+   entry whose name slugs to something other than its mapped slug redirects
+   `/natural`, `/natural/`, `/natural/:path*` and `/natural/:path*/` to the mapped
+   slug. A natural slug the map still routes to is never redirected.
+3. The per-site list in `src/data/redirects.json`.
+4. Three security headers on every path.
+
+`src/data/redirects.json` is required and may be `{}`:
+
+```json
+{
+  "renames": { "marketingdigital": "marketing-digital" },
+  "skip": ["Entrevistas com Arquitetos"],
+  "redirects": [{ "source": "/a/post-2/", "destination": "/a/post/", "permanent": true }]
+}
+```
+
+`renames` adds category redirects the map cannot derive, `skip` names map
+entries whose natural slug never was a URL, and `redirects` are appended as
+written.
 
 ## Locale and color scheme
 
@@ -365,7 +346,7 @@ content-index URLs do not add locale prefixes.
 | `"dark"`           | Renders the `.dark` class without a theme initialization script.                                                 |
 
 Fixed schemes also set the corresponding `color-scheme` metadata. For a light-only
-site use `<BaseLayout colorScheme="light" ...>` and omit ThemeToggle; no script is
+site set `colorScheme: "light"` in the integration config and omit ThemeToggle; no script is
 needed to undo a stored dark preference. For automatic mode, add the island in
 your own header:
 
@@ -392,23 +373,24 @@ hash. Fixed-scheme sites run no script; set a literal
 
 ## Remaining building blocks
 
-| Import                                   | Props and purpose                                                              |
-| ---------------------------------------- | ------------------------------------------------------------------------------ |
-| `astro-awesomeness/astro/author-byline`  | `author`, optional `class`; compact author name, photo and link.               |
-| `astro-awesomeness/astro/author-card`    | `author`, optional `class`; author profile with optional biography.            |
-| `astro-awesomeness/astro/footer`         | `siteTitle`, optional `class` for the inner row; copyright and a `links` slot. |
-| `astro-awesomeness/astro/formatted-date` | `date: Date`, optional `class`; localized `<time>`.                            |
-| `astro-awesomeness/astro/pagination`     | `page`, optional `class`; Astro pagination links.                              |
-| `astro-awesomeness/astro/prose`          | Optional `class` and a default slot; styled article content.                   |
-| `astro-awesomeness/astro/reading-time`   | `text`, optional `class`; reading minutes with a localized label.              |
-| `astro-awesomeness/astro/seo`            | The page/article metadata props described above.                               |
-| `astro-awesomeness/astro/tag-list`       | `tags: string[]`, optional `class`; deduplicated links under `/tag/`.          |
-| `astro-awesomeness/components`           | `ThemeToggle`, `Button` and `buttonVariants`; requires React.                  |
-| `astro-awesomeness/lib`                  | `cn`, `createContentIndex` and its types.                                      |
-| `astro-awesomeness/content`              | `postSchema`, `authorSchema`, `Post` and `Author`.                             |
+| Import                                   | Props and purpose                                                     |
+| ---------------------------------------- | --------------------------------------------------------------------- |
+| `astro-awesomeness/astro/author-byline`  | `author`, optional `class`; compact author name, photo and link.      |
+| `astro-awesomeness/astro/author-card`    | `author`, optional `class`; author profile with optional biography.   |
+| `astro-awesomeness/astro/footer`         | Optional `class` for the inner row; copyright and a `links` slot.     |
+| `astro-awesomeness/astro/formatted-date` | `date: Date`, optional `class`; localized `<time>`.                   |
+| `astro-awesomeness/astro/pagination`     | `page`, optional `class`; Astro pagination links.                     |
+| `astro-awesomeness/astro/prose`          | Optional `class` and a default slot; styled article content.          |
+| `astro-awesomeness/astro/reading-time`   | `text`, optional `class`; reading minutes with a localized label.     |
+| `astro-awesomeness/astro/seo`            | The page/article metadata props described above.                      |
+| `astro-awesomeness/astro/tag-list`       | `tags: string[]`, optional `class`; deduplicated links under `/tag/`. |
+| `astro-awesomeness/components`           | `ThemeToggle`, `Button` and `buttonVariants`; requires React.         |
+| `astro-awesomeness/lib`                  | `cn`, `createContentIndex` and its types.                             |
+| `astro-awesomeness/content`              | `postSchema`, `authorSchema`, `Post` and `Author`.                    |
 
-The lib types are `CategoryOptions`, `ContentBucket`, `ContentIndex`,
-`ContentIndexOptions`, `ContentPost`, `FeedItem`, `PostCategory` and `PostParams`.
-There is no root package entry. The Astro components ship as source for Astro to
-compile; consumers own headers, cards, list/post layouts, tables of contents and
-code-block presentation.
+The lib types are `ContentBucket`, `ContentIndex`, `ContentIndexOptions`,
+`ContentPost`, `FeedItem`, `PostCategory`, `PostParams` and `TagBucket`. The root
+entry exports the integration and the `AwesomenessUserConfig`, `ListLayoutProps`,
+`PostLayoutProps` and `TagAliases` types. The Astro components and routes ship as
+source for Astro to compile; consumers own headers, cards, list/post layouts,
+tables of contents and code-block presentation.

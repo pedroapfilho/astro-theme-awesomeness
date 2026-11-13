@@ -1,7 +1,8 @@
 # AGENTS.md
 
 `astro-theme-awesomeness` is the Turborepo home of the published Astro 6/7
-blog theme `astro-awesomeness` and the demo blog that exercises it. Library
+blog theme `astro-awesomeness`, an Astro integration, and the demo blog that
+exercises it. Library
 profile in standy: no DB, no auth, no email infra.
 
 ## Friction Log
@@ -39,13 +40,16 @@ This repo follows the fleet's shared standards, checked by `standy` (`~/dev/stan
 ```
 apps/
   demo/                       # Astro reference blog: dev loop + showcase
-    src/lib/content.ts        # one createContentIndex binding for all routes and layouts
-    src/lib/site.ts           # site title and archive page size
+    astro.config.ts           # registers the integration: identity, layouts, route copy
     src/components/           # demo-owned site layout (header, footer), cards and list/post layouts
     src/content/posts/        # local posts with CMS-shaped frontmatter
-    src/pages/                # posts, category, article, tag, RSS and 404 routes
+    src/data/                 # category-slugs.json
+    src/pages/                # the homepage and 404; every content route is injected
 packages/
   astro-awesomeness/          # published npm package (the theme)
+    src/index.ts              # the integration: injects routes, registers virtual modules
+    src/integration/          # config schema and the virtual-modules Vite plugin
+    src/routes/               # injected article, category, tag, archive and RSS routes
     src/astro/                # static building blocks (footer, seo, pagination, …)
     src/components/           # shadcn React primitives and public entry
     src/compositions/         # product React islands (theme-toggle)
@@ -53,6 +57,9 @@ packages/
     src/content/              # post/author schemas and normalized heroImage
     src/lib/                  # content index, cn and internal component helpers
     src/styles/               # globals.css (shipped as `astro-awesomeness/styles.css`)
+    src/vercel/               # vercel.json generator and the `astro-awesomeness` bin
+    virtual.d.ts              # types of the public virtual modules
+  blog-snapshot/              # private: routing snapshots of a blog checkout or production site
   config-typescript/          # @repo/typescript-config (base, vite, astro)
   config-vitest/              # @repo/config-vitest (node)
 .changeset/                   # changeset config (ignores `demo`)
@@ -97,6 +104,9 @@ pnpm release                  # turbo build + changeset publish
 
 `astro-awesomeness` exposes these subpath entries (see `packages/astro-awesomeness/package.json`):
 
+- `astro-awesomeness`: the integration (`src/index.ts`) and the `ListLayoutProps`,
+  `PostLayoutProps`, `TagAliases` and config types
+- `astro-awesomeness/routes/*`: the injected route sources in `src/routes/`
 - `astro-awesomeness/components`: React islands (`src/components/index.ts`)
 - `astro-awesomeness/astro/*`: raw `.astro` components in `src/astro/`
 - `astro-awesomeness/layouts/base-layout`: page/article document layout with `head`,
@@ -108,10 +118,32 @@ pnpm release                  # turbo build + changeset publish
 
 The package README documents every component and member.
 
-There is no root entry or Tailwind preset export. Import each public subpath explicitly.
+There is no Tailwind preset export. The `astro-awesomeness` bin writes a blog's
+`vercel.json` (`astro-awesomeness vercel-json [--check]`).
 
-The Astro / layouts entries ship as source on purpose; Astro needs the
-component files at build time. Don't move them into the bundled output.
+The Astro, layouts and routes entries ship as source on purpose; Astro needs the
+component files at build time. Don't move them into the bundled output. Source
+that an `.astro` file reaches by relative import must not import a dependency's
+types: under pnpm a consumer's `astro check` resolves those files by their
+symlinked path and cannot see the theme's dependencies.
+
+## Blog snapshots
+
+`pnpm snapshot` (`packages/blog-snapshot`) records what a blog serves, so a theme
+or blog change can be checked against a fixed copy of its content:
+
+```sh
+pnpm snapshot capture --site https://www.example.com --blog ../blog --archive postagens --default-category sem-categoria --out snapshots/blog
+pnpm snapshot record --blog ../blog --content snapshots/blog/content.json --out after.json
+pnpm snapshot diff snapshots/blog/baseline.json after.json
+```
+
+`capture` crawls the production sitemap and writes `content.json`, a copy of the
+posts in the Easeia build API shape with everything routing reads (slugs, dates,
+categories, tags, authors) and no bodies or images, and `production.json`.
+`record` serves that copy to the blog's own `pnpm build` and snapshots `dist`:
+every page's title, description, canonical, post links and tag links, the feed,
+and `vercel.json` resolved one probe per redirect. Build the theme first.
 
 ## Conventions
 
@@ -120,8 +152,8 @@ component files at build time. Don't move them into the bundled output.
 - No `as any`, strict TS, no silent failures.
 - `.astro` components live in `src/astro/`; React primitives in `src/components/` and product islands in `src/compositions/`.
 - Content schemas in `src/content/`; consumer apps import via `astro-awesomeness/content`.
-- Vite is told to `optimizeDeps.exclude: ["astro-awesomeness"]` in the demo so
-  the workspace package isn't pre-bundled; keep that in any new consumer config.
+- The integration sets `optimizeDeps.exclude: ["astro-awesomeness"]`, so Vite never
+  pre-bundles the package's source entries.
 
 ## Library profile (standy)
 
@@ -151,21 +183,31 @@ only. None run on pushes to main. `release.yml` runs on pushes to main, and
   and `peerDependenciesMeta` declarations together.
 - **Astro i18n owns locale.** Components read `Astro.currentLocale` for document
   language, Open Graph locale, dates and built-in labels. The demo config uses
-  `i18n: { defaultLocale: "en-US", locales: ["en-US"] }` and `trailingSlash: "always"`.
+  `i18n: { defaultLocale: "en-US", locales: ["en-US"] }`.
   Labels support English and Portuguese, defaulting to English for other locales.
-- **One content index per site.** Bind `createContentIndex` in `src/lib/content.ts`.
-  It filters drafts, orders posts by publication date with an ID tie-breaker, and
-  owns post URLs, route params, category/tag buckets, related posts and feed items.
-  Use its methods everywhere so archives, links and RSS agree.
-- **Routes own SEO identity.** BaseLayout and Seo accept either `siteTitle`, `title`
-  and `description` for a page, or `siteTitle` and `post` for an article. Canonical,
+- **The integration owns routing.** `awesomeness()` injects the article, category,
+  tag, archive and RSS routes, sets `trailingSlash: "always"` and
+  `prerenderConflictBehavior: "error"`, and adds the sitemap. A site never adds
+  pages at those paths.
+- **One content index per site.** The integration binds `createContentIndex` to the
+  `posts` collection in `virtual:astro-awesomeness/content`. It filters drafts,
+  orders posts by publication date with an ID tie-breaker, and owns post URLs,
+  route params, category/tag buckets, related posts and feed items. Use its
+  methods everywhere so archives, links and RSS agree.
+- **Unmapped categories slug from the name as the CMS sent it.** `Luz &amp; Sombra`
+  routes to `/luz-amp-sombra/`, as in 3.0.0. Display names are decoded.
+- **Site identity is config.** Title, description, images and color scheme are
+  integration options, read from `virtual:astro-awesomeness/config`. BaseLayout
+  and Seo accept either `title` and `description` for a page, or `post` for an
+  article. Canonical,
   `og:url` and JSON-LD `mainEntityOfPage.@id` derive from the route pathname on
   `Astro.site`. `seo.canonical_url` influences content route selection only.
 - **Consumers own presentation.** The demo wraps BaseLayout in its own site layout
-  (header, footer, stylesheet) and list/post layouts. Shared components do not
-  prescribe a blog shell. `colorScheme="light"` or `"dark"` fixes the scheme
-  without a theme initialization script; `"auto"` follows a stored preference or
-  the system preference.
+  (header, footer, stylesheet) and names its list/post layouts in the integration's
+  `components` option; the injected routes render them. The theme ships no default
+  layouts. `colorScheme: "light"` or `"dark"` fixes the scheme without a theme
+  initialization script; `"auto"` follows a stored preference or the system
+  preference.
 - **Changesets ignores `demo`.** Only `astro-awesomeness` is published; demo
   is a dev playground.
 

@@ -1,16 +1,19 @@
-import type { Post } from "../content";
-
 type ArticlePost = {
-  data: Pick<Post, "author" | "description" | "heroImage" | "pubDate" | "title" | "updatedDate">;
+  data: {
+    author?: { bio?: string; name: string; photoUrl?: string; url?: string };
+    description: string;
+    heroImage?: { alt: string; height: number; src: string; width: number };
+    pubDate: Date;
+    title: string;
+    updatedDate?: Date;
+  };
 };
 
-type MetadataProps = {
-  image?: string;
-  siteTitle: string;
-} & (
+type PageProps =
   | { description: string; noindex?: boolean; post?: never; title: string }
-  | { description?: never; noindex?: never; post: ArticlePost; title?: never }
-);
+  | { description?: never; noindex?: never; post: ArticlePost; title?: never };
+
+type MetadataProps = PageProps & { image?: string; logo?: string; siteTitle: string };
 
 const present = (value?: string): string | undefined => (value === "" ? undefined : value);
 
@@ -19,8 +22,15 @@ const buildMetadata = (props: MetadataProps, url: URL, site?: URL) => {
   const { description, title } = post ? post.data : props;
   const origin = site ?? url.origin;
   const canonical = new URL(url.pathname, origin).toString();
-  const imagePath = present(props.image);
-  const image = imagePath === undefined ? undefined : new URL(imagePath, origin).toString();
+
+  const absolute = (path?: string): string | undefined => {
+    const value = present(path);
+
+    return value === undefined ? undefined : new URL(value, origin).toString();
+  };
+
+  const image = absolute(props.image);
+  const logo = absolute(props.logo) ?? image;
   const ogImage = post?.data.heroImage?.src ?? image;
   const author = post?.data.author;
   const publishedTime = post?.data.pubDate.toISOString();
@@ -49,7 +59,7 @@ const buildMetadata = (props: MetadataProps, url: URL, site?: URL) => {
         mainEntityOfPage: { "@id": canonical, "@type": "WebPage" },
         publisher: {
           "@type": "Organization",
-          logo: image === undefined ? undefined : { "@type": "ImageObject", url: image },
+          logo: logo === undefined ? undefined : { "@type": "ImageObject", url: logo },
           name: siteTitle,
         },
       }
@@ -73,4 +83,4 @@ const buildMetadata = (props: MetadataProps, url: URL, site?: URL) => {
 
 export { buildMetadata };
 
-export type { ArticlePost, MetadataProps };
+export type { ArticlePost, MetadataProps, PageProps };

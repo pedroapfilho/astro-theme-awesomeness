@@ -1,7 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import FormattedDate from "astro-awesomeness/astro/formatted-date";
-import { content } from "../lib/content";
+import { content } from "virtual:astro-awesomeness/content";
 
 type Props = { post: CollectionEntry<"posts"> };
 

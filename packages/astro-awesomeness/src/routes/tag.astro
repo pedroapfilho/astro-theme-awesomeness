@@ -1,0 +1,17 @@
+---
+import type { GetStaticPaths } from "astro";
+import ListLayout from "virtual:astro-awesomeness/components/ListLayout";
+import config from "virtual:astro-awesomeness/config";
+import { content } from "virtual:astro-awesomeness/content";
+import tagAliases from "virtual:astro-awesomeness/tag-aliases";
+import { listingCopy } from "../lib/listing-copy";
+import { tagRoutes } from "../lib/tag-routes";
+
+export const getStaticPaths = (() => tagRoutes(content.tags(), tagAliases)) satisfies GetStaticPaths;
+
+const { tag } = Astro.props;
+---
+<ListLayout
+  {...listingCopy(config.strings.tag, { name: tag.name, total: tag.posts.length })}
+  posts={tag.posts}
+/>

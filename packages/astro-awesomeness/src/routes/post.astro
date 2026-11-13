@@ -1,17 +1,15 @@
 ---
-import type { GetStaticPaths, InferGetStaticPropsType } from "astro";
+import type { GetStaticPaths } from "astro";
 import { render } from "astro:content";
-import PostLayout from "../../components/post-layout.astro";
-import { content } from "../../lib/content";
+import PostLayout from "virtual:astro-awesomeness/components/PostLayout";
+import { content } from "virtual:astro-awesomeness/content";
 
 export const getStaticPaths = (() => content.posts.map((post) => ({
   params: content.postParams(post),
   props: { post },
 }))) satisfies GetStaticPaths;
 
-type Props = InferGetStaticPropsType<typeof getStaticPaths>;
-
-const { post }: Props = Astro.props;
+const { post } = Astro.props;
 const { Content } = await render(post);
 ---
 <PostLayout post={post}>

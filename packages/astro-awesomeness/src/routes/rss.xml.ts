@@ -1,8 +1,7 @@
 import rss from "@astrojs/rss";
 import type { APIRoute } from "astro";
-
-import { content } from "../lib/content";
-import { SITE_TITLE } from "../lib/site";
+import config from "virtual:astro-awesomeness/config";
+import { content } from "virtual:astro-awesomeness/content";
 
 const GET: APIRoute = (context) => {
   if (!context.site) {
@@ -10,10 +9,10 @@ const GET: APIRoute = (context) => {
   }
 
   return rss({
-    description: "The reference blog for astro-awesomeness.",
+    description: config.description,
     items: content.feedItems(),
     site: context.site,
-    title: SITE_TITLE,
+    title: config.title,
   });
 };
 
