@@ -65,7 +65,9 @@ The integration sets `trailingSlash: "always"` and
 already registered it. A build fails when two routes produce the same URL, such
 as a category that slugs to your archive path.
 
-Create `src/styles/global.css` and import it from your pages or a local layout:
+Create `src/styles/global.css` and import it from the layout your pages and your
+`ListLayout` and `PostLayout` share. The injected routes load only what those
+layouts import, so a stylesheet imported from page files leaves them unstyled:
 
 ```css
 @import "tailwindcss";
@@ -163,6 +165,11 @@ routes use:
 import { content } from "virtual:astro-awesomeness/content";
 import config from "virtual:astro-awesomeness/config";
 ```
+
+`virtual:astro-awesomeness/components/ListLayout`, `.../PostLayout` and
+`.../ArchiveLayout` resolve to the components you configured, and
+`virtual:astro-awesomeness/tag-aliases` to your tag-alias function, for a page
+that renders one of them itself.
 
 `config` is the resolved integration config. `content` is bound to the `posts`
 collection. It excludes `draft: true` and `status: "DRAFT"`, then orders posts
@@ -324,7 +331,8 @@ The file holds, in order:
 
 `renames` adds category redirects the map cannot derive, `skip` names map
 entries whose natural slug never was a URL, and `redirects` are appended as
-written.
+written. A rename of a slug the map still routes to fails, since it would redirect
+a category the site serves.
 
 ## Locale and color scheme
 

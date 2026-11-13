@@ -52,8 +52,33 @@ integrations: [
 
 `ListLayout` receives `title`, `description`, an optional `eyebrow`, `posts`, and
 `page` on paginated listings. `PostLayout` receives `post` and the rendered body
-in its default slot; compute related posts inside it. Type both with
-`ListLayoutProps` and `PostLayoutProps` from `astro-awesomeness`.
+in its default slot. Type both with `ListLayoutProps` and `PostLayoutProps` from
+`astro-awesomeness`.
+
+## Steps the deleted files leave behind
+
+1. Import the stylesheet from a layout. The injected routes load only what
+   `ListLayout`, `PostLayout` and `ArchiveLayout` import. A site whose page files
+   import `src/styles/global.css` moves that import into the layout those three
+   share, or every article, category, tag and archive page renders unstyled.
+2. Set `colorScheme`. It defaults to `"auto"`, which adds the dark scheme, the
+   `theme-color` meta and the theme script. A site that passed
+   `colorScheme="light"` to BaseLayout sets `colorScheme: "light"` in
+   `awesomeness({...})`.
+3. Set `ogImage`. It has no default, and BaseLayout no longer takes `image`.
+   Without it a page with no hero image loses `og:image` and `twitter:image`, and
+   every article loses its JSON-LD publisher logo.
+4. Compute related posts in `PostLayout`. The route passes only `post`, so a site
+   whose article page called `content.relatedPosts(post, 6)` and passed the result
+   down calls it inside the layout.
+5. Export the tag-alias function as the module's default export. The integration
+   re-exports `default`, so a module with only a named export does not build.
+6. Keep live category slugs out of `renames`. The `vercel-json` command fails on
+   an entry whose source the category slug map still routes to.
+
+The virtual modules `virtual:astro-awesomeness/components/*` and
+`virtual:astro-awesomeness/tag-aliases` are now typed, next to `config` and
+`content`.
 
 ## Routing
 

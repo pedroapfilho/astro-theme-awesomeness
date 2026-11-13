@@ -116,6 +116,10 @@ const categoryRenames = ({ categorySlugMap, site }: z.output<typeof vercelJsonOp
   }
 
   for (const [from, to] of Object.entries(site.renames)) {
+    if (liveSlugs.has(from)) {
+      throw new Error(`renames sends /${from}/ to /${to}/, but the category slug map routes to it`);
+    }
+
     rename(from, to);
   }
 

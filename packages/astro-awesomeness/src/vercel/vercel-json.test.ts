@@ -114,6 +114,12 @@ describe("buildVercelJson", () => {
     );
   });
 
+  it("refuses a per-site rename of a slug the map still routes to", () => {
+    expect(() =>
+      buildVercelJson({ categorySlugMap, site: { renames: { arquitetura: "projetos" } } }),
+    ).toThrow("renames sends /arquitetura/ to /projetos/, but the category slug map routes to it");
+  });
+
   it("rejects two targets for one slug, a skip entry the map lacks and an unknown redirect key", () => {
     expect(() =>
       buildVercelJson({ categorySlugMap, site: { renames: { architecture: "arq" } } }),
