@@ -9,6 +9,13 @@ describe("diff", () => {
     ).toEqual([]);
   });
 
+  it("counts repeated entries, so losing one of two equal links is a removal", () => {
+    expect(diff({ links: ["/a/", "/b/", "/a/"] }, { links: ["/a/", "/b/"] })).toEqual([
+      'links: - "/a/"',
+    ]);
+    expect(diff({ links: ["/a/"] }, { links: ["/a/", "/a/"] })).toEqual(['links: + "/a/"']);
+  });
+
   it("names every route, listing entry and value that changed", () => {
     const before = {
       feed: { title: "Blog" },

@@ -54,7 +54,7 @@ const buildSnapshot = ({ feedXml, files, pages, vercelJson }: SnapshotSource) =>
     .toSorted(([a], [b]) => (a < b ? -1 : 1))
     .map(([path, page]): [string, PageSnapshot] => [
       path,
-      { ...page, links: [...new Set(page.links.map((link) => link.path))] },
+      { ...page, links: page.links.map((link) => link.path) },
     ]);
 
   return {

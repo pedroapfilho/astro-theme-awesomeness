@@ -76,6 +76,18 @@ describe("buildSnapshot", () => {
     expect(changed(listing.replace(lost, replacement))).toEqual(fields);
   });
 
+  it("fails the diff when a page loses a link whose target another link repeats", () => {
+    const paged = page("/postagens/2/", "website", ["/postagens/", "/notes/hello/", "/postagens/"]);
+    const previous = '<a href="/postagens/">/postagens/</a>';
+    const last = paged.lastIndexOf(previous);
+    const unlinked = `${paged.slice(0, last)}<span>/postagens/</span>${paged.slice(last + previous.length)}`;
+
+    expect(paged.indexOf(previous)).toBeLessThan(last);
+    expect(diff(snapshotOf(paged), snapshotOf(unlinked))).toEqual([
+      'pages / links: - "/postagens/"',
+    ]);
+  });
+
   it("ignores a stylesheet's hashed file name", () => {
     const renamed = listing.replace("/_astro/site.css", "/_astro/site.B2x9.css");
 

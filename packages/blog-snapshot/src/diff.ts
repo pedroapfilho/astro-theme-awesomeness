@@ -6,13 +6,26 @@ type Json = JsonValue | undefined;
 
 const show = (value: Json): string => (value === undefined ? "absent" : JSON.stringify(value));
 
+const surplus = (items: Array<string>, others: Array<string>): Array<string> => {
+  const unmatched = new Map<string, number>();
+
+  for (const item of others) {
+    unmatched.set(item, (unmatched.get(item) ?? 0) + 1);
+  }
+
+  return items.filter((item) => {
+    const count = unmatched.get(item) ?? 0;
+    unmatched.set(item, count - 1);
+
+    return count <= 0;
+  });
+};
+
 const diffArrays = (path: string, before: Array<Json>, after: Array<Json>): Array<string> => {
   const left = before.map(show);
   const right = after.map(show);
-  const kept = new Set(right);
-  const known = new Set(left);
-  const removed = left.filter((item) => !kept.has(item));
-  const added = right.filter((item) => !known.has(item));
+  const removed = surplus(left, right);
+  const added = surplus(right, left);
 
   if (removed.length === 0 && added.length === 0) {
     return left.join("\n") === right.join("\n") ? [] : [`${path}: order changed`];
