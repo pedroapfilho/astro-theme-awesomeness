@@ -1,19 +1,14 @@
 {
-  "version": 1,
-  "upstreamCommit": "2b3e6d4f8d9161fe5c19340dc383aade392012dd",
-  "registryBase": "https://ui.shadcn.com/r/styles/base-nova",
-  "style": "base-nova",
+  "version": 2,
+  "registries": {
+    "@shadcn": {
+      "upstreamCommit": "2b3e6d4f8d9161fe5c19340dc383aade392012dd"
+    }
+  },
   "componentsDirectory": "src/components",
-  "normalizations": [
-    "Repository formatting, import paths, declaration ordering, and RSC boundaries.",
-    "Arbitrary values replaced with equivalent named theme tokens or utilities.",
-    "Registry markers resolved to installed styling and Sonner CSS variables moved to its utility.",
-    "Strictly typed conditions and theme values, with reduced-motion support.",
-    "Composite internals render at the primitive layer when no-restyle prohibits the upstream call; public APIs and DOM composition are retained."
-  ],
   "files": {
     "src/components/button.tsx": {
-      "registry": "button",
+      "registry": "@shadcn/button",
       "registrySha256": "9ba7e870178813f0552b818a913a2792fb500c779e36395740b4973e3025d427",
       "sha256": "b78018fbb870dcae0cdd1d2d4d7ebbd70742ade1bc69c7f3dd0f7af429c4c52b"
     }
