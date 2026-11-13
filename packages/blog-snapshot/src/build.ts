@@ -3,8 +3,8 @@ import { access, readdir, readFile } from "node:fs/promises";
 import { createServer } from "node:http";
 import { join, relative } from "node:path";
 
-import { readPage } from "./read-page.ts";
-import { buildSnapshot, readFeed } from "./snapshot.ts";
+import { readPage } from "./read-page";
+import { buildSnapshot, readFeed } from "./snapshot";
 
 const buildWithContent = async (blog: string, contentPath: string): Promise<void> => {
   const content = await readFile(contentPath);

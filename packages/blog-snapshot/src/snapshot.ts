@@ -1,8 +1,8 @@
 import { XMLParser } from "fast-xml-parser";
 import { z } from "zod";
 
-import type { PageFacts } from "./read-page.ts";
-import { redirectSchema, resolveRedirects } from "./redirects.ts";
+import type { PageFacts } from "./read-page";
+import { redirectSchema, resolveRedirects } from "./redirects";
 
 type PageSnapshot = {
   canonical?: string;

@@ -1,7 +1,7 @@
 import { z } from "zod";
 
-import { readPage, type PageFacts } from "./read-page.ts";
-import { xml } from "./snapshot.ts";
+import { readPage, type PageFacts } from "./read-page";
+import { xml } from "./snapshot";
 
 const CONCURRENCY = 8;
 const ATTEMPTS = 3;

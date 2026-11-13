@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { readPage } from "./read-page.ts";
+import { readPage } from "./read-page";
 
 const html = `<!doctype html><html><head>
 <title>Luz &amp; Sombra · Blog</title>

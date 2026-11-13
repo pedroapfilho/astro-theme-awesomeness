@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { redirectSchema, resolveRedirects } from "./redirects.ts";
+import { redirectSchema, resolveRedirects } from "./redirects";
 
 const table = (rows: Array<object>) =>
   resolveRedirects(rows.map((row) => redirectSchema.parse(row)));

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import { contentFromPages } from "./content.ts";
-import type { PageFacts } from "./read-page.ts";
+import { contentFromPages } from "./content";
+import type { PageFacts } from "./read-page";
 
 const page = (facts: Partial<PageFacts>): PageFacts => ({
   description: "",

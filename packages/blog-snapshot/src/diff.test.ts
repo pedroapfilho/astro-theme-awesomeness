@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { diff } from "./diff.ts";
+import { diff } from "./diff";
 
 describe("diff", () => {
   it("reports nothing for equal snapshots", () => {

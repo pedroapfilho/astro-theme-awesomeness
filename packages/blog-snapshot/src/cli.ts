@@ -4,11 +4,11 @@ import { parseArgs } from "node:util";
 
 import { z } from "zod";
 
-import { buildWithContent, snapshotFromDist } from "./build.ts";
-import { contentFromPages } from "./content.ts";
-import { diff } from "./diff.ts";
-import { crawlProduction } from "./production.ts";
-import { buildSnapshot } from "./snapshot.ts";
+import { buildWithContent, snapshotFromDist } from "./build";
+import { contentFromPages } from "./content";
+import { diff } from "./diff";
+import { crawlProduction } from "./production";
+import { buildSnapshot } from "./snapshot";
 
 const USAGE = `Usage:
   blog-snapshot capture --site <origin> --blog <checkout> --archive <path> --default-category <slug> --out <dir>

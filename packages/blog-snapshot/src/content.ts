@@ -1,7 +1,7 @@
 import { createContentIndex } from "astro-awesomeness/lib";
 
-import type { PageFacts } from "./read-page.ts";
-import { articlePaths } from "./snapshot.ts";
+import type { PageFacts } from "./read-page";
+import { articlePaths } from "./snapshot";
 
 type ContentOptions = {
   archivePath: string;
