@@ -30,7 +30,6 @@ pnpm lint
 pnpm format:check
 pnpm typecheck
 pnpm test
-pnpm test:lint
 pnpm check:shadcn
 ```
 

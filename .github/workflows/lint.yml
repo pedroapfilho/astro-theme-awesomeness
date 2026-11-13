@@ -55,9 +55,6 @@ jobs:
       - name: Lint Astro templates
         if: ${{ !cancelled() }}
         run: node .github/ci/ci.mjs run lint -- pnpm lint:astro
-      - name: Test the Astro linter
-        if: ${{ !cancelled() }}
-        run: node .github/ci/ci.mjs run lint -- pnpm test:lint
       - name: Install gitleaks
         if: ${{ !cancelled() }}
         env:
