@@ -66,8 +66,9 @@ in its default slot. Type both with `ListLayoutProps` and `PostLayoutProps` from
    `colorScheme="light"` to BaseLayout sets `colorScheme: "light"` in
    `awesomeness({...})`.
 3. Set `ogImage`. It has no default, and BaseLayout no longer takes `image`.
-   Without it a page with no hero image loses `og:image` and `twitter:image`, and
-   every article loses its JSON-LD publisher logo.
+   Without it a page with no hero image loses `og:image` and `twitter:image`. The
+   JSON-LD publisher logo is `logo`, or `ogImage` when `logo` is not set, so a
+   site that sets neither loses it on every article.
 4. Compute related posts in `PostLayout`. The route passes only `post`, so a site
    whose article page called `content.relatedPosts(post, 6)` and passed the result
    down calls it inside the layout.
