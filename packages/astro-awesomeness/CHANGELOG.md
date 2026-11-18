@@ -1,5 +1,11 @@
 # astro-awesomeness
 
+## 4.0.1
+
+### Patch Changes
+
+- d8a1912: The button's Tailwind classes are in the order the library base's button uses. The classes are the same, so nothing renders differently.
+
 ## 4.0.0
 
 ### Major Changes
